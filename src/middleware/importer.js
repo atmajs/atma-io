@@ -20,8 +20,8 @@
 	
 	
 
-	var rgx_importStatement = /^[\t ]*\/\/[ ]*import[ ]+(([^\n\r'" ]+)|('|"([^'"]+))'|")[ \t]*$/gm,
-		rgx_sourceStatement = /^[\t ]*\/\/[ ]*source[ ]+(([^\n\r'" ]+)|('|"([^'"]+))'|")[ \t]*$/gm;
+	var rgx_importStatement = /^[\t ]*\/\/[ ]*import[ ]+(([^\s'"]+)|('|"([^'"]+))'|")[ \t]*$/gm,
+		rgx_sourceStatement = /^[\t ]*\/\/[ ]*source[ ]+(([^\s'"]+)|('|"([^'"]+))'|")[ \t]*$/gm;
 
 	function process(currentUri, code) {
 
