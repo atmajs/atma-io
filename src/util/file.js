@@ -29,11 +29,12 @@ function file_copy(from, to) {
     
     
     try {
-        var stream = __fs.createWriteStream(to);
-        
-        __fs
-            .createReadStream(from)
-            .pipe(__fs.createWriteStream(to));    
+        //var stream = __fs.createWriteStream(to);
+        //
+        //__fs
+        //    .createReadStream(from)
+        //    .pipe(__fs.createWriteStream(to));
+        file_performCopySync(from, to);
     } catch(error) {
         
         logger.error('<file:copy> - ', error);
@@ -96,4 +97,23 @@ function file_rename(path, fileName) {
     }
     
     return false;
+}
+
+function file_performCopySync(from, to) {
+
+    var BUF_LENGTH = 64 * 1024,
+        buff = new Buffer(BUF_LENGTH),
+        bytesRead = 1,
+        fdr = __fs.openSync(from, "r"),
+        fdw = __fs.openSync(to, "w"),
+        pos = 0;
+    
+    while (bytesRead > 0) {
+        bytesRead = __fs.readSync(fdr, buff, 0, BUF_LENGTH, pos);
+        __fs.writeSync(fdw, buff, 0, bytesRead);
+        pos += bytesRead;
+    }
+    __fs.closeSync(fdr);
+    return __fs.closeSync(fdw);
+
 }

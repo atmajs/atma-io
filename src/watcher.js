@@ -41,20 +41,21 @@
 
 			this.listeners = [callback];
 			this.path = file.uri.toLocalFile();
-			this.fswatcher = __fs.watch(this.path, this.changed.bind(this));
-			this.trigger = this.trigger.bind(this);
+			this.fswatcher = __fs.watch(this.path, this.changed);
 		},
-		changed: function() {
-			if (this.timeout) 
-				clearTimeout(this.timeout);
-			
+		Self:{
+			changed: function() {
+				if (this.timeout) 
+					clearTimeout(this.timeout);
+				
 
-			this.timeout = setTimeout(this.trigger, 100);
-		},
-		trigger: function() {
-			for (var i = 0, x, length = this.listeners.length; i < length; i++) {
-				x = this.listeners[i];
-				x(this.path);
+				this.timeout = setTimeout(this.trigger, 100);
+			},
+			trigger: function() {
+				for (var i = 0, x, length = this.listeners.length; i < length; i++) {
+					x = this.listeners[i];
+					x(this.path);
+				}
 			}
 		},
 		bind: function(callback) {
