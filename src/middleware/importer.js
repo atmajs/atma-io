@@ -8,7 +8,8 @@
 			code = code.toString();
 		}
 
-		file.content = process(file.uri, code);
+		if (rgx_importStatement.test(code)) 
+			file.content = process(file.uri, code);
 	}
 	
 
