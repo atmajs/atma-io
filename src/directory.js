@@ -1,6 +1,9 @@
 
-io.Directory = Class({
+var Directory = io.Directory = Class({
 	Construct: function(directory) {
+
+		if (directory instanceof Directory)
+			return directory;
 		
 		if (directory == null || directory === '/') {
 			this.uri = io.env.currentDir;
@@ -13,6 +16,10 @@ io.Directory = Class({
 		}
 		
 		this.uri = new net.Uri(directory);
+
+		if (this.uri.isRelative() && io.env) {
+			this.uri = io.env.currentDir.combine(this.uri);
+		}
 		
 		delete this.uri.file;
 	},

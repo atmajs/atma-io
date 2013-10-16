@@ -68,7 +68,14 @@ function dir_symlink(source, target){
 
 function dir_walk(dir, root, data) {
     var results = [],
-        files = __fs.readdirSync(dir);
+        files;
+
+    try {
+        files = __fs.readdirSync(dir);  
+    } catch(error){
+        console.error('<dir walk>', error);
+        return results;
+    }
 
     if (root == null) 
         root = '';
