@@ -13,6 +13,11 @@ where asynchronous performance is not critical.
 
 This library is included into Atma.Toolkit, so creating custom scripts you can already use this API.
 
+- [File](#file)
+- [Directory](#directory)
+- [Middleware](#middleware)
+- [File Handler / Virtual Files](#file-handler--virtual-files)
+
 #### File
 ```javascript
 var file = new io.File('test.txt');
@@ -73,14 +78,14 @@ new io
     .File('myscript.js')
     .write(javascriptCode);
 
-// or we can enable markdown reader, so that we receive parsed md into html
+// or we can enable markdown reader, so that we receive html from parsed markdown
 
 var html = new io.File('readme.md').read();
 
 ```
 
 
-### File Handler
+### File Handler / Virtual Files
 
 Define via RegExp a File Handler to process read/writes etc. In this way virtual files could be defined. 
 
