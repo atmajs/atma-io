@@ -86,7 +86,18 @@ var Directory = io.Directory = Class({
 		
 		__fs.renameSync(oldpath, newpath);
 	},
-	
+	watch: function(callback){
+			
+		io
+			.watcher
+			.watch(this.uri.toLocalFile(), callback);
+	},
+	unwatch: function(callback){
+		// - callback: if undefined remove all listeners
+		io
+			.watcher
+			.unwatch(this.uri.toLocalFile(), callback);
+	},
 	Static: {
 		symlink: dir_symlink
 	}

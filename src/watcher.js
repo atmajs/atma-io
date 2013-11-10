@@ -1,47 +1,53 @@
-(function(resp) {
-
+(function() {
+	var event_CHANGE = event_CHANGE;
 	var _watchers = {};
+		
 
-	io.File.watcher = {
+	io.watcher = {
 
-		watch: function(file, callback) {
-			if (file == null || file.uri == null) {
-				logger.error('File is undefined', file);
-			}
-
-			var path = file.uri.toLocalFile();
-
+		watch: function(path, callback) {
+			
 			if (_watchers[path]) {
+				_watchers[path].on(event_CHANGE, callback);
+				return;
+			}
+			
+			if (__fs.existsSync(path) === false) {
+				logger.error('<watcher> File not exists', path);
 				return;
 			}
 
-			_watchers[path] = new FileWatcher(file, callback);
+			_watchers[path] = new Watcher(path);
+			_watchers[path].on(event_CHANGE, callback);
 		},
-		unwatch: function(path) {
+		unwatch: function(path, callback) {
 			var watcher = _watchers[path];
-
-			if (watcher) {
-				watcher.close();
-			} else {
-				logger.warn('Watcher not found:', path);
+			if (watcher == null) {
+				logger.warn('<watcher> No exists', path);
+				return;
 			}
 
+			if (callback) {
+				watcher.off(event_CHANGE, callback);
+				
+				
+				if (watcher._listeners.length !== 0) 
+					return;
+			}
+			
+			watcher.close();
 			delete _watchers[path];
 		}
 
 	};
 
 
-	var FileWatcher = Class({
-		Construct: function(file, callback) {
+	var Watcher = Class({
+		Base: Class.EventEmitter,
+		Construct: function(path, callback) {
 
-			if (file == null || file.uri == null) {
-				logger.error('File is undefined', file);
-			}
-
-			this.listeners = [callback];
-			this.path = file.uri.toLocalFile();
-			this.fswatcher = __fs.watch(this.path, this.changed);
+			this.path = path;
+			this.fswatcher = __fs.watch(path, this.changed);
 		},
 		Self:{
 			changed: function() {
@@ -52,18 +58,13 @@
 				this.timeout = setTimeout(this.trigger, 100);
 			},
 			trigger: function() {
-				for (var i = 0, x, length = this.listeners.length; i < length; i++) {
-					x = this.listeners[i];
-					x(this.path);
-				}
+				
+				this.trigger(event_CHANGE);
 			}
-		},
-		bind: function(callback) {
-			this.listeners.push(callback);
 		},
 		close: function() {
 			this.fswatcher.close();
-			this.listeners = [];
+			this.off();
 		}
 	});
 

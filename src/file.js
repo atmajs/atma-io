@@ -96,6 +96,18 @@
 			
 			return file_remove(this.uri.toLocalFile());
 		},
+		watch: function(callback){
+			
+			io
+				.watcher
+				.watch(this.uri.toLocalFile(), callback);
+		},
+		unwatch: function(callback){
+			// - callback: if undefined remove all listeners
+			io
+				.watcher
+				.unwatch(this.uri.toLocalFile(), callback);
+		},
 		Static: {
 			clearCache: function(path) {
 				if (!path) {
