@@ -1,5 +1,5 @@
 (function() {
-	var event_CHANGE = event_CHANGE;
+	var event_CHANGE = 'change';
 	var _watchers = {};
 		
 
@@ -54,12 +54,12 @@
 				if (this.timeout) 
 					clearTimeout(this.timeout);
 				
-
-				this.timeout = setTimeout(this.trigger, 100);
-			},
-			trigger: function() {
 				
-				this.trigger(event_CHANGE);
+				this.timeout = setTimeout(this.reportChange, 100);
+			},
+			reportChange: function() {
+				
+				this.trigger(event_CHANGE, this.path);
 			}
 		},
 		close: function() {
