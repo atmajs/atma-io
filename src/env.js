@@ -5,12 +5,14 @@ var mainFile = process
 		.replace(/\\/g, '/'),
 		
 	platform = process.platform,
-	cwd = process.cwd();
+	
+	__cwd = process.cwd().replace(/\\/g, '/')
+	;
 
 
 io.env = {
 	applicationDir: new net.Uri(mainFile.substring(0, mainFile.lastIndexOf('/') + 1)),
-	currentDir: new net.Uri(net.Uri.combine(cwd, '/')),
+	currentDir: new net.Uri(net.Uri.combine(__cwd, '/')),
 	newLine: platform === 'win32'
 		? '\r\n' 
 		: '\n'

@@ -112,14 +112,20 @@
 			clearCache: function(path) {
 				if (!path) {
 					_cache = {};
-				} else {
-					if (_cache.hasOwnProperty(path) === false) {
-						logger.log('io.File - not in cache -', path);
-						return;
-					}
-					delete _cache[path];
+					return;
+				} 
+				
+				if (path.charCodeAt(0) === 47) {
+					// /
+					path = net.Uri.combine(__cwd, path);
 				}
-
+				
+				if (_cache.hasOwnProperty(path)) {
+					delete _cache[path];
+					return;
+				}
+				
+				logger.log('io.File - not in cache -', path);
 			},
 			registerFactory: function(factory) {
 				_factory = factory;

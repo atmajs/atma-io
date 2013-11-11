@@ -1,14 +1,22 @@
-if (!(global.include) || !(global.net && global.net.Uri)) {
 
-    require('atma-libs/globals-dev');
+var atma = typeof atma !== 'undefined'
+    ? atma
+    : global
+    ;
+    
+if (atma.Class == null) {
+
+    atma = require('atma-libs/exports');
 }
 
-if (!(global.logger)) {
+if (global.logger == null) {
     
     require('atma-logger');
 }
 
 var __fs = require('fs'),
-    net = global.net,
-    logger = global.logger;
+    net = atma.net,
+    Class = atma.Class,
+    logger = global.logger
+    ;
     
