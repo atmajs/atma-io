@@ -7,6 +7,7 @@
 	// import middleware/uglify.js
 	// import middleware/cssmin.js
 	// import middleware/coffee.js
+	// import middleware/traceur.js
 	// import middleware/less.js
 	// import middleware/condcomments.js
 	// import middleware/importer.js
@@ -15,12 +16,37 @@
 
 
 	registerMiddleware({
-		'js': ['condcomments:read', 'hint:read', 'uglify:write'],
-		'css': ['cssmin:write'],
-		'coffee': ['coffee:read', 'hint:read', 'uglify:write'],
-		'less': ['less:read', 'cssmin:write'],
-		'yml': ['yml:read', 'yml:write'],
-		'json': ['json:read', 'json:write']
+		'js': [
+			'condcomments:read',
+			'hint:read',
+			'uglify:write'
+		],
+		'jsnext': [
+			'condcomments:read',
+			'traceur:read',
+			'hint:read',
+			'uglify:write'
+		],
+		'css': [
+			'cssmin:write'
+		],
+		'coffee': [
+			'coffee:read',
+			'hint:read',
+			'uglify:write'
+		],
+		'less': [
+			'less:read',
+			'cssmin:write'
+		],
+		'yml': [
+			'yml:read',
+			'yml:write'
+		],
+		'json': [
+			'json:read',
+			'json:write'
+		]
 	});
 	
 	
