@@ -97,7 +97,8 @@
 		}
 
 		file.content = ast.print_to_string({
-			beautify: !minify
+			beautify: !minify,
+			comments: /^!/
 		});
 
 		logger.log('Uglify... [end %sms]', Date.now() - start);
