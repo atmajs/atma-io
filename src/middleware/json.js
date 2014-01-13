@@ -31,7 +31,10 @@
             		: 4
             		;
 
-                file.content = JSON.stringify(file.content, null, indent);
+                file.content = JSON
+					.stringify(file.content, null, indent)
+					.replace(/\n/g, io.env.newLine)
+					;
                 
             } catch(error) {
                 logger.error('Json Stringify:', error);
