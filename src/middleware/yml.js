@@ -20,7 +20,7 @@
 				file.content = _yaml.parse(yml);
 				
 			} catch (error) {
-				logger.error('Yaml Parser:', error);
+				logger.error('<yaml:parse> ', error);
 			}  
 		},
 		
@@ -29,12 +29,16 @@
 			if (_yaml == null) 
 				_yaml = require('yamljs');
 			
-			if ((file.content && typeof file.content !== 'object') === false) {
+			if (file.content == null || typeof file.content !== 'object') {
 				return;
 			}
 			
-			
-			file.content = _yaml.stringify(file.content);
+			file.content = _yaml.stringify(
+				JSON.parse(
+					JSON.stringify(file.content)
+				),
+				4
+			);
 		}
 	};
 	

@@ -15,13 +15,13 @@
 				file.content = JSON.parse(file.content);
                 
 			} catch (error) {
-				logger.error('Json Parser:', error);
+				logger.error('<json:parser>', error);
 			}  
 		},
 		
 		write: function(file, config){
 			
-			if ((file.content && typeof file.content === 'object') === false) {
+			if (file.content == null || typeof file.content !== 'object') {
 				return;
 			}
 			
@@ -37,7 +37,7 @@
 					;
                 
             } catch(error) {
-                logger.error('Json Stringify:', error);
+                logger.error('<json:stringify> ', error);
             }
 			
 		}

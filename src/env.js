@@ -50,8 +50,6 @@ io.env = {
 		if (platform === 'darwin') 
 			path = path.combine('Library/Application Support/');
 		
-		
-		logger.log(mainFile);
 		path = path.combine('.' + mainFile.file + '/');
 		
 		Object.defineProperty(this, 'appdataDir', {
