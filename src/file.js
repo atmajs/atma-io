@@ -32,15 +32,41 @@
 
 			return (_cache[path] = this);
 		},
-		read: function(asBuffer) {
+		read: function(mix) {
 
-			if (this.content) {
+			if (this.content) 
 				return this.content;
+			
+			var encoding = 'utf-8',
+				skipHooks = false;
+				
+			if (mix != null) {
+				
+				switch(typeof mix){
+					case 'string':
+						encoding = mix;
+						break;
+					
+					case 'object':
+						
+						if (mix.hasOwnProperty('encoding')) 
+							encoding = mix.encoding;
+						
+						if (mix.hasOwnProperty('skipHooks')) 
+							skipHooks = mix.skipHooks;
+							
+						break;
+				}
+				
+				if (encoding === 'buffer' ) 
+					encoding = null;
 			}
+			
 
-			this.content = file_read(this.uri.toLocalFile(), asBuffer);
+			this.content = file_read(this.uri.toLocalFile(), encoding);
 
-			_hook && _hook.trigger('read', this);
+			if (_hook && skipHooks !== true) 
+				_hook.trigger('read', this);
 
 			return this.content;
 		},

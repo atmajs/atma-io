@@ -45,10 +45,10 @@ function file_exists(path) {
     return __fs.existsSync(path) && __fs.statSync(path).isFile();
 }
 
-function file_read(path, asBuffer) {
+function file_read(path, encoding) {
     
     try {
-        return __fs.readFileSync(path, asBuffer ? null : 'utf-8');
+        return __fs.readFileSync(path, encoding);
     } catch (error) {
         
         logger.log('red<.read():> red<bold<%s>>'.color, error.toString());
