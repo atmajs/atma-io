@@ -8,7 +8,7 @@ function cfg_get() {
         }
     }
     
-    if ((global.app && app.config && app.config.tasks) === false) 
+    if (!!(global.app && app.config && app.config.tasks) === false) 
         return cfg;
     
     var task = app.current || app.config.tasks[0];
