@@ -13,6 +13,8 @@ UTest({
 	'exists': function() {
 		eq(io.File.exists(path_File), true);
 		eq(io.File.exists(path_Copy), false);
+		eq(io.File.exists('/path/not/exists'), false);
+		eq(io.File.exists('test'), false, 'file matched, but should be a directory');
 	},
 	
 	'read': function(){

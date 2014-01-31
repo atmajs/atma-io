@@ -43,7 +43,7 @@
 	});
 	
 	
-	function registerMiddleware(extensions){
+	io.File.registerExtensions = function registerMiddleware(extensions){
 		
 		var hook = io.File.getHookHandler();
 	
@@ -93,13 +93,5 @@
 
 		hook.register(new RegExp('\\.' + extension + '$'), funcName, middleware);
 	}
-	
-	io.File.registerExtensions = registerMiddleware;
-	
-	io.File.registerHook = function(method, rgx, handler){
-		var hook = io.File.getHookHandler();
-		
-		hook.register(rgx, method, hook);
-	};
 
 }());

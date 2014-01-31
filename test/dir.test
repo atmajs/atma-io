@@ -25,12 +25,7 @@ include
 
 function hasFile(files, filename) {
     
-    for (var i = 0, x, imax = files.length; i < imax; i++){
-        x = files[i];
-        
-        if (x.uri.file === filename)
-            return true;
-    }
-    
-    return false;
+    return files.some(function(file){
+        return file.uri.file === filename;
+    });
 }
