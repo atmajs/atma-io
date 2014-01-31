@@ -35,11 +35,13 @@
 	
 	// import ../src/env.js
 	// import ../src/file.js
+	// import ../src/file.statics.js
 	// import ../src/directory.js
 	// import ../src/file.hook.js
 	// import ../src/file.factory.js
 	// import ../src/watcher.js
 	// import ../src/middleware.js
+	// import ../src/exports.utils.js
 
 	
 	if (exports.io != null && typeof exports.io === 'object') {

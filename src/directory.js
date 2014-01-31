@@ -32,9 +32,10 @@ var Directory = io.Directory = Class({
 	},
 	readFiles: function(pattern, exclude) {
 
-		var patterns = parsePatterns(pattern),
-			excludes = parsePatterns(exclude),
-			that = this;
+		var patterns = glob_parsePatterns(pattern),
+			excludes = glob_parsePatterns(exclude),
+			that = this
+			;
 
 		this.files = dir_files(this.uri.toLocalDir(), patterns, excludes)
 			.map(function(x) {
@@ -102,133 +103,3 @@ var Directory = io.Directory = Class({
 		symlink: dir_symlink
 	}
 });
-
-function parseDirs(pattern) {
-	if (pattern[0] === '/') {
-		pattern = pattern.substring(1);
-	}
-
-	var depth = 0,
-		dirs = pattern.split('/');
-
-	if (~pattern.indexOf('**')) {
-		depth = Infinity;
-	}
-	else {
-		depth = dirs.length;
-	}
-	// remove file
-	dirs.pop();
-	for(var i = 0; i < dirs.length; i++){
-		if (dirs[i].indexOf('*') === -1){
-			continue;
-		}
-		dirs.splice(i);
-	}
-
-	return [depth, dirs.length, dirs.join('/').toLowerCase()];
-}
-
-
-function parsePatterns(pattern, out) {
-	if (pattern == null) {
-		return null;
-	}
-	if (out == null) {
-		out = [];
-	}
-	if (Array.isArray(pattern)) {
-		pattern.forEach(function(x){
-			parsePatterns(x, out);
-		});
-		
-		return out;
-	}
-	if (pattern instanceof RegExp) {
-		out.push(pattern);
-		return out;
-	}
-	if (typeof pattern === 'string') {
-
-		if (pattern[0] === '/'){
-			pattern = pattern.substring(1);
-		}
-
-		var depth = null,
-			regexp = globToRegex(pattern),
-			triple = parseDirs(pattern);
-
-		regexp.depth = triple[0];
-		regexp.rootCount = triple[1];
-		regexp.root = triple[2];
-
-
-		out.push(regexp);
-		return out;
-	}
-
-	logger.error('<glob> Unsupported pattern', pattern);
-	return out;
-}
-
-function globToRegex(glob) {
-	var specialChars = "\\^$*+?.()|{}[]",
-		stream = '',
-		i = -1,
-		length = glob.length;
-
-	glob = glob.replace(/(\*\*\/){2,}/g, '**/');
-
-
-	while (++i < length) {
-		var c = glob[i];
-		switch (c) {
-		case '?':
-			stream += '.';
-			break;
-		case '*':
-			if (glob[i + 1] === '*') {
-
-				if (i === 0 && /[\\\/]/.test(glob[i + 2])){
-					stream += '.+';
-					i+=2;
-				}
-
-				stream += '.+';
-				i++;
-				break;
-			}
-
-			stream += '[^/]+';
-			break;
-		case '{':
-			var close = glob.indexOf('}', i);
-			if (~close) {
-				stream += '(' + glob.substring(i + 1, close).replace(/,/g, '|') + ')';
-				i = close;
-				break;
-			}
-			stream += c;
-			break;
-		case '[':
-			var close = glob.indexOf(']', i);
-			if (~close) {
-				stream = glob.substring(i, close);
-				i = close;
-				break;
-			}
-			stream += c;
-			break;
-		default:
-			if (~specialChars.indexOf(c)) {
-				stream += '\\';
-			}
-			stream += c;
-			break;
-		}
-	}
-
-	stream = '^' + stream + '$';
-
-	return new RegExp(stream, 'i');
-}

@@ -1,24 +1,22 @@
 (function() {
 	var _hooks = [],
 		Hook = Class({
-			Construct: function(regexp, name, handler) {
+			Construct: function(regexp, name, handler, zIndex) {
 				this.regexp = regexp;
 				this.name = name;
 				this.handler = handler;
+				this.zIndex = zIndex;
 			},
 			run: function(functionName, file) {
 				if (functionName !== this.name) 
 					return;
 				
-				
-				
 				if (this.regexp.test(file.uri.toString()) === false) 
 					return;
 				
-
 				this.handler(file);
 			},
-			isMatch: function(path, funcName){
+			canHandle: function(path, funcName){
 				if (funcName != null && funcName !== this.name) 
 					return false;
 				
@@ -28,7 +26,7 @@
 
 
 	io.File.registerHookHandler({
-		register: function(regexp, name, handler) {
+		register: function(regexp, method, handler, zIndex) {
 			
 			if (typeof handler === 'string') {
 				handler = io.File.middleware[handler];
@@ -40,8 +38,8 @@
 				
 			}
 			
-            if (this.contains(name, handler) === false){
-                _hooks.push(new Hook(regexp, name, handler));
+            if (this.contains(method, handler) === false){
+                _hooks.push(new Hook(regexp, method, handler, zIndex || 0));
             }
             return this;
 		},
@@ -63,21 +61,30 @@
         	if (typeof handler === 'string')
         		handler = io.File.middleware[handler];
 			
-			for (var i = 0, x, imax = _hooks.length; i < imax; i++){
-				x = _hooks[i];
-				
-				if (x.name === name && x.handler === handler) {
-					
-					_hooks.splice(i, 1);
-					i--;
-					imax--;
-				}
-			}
+			_hooks = _hooks.filter(function(x){
+				return x.name !== name && x.handler !== handler;
+			});
         },
 		trigger: function(funcName, file) {
-			_hooks.forEach(function(x) {
-				x.run(funcName, file);
-			});
+			
+			this
+				.getHooksForPath(file.uri.toString(), funcName)
+				.sort(function(a, b){
+					var az = a.zIndex,
+						bz = b.zIndex
+						;
+					if (az === bz) 
+						return 0;
+					
+					return a.zIndex < b.zIndex
+						? 1
+						: -1
+						;
+				})
+				.forEach(function(x) {
+					x.run(funcName, file);
+				});
+				
             return this;
 		},
         clear: function(){
@@ -86,13 +93,10 @@
         },
 		
 		getHooksForPath: function(path, funcName){
-			var array = [];
-			_hooks.forEach(function(x) {
-				if (x.isMatch(path, funcName))
-					array.push(x);
+			
+			return _hooks.filter(function(x) {
+				return x.canHandle(path, funcName);
 			});
-            
-			return array;
 		}
 	});
 }());

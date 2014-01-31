@@ -7,7 +7,6 @@
 	// import middleware/uglify.js
 	// import middleware/cssmin.js
 	// import middleware/coffee.js
-	// import middleware/traceur.js
 	// import middleware/less.js
 	// import middleware/condcomments.js
 	// import middleware/importer.js
@@ -18,12 +17,6 @@
 	registerMiddleware({
 		'js': [
 			'condcomments:read',
-			'hint:read',
-			'uglify:write'
-		],
-		'jsnext': [
-			'condcomments:read',
-			'traceur:read',
 			'hint:read',
 			'uglify:write'
 		],
