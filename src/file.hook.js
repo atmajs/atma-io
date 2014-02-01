@@ -7,14 +7,14 @@
 				this.handler = handler;
 				this.zIndex = zIndex;
 			},
-			run: function(functionName, file) {
+			run: function(functionName, file, mix) {
 				if (functionName !== this.name) 
 					return;
 				
 				if (this.regexp.test(file.uri.toString()) === false) 
 					return;
 				
-				this.handler(file);
+				this.handler(file, mix);
 			},
 			canHandle: function(path, funcName){
 				if (funcName != null && funcName !== this.name) 
@@ -24,9 +24,17 @@
 			}
 		});
 
-
+	
 	io.File.registerHookHandler({
-		register: function(regexp, method, handler, zIndex) {
+		register: function(mix, method, handler, zIndex) {
+			var regexp = mix;
+			
+			if (arguments.length === 1) {
+				regexp = mix.regexp;
+				method = mix.method;
+				handler = mix.handler;
+				zIndex = mix.zIndex;
+			}
 			
 			if (typeof handler === 'string') {
 				handler = io.File.middleware[handler];
@@ -65,7 +73,7 @@
 				return x.name !== name && x.handler !== handler;
 			});
         },
-		trigger: function(funcName, file) {
+		trigger: function(funcName, file, mix) {
 			
 			this
 				.getHooksForPath(file.uri.toString(), funcName)
@@ -82,7 +90,7 @@
 						;
 				})
 				.forEach(function(x) {
-					x.run(funcName, file);
+					x.run(funcName, file, mix);
 				});
 				
             return this;

@@ -66,7 +66,7 @@
 			this.content = file_read(this.uri.toLocalFile(), encoding);
 
 			if (_hook && skipHooks !== true) 
-				_hook.trigger('read', this);
+				_hook.trigger('read', this, mix);
 
 			return this.content;
 		},

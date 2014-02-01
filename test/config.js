@@ -1,7 +1,7 @@
 module.exports = {
 	exec: 'node',
 	env: [
-		'lib/io.js'
+		'/lib/io.js'
 	],
 	tests: 'test/**.test'
 };

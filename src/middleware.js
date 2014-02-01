@@ -13,7 +13,8 @@
 	// import middleware/yml.js
 	// import middleware/json.js
 
-
+	io.File.registerExtensions = registerMiddleware;
+	
 	registerMiddleware({
 		'js': [
 			'condcomments:read',
@@ -43,7 +44,7 @@
 	});
 	
 	
-	io.File.registerExtensions = function registerMiddleware(extensions){
+	function registerMiddleware(extensions){
 		
 		var hook = io.File.getHookHandler();
 	

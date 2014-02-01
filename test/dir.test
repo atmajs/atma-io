@@ -1,10 +1,8 @@
 
 
-
-include
-    .inject('/lib/io.js')
-    .done(function(){
-        
+UTest({
+    
+    'directory': function(){
         var dir = new io.Directory('test/');
         
         
@@ -20,8 +18,9 @@ include
         
         assert(all.length > files.length);
         eq(hasFile(all, 'json.test'), true);
-    });
-        
+    }
+    
+});
 
 function hasFile(files, filename) {
     
