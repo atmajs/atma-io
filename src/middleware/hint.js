@@ -5,8 +5,10 @@
 
 	io.File.middleware['hint'] = function(file, config) {
 
-		if (config == null)
-			config = cfg_get().jshint;
+		config = config != null && typeof config === 'object'
+			? config.jshint
+			: cfg_get().jshint
+			;
 		
 	
 		if (config == null)
