@@ -1,5 +1,6 @@
 (function() {
 	var _cache = {},
+		_cacheEnabled = true,
 		_hook, _factory;
 
 	io.File = Class({
@@ -17,7 +18,7 @@
 
 			path = this.uri.toLocalFile();
 
-			if (_cache.hasOwnProperty(path)) {
+			if (_cacheEnabled && _cache.hasOwnProperty(path)) {
 				return _cache[path];
 			}
 
@@ -152,6 +153,12 @@
 				}
 				
 				logger.log('io.File - not in cache -', path);
+			},
+			disableCache: function(){
+				_cacheEnabled = false
+			},
+			enableCache: function(){
+				_cacheEnabled = true;
 			},
 			registerFactory: function(factory) {
 				_factory = factory;
