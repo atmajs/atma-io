@@ -18,6 +18,12 @@ UTest({
         
         assert(all.length > files.length);
         eq(hasFile(all, 'json.test'), true);
+        
+        
+        var  files = io.glob.readFiles('test/*.test');
+        assert(files.length > 1, files.length);
+        eq(hasFile(files, 'dir.test'), true);
+        eq(hasFile(files, 'file.test'), true);
     }
     
 });
