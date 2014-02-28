@@ -91,8 +91,21 @@
 				return;
 			}
 		}
-
-		hook.register(new RegExp('\\.' + extension + '$'), funcName, middleware);
+		
+		extension = rgx_prepairString(extension);
+		var rgx_end = '\\.' + extension + '$',
+			rgx_query = '\\.' + extension + '\\?',
+			rgx_hash = '\\.' + extension + '#',
+			
+			rgx = rgx_end
+				+ '|'
+				+ rgx_query
+				+ '|'
+				+ rgx_hash
+				;
+		
+		
+		hook.register(new RegExp(rgx), funcName, middleware);
 	}
 
 }());
