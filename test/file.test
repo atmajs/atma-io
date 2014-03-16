@@ -18,22 +18,19 @@ UTest({
 	},
 	
 	'read': function(){
-		assert(io
-			.File
-			.read(path_File)
-			.indexOf('test/bin/copied.js') !== -1
-		);
+		function check(path) {
+			has_(io.File.read(path), "'test/bin/copied.js'", path);
+		}
+		
+		check(path_File);
+		check('/' + path_File);
 	},
 	
 	'copy': function(){
 		io.File.copyTo(path_File, path_Copy);
 		
-		eq(io.File.exists(path_Copy), true);
-		assert(io
-			.File
-			.read(path_Copy)
-			.indexOf('test/bin/copied.js') !== -1
-		);
+		eq_(io.File.exists(path_Copy), true);
+		has_(io.File.read(path_Copy), "'test/bin/copied.js'");
 	},
 	
 	'hook': function(){

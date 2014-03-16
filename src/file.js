@@ -8,6 +8,9 @@
 			if (typeof path !== 'string')
 				path = path.toString();
 
+			if (path[0] === '/') 
+				path = net.Uri.combine('file://', process.cwd(), path);
+			
 
 			this.uri = new net.Uri(path);
 
