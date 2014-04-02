@@ -74,7 +74,7 @@
 
 			return this.content;
 		},
-		write: function(content) {
+		write: function(content, mix) {
 
 			if (content != null) {
 				this.content = content;
@@ -84,8 +84,11 @@
 				logger.error('io.file.write: Content is empty');
 				return this;
 			}
-
-			_hook && _hook.trigger('write', this);
+			
+			var skipHooks = mix && mix.skipHooks;
+			if (skipHooks !== true) 
+				_hook && _hook.trigger('write', this);
+			
 
 			file_save(this.uri.toLocalFile(), this.content);
 			return this;

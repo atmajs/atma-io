@@ -1,23 +1,30 @@
 (function() {
 	var _hooks = [],
 		Hook = Class({
-			Construct: function(regexp, name, handler, zIndex) {
+			Construct: function(regexp, method, handler, zIndex) {
 				this.regexp = regexp;
-				this.name = name;
+				this.method = method;
 				this.handler = handler;
 				this.zIndex = zIndex;
 			},
-			run: function(functionName, file, mix) {
-				if (functionName !== this.name) 
+			run: function(method, file, config) {
+				if (method !== this.method) 
 					return;
 				
 				if (this.regexp.test(file.uri.toString()) === false) 
 					return;
 				
-				this.handler(file, mix);
+				if (typeof this.handler !== 'function') {
+					if (this.handler[method])
+						this.handler[method](file, config);
+					
+					return;
+				}
+				
+				this.handler(file, config);
 			},
-			canHandle: function(path, funcName){
-				if (funcName != null && funcName !== this.name) 
+			canHandle: function(path, method){
+				if (method != null && method !== this.method) 
 					return false;
 				
 				return this.regexp.test(path);
@@ -40,8 +47,16 @@
 				handler = io.File.middleware[handler];
 				
 				if (handler == null) {
-					logger.error('Invalid hook handler - ', handler);
-					throw new Error('Handler not Found by name');
+					logger.error('<io.File> Hook handler not found', handler);
+					return this;
+				}
+				
+				if (typeof handler !== 'function' && handler[method] == null) {
+					logger.error(
+						'<io.File> Hook handler does not support `%s` method'
+						, method
+					);
+					return this;
 				}
 				
 			}
@@ -51,32 +66,32 @@
             }
             return this;
 		},
-        contains: function(name, handler){
+        contains: function(method, handler){
 			var i = _hooks.length,
 				hook;
 				
 			while (--i > -1) {
 				hook = _hooks[i];
 				
-				if (hook.name === name && hook.handler === handler) 
+				if (hook.method === method && hook.handler === handler) 
 					return true;
 				
 			}
 			return false;
         },
-        unregister: function(name, handler){
+        unregister: function(method, handler){
 
         	if (typeof handler === 'string')
         		handler = io.File.middleware[handler];
 			
 			_hooks = _hooks.filter(function(x){
-				return x.name !== name && x.handler !== handler;
+				return x.method !== method && x.handler !== handler;
 			});
         },
-		trigger: function(funcName, file, mix) {
+		trigger: function(method, file, config) {
 			
 			this
-				.getHooksForPath(file.uri.toString(), funcName)
+				.getHooksForPath(file.uri.toString(), method)
 				.sort(function(a, b){
 					var az = a.zIndex,
 						bz = b.zIndex
@@ -90,7 +105,7 @@
 						;
 				})
 				.forEach(function(x) {
-					x.run(funcName, file, mix);
+					x.run(method, file, config);
 				});
 				
             return this;
@@ -100,10 +115,10 @@
             return this;
         },
 		
-		getHooksForPath: function(path, funcName){
+		getHooksForPath: function(path, method){
 			
 			return _hooks.filter(function(x) {
-				return x.canHandle(path, funcName);
+				return x.canHandle(path, method);
 			});
 		}
 	});
