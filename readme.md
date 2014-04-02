@@ -1,11 +1,12 @@
 Atma Node.js IO Module
 ----
+[![Build Status](https://travis-ci.org/atmajs/atma-io.svg?branch=master)](https://travis-ci.org/atmajs/atma-io)
 
 Features:
 
 - File Class
 - Directory Class
-- File Read/Write Middleware
+- File `read/write` Middleware
 - Sync
 
 Mostly all operations are synchronous, and this is really useful in case of script applications or desktop applications, where the synchronous performance is not critical.
@@ -17,7 +18,7 @@ Mostly all operations are synchronous, and this is really useful in case of scri
     - [API](#file-methods)
     - [Cache](#cache)
     - [Middleware](#file-middleware)
-    - [Virtual File](#virtual-file)
+    - [Virtual File](#virtual-files)
 - [Directory](#directory)
     - [API](#directory-methods)
 
@@ -162,7 +163,7 @@ Path is matched by the regexp. The greater `zIndex` ist the later it is called i
 
 ### **Virtual** Files
 
-Define via RegExp a File Handler to completely override  the read/write/exists/remove behaviour.
+Define with RegExp a File Handler to completely override  the read/write/exists/remove behaviour.
 
 ```javascript
 io

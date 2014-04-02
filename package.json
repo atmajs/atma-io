@@ -5,22 +5,22 @@
         "name": "Alexander Kit",
         "email": "source.kit@gmail.com"
     },
-    "version": "0.1.71",
+    "version": "0.1.72",
     "main": "./lib/io.js",
     "repository": {},
     "license": "MIT",
     "dependencies": {
-        "atma-logger": ">0.0.0",
-        "atma-libs": ">0.0.0",
+        "atma-logger": "latest",
+        "atma-libs": "latest",
         "clean-css": "~1.0.12",
-        "coffee-script": ">0.0.0",
+        "coffee-script": "latest",
         "less": "~1.5.0",
-        "yamljs": ">0.0.0",
-        "uglify-js": ">0.0.0",
-        "jshint": ">0.0.0"
+        "yamljs": "latest",
+        "uglify-js": "latest",
+        "jshint": "latest"
     },
     "devDependencies": {
-        "atma": ">0.0.0"
+        "atma": "latest"
     },
     "scripts": {
         "test": "node_modules/.bin/atma test"
