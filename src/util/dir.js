@@ -1,184 +1,224 @@
-function dir_ensure(path) {
+var dir_ensure,
+	dir_exists,
+	dir_symlink,
+	dir_files,
+	dir_remove
+	;
 
-    if (path[path.length - 1] === '/') {
-        path = path.substring(0, path.length - 1);
-    }
-    
-    if (__fs.existsSync(path) === false) {
-        
-        var sub = path.substring(0, path.lastIndexOf('/')),
-            error;
-            
-        if (sub) 
-            error = dir_ensure(sub);
-            
-        if (error) 
-            return error.toString();
-        
-        try {
+(function() {
 
-            __fs.mkdirSync(path);
-        } catch (e) {
+	dir_ensure = function(path) {
 
-            return e.toString();
-        }
+		if (path[path.length - 1] === '/') {
+			path = path.substring(0, path.length - 1);
+		}
 
-    }
+		if (__fs.existsSync(path) === false) {
+
+			var sub = path.substring(0, path.lastIndexOf('/')),
+				error;
+
+			if (sub)
+				error = dir_ensure(sub);
+
+			if (error)
+				return error.toString();
+
+			try {
+
+				__fs.mkdirSync(path);
+			} catch (e) {
+
+				return e.toString();
+			}
+
+		}
 
 
-    if (!fs_isDirectory(path))
-        return 'Target exists, but is not a directory:' + path;
-}
+		if (!fs_isDirectory(path))
+			return 'Target exists, but is not a directory:' + path;
+	};
 
-function dir_exists(path) {
-    if (__fs.existsSync(path) === false)
-        return false;
-    
-    return fs_isDirectory(path);
-}
+	dir_exists = function(path) {
+		if (__fs.existsSync(path) === false)
+			return false;
 
-function dir_files(path, patterns, excludes) {
+		return fs_isDirectory(path);
+	};
 
-    var maxdepth = 0;
+	dir_files = function(path, patterns, excludes) {
 
-    if (patterns) {
-        patterns.forEach(function(x) {
-            if (maxdepth < x.depth)
-                maxdepth = x.depth;
-        });
-    }
+		var maxdepth = 0;
 
-    return dir_walk(path, '', {
-        depth: 0,
-        maxdepth: maxdepth || Infinity,
-        patterns: patterns,
-        excludes: excludes
-    });
-}
+		if (patterns) {
+			patterns.forEach(function(x) {
+				if (maxdepth < x.depth)
+					maxdepth = x.depth;
+			});
+		}
 
-function dir_symlink(source, target){
-    try {
-        
-        __fs.symlinkSync(source, target, 'junction');
-    } catch (error) {
-        
-        logger.error('symlink: bold<%s>', error);
-    }
-}
+		return dir_walk(path, '', {
+			depth: 0,
+			maxdepth: maxdepth || Infinity,
+			patterns: patterns,
+			excludes: excludes
+		});
+	};
 
-function dir_walk(dir, root, data) {
-    var results = [],
-        files;
+	dir_symlink = function(source, target) {
+		try {
+			__fs.symlinkSync(source, target, 'junction');
+		} catch (error) {
 
-    try {
-        files = __fs.readdirSync(dir);  
-    } catch(error){
-        console.error('<dir walk>', error);
-        return results;
-    }
+			logger.error('symlink: bold<%s>', error);
+		}
+	};
 
-    if (root == null) 
-        root = '';
-    
-    if (data == null) 
-        data = {
-            depth: 0,
-            maxdepth: Infinity
-        };
-    
+	dir_remove = function(path) {
+		if (dir_exists(path) === false)
+			return;
 
-    var currentDepth = data.depth,
-        patterns = data.patterns,
-        excludes = data.excludes;
+		dir_removeRecursive(path);
+	}
 
-    data.depth++;
 
-    
-    for (var i = 0, x, imax = files.length; i < imax; i++) {
-        x = files[i];
+	//> private
 
-        var stats = __fs.lstatSync(path_combine(dir, x)),
-            path = path_combine(root, x),
-            match = true;
+	function dir_removeRecursive(path) {
+		__fs
+			.readdirSync(path)
+			.forEach(function(filename, index) {
+				if ('.' === filename || '..' === 'filename') 
+				return;
+			
+				var entry = path + "/" + filename,
+					stats = __fs.lstatSync(entry)
+					;
+					
+					if (stats.isDirectory()) { 
+						dir_removeRecursive(entry);
+						return;
+					}
+					
+					__fs.unlinkSync(entry);
+			});
 
-        if (stats.isDirectory()) {
-            if (stats.isSymbolicLink()) 
-                continue;
-            
-            if (data.depth >= data.maxdepth) 
-                continue;
-            
+		__fs.rmdirSync(path);
+	}
 
-            var dirroot = path_combine(root, x);
+	function dir_walk(dir, root, data) {
+		var results = [],
+			files;
 
-            if (patterns) {
-                var dirCanBeMatched = false;
-                
-                for (var j = 0, jmax = patterns.length; j < jmax; j++) {
-                    var patternRootCount = patterns[j].rootCount - currentDepth,
-                        patternRoot = patterns[j].root;
-                        
-                    if (!patternRootCount || currentDepth > patternRootCount) {
-                        dirCanBeMatched = true;
-                        break;
-                    }
+		try {
+			files = __fs.readdirSync(dir);
+		} catch (error) {
+			console.error('<dir walk>', error);
+			return results;
+		}
 
-                    if (patternRoot.indexOf(dirroot) === 0) {
-                        dirCanBeMatched = true;
-                        break;
-                    }
-                    
-                    logger(90)
-                        .warn('<glob> not matched %s | %s', dirroot, patternRoot);
-                    
-                }
+		if (root == null)
+			root = '';
 
-                if (dirCanBeMatched === false) 
-                    continue;
-                
-            }
-            
-            logger(90)
-                .warn('<glob> match sub-', dirroot);
-                        
-                        
-            results = results
-                .concat(
-                    dir_walk(
-                        path_combine(dir, x),
-                        dirroot,
-                        data
-                    )
-                );
+		if (data == null)
+			data = {
+				depth: 0,
+				maxdepth: Infinity
+		};
 
-            continue;
-        }
 
-        if (patterns) {
-            match = false;
-            for (var j = 0, jmax = patterns.length; j < jmax; j++) {
-                if (patterns[j].test(path)) {
-                    match = true;
-                    break;
-                }
-            }
-        }
+		var currentDepth = data.depth,
+			patterns = data.patterns,
+			excludes = data.excludes;
 
-        if (match && excludes) {
-            for (var j = 0, jmax = excludes.length; j < jmax; j++) {
-                if (excludes[j].test(path)) {
-                    match = false;
-                    break;
-                }
-            }
-        }
+		data.depth++;
 
-        if (match) 
-            results.push(path);
-        
-    }
 
-    data.depth = currentDepth;
+		for (var i = 0, x, imax = files.length; i < imax; i++) {
+			x = files[i];
 
-    return results;
-}
+			var stats = __fs.lstatSync(path_combine(dir, x)),
+				path = path_combine(root, x),
+				match = true;
+
+			if (stats.isDirectory()) {
+				if (stats.isSymbolicLink())
+					continue;
+
+				if (data.depth >= data.maxdepth)
+					continue;
+
+
+				var dirroot = path_combine(root, x);
+
+				if (patterns) {
+					var dirCanBeMatched = false;
+
+					for (var j = 0, jmax = patterns.length; j < jmax; j++) {
+						var patternRootCount = patterns[j].rootCount - currentDepth,
+							patternRoot = patterns[j].root;
+
+						if (!patternRootCount || currentDepth > patternRootCount) {
+							dirCanBeMatched = true;
+							break;
+						}
+
+						if (patternRoot.indexOf(dirroot) === 0) {
+							dirCanBeMatched = true;
+							break;
+						}
+
+						logger(90)
+							.warn('<glob> not matched %s | %s', dirroot, patternRoot);
+
+					}
+
+					if (dirCanBeMatched === false)
+						continue;
+
+				}
+
+				logger(90)
+					.warn('<glob> match sub-', dirroot);
+
+
+				results = results
+					.concat(
+					dir_walk(
+					path_combine(dir, x),
+					dirroot,
+					data));
+
+				continue;
+			}
+
+			if (patterns) {
+				match = false;
+				for (var j = 0, jmax = patterns.length; j < jmax; j++) {
+					if (patterns[j].test(path)) {
+						match = true;
+						break;
+					}
+				}
+			}
+
+			if (match && excludes) {
+				for (var j = 0, jmax = excludes.length; j < jmax; j++) {
+					if (excludes[j].test(path)) {
+						match = false;
+						break;
+					}
+				}
+			}
+
+			if (match)
+				results.push(path);
+
+		}
+
+		data.depth = currentDepth;
+
+		return results;
+	}
+
+}());

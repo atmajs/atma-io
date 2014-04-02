@@ -13,6 +13,9 @@ var Directory = io.Directory = Class({
 		if (typeof directory === 'string' && directory[directory.length - 1] !== '/') {
 			logger
 				.warn('@ directory path should end with slash', directory);
+			
+			if (/\.\w+$/.test(directory) === false) 
+				directory = directory + '/';
 		}
 		
 		this.uri = new net.Uri(directory);
@@ -87,6 +90,11 @@ var Directory = io.Directory = Class({
 		
 		__fs.renameSync(oldpath, newpath);
 	},
+	
+	remove: function(){
+		dir_remove(this.uri.toLocalFile());
+	},
+	
 	watch: function(callback){
 			
 		io

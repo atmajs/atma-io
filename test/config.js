@@ -1,7 +1,11 @@
 module.exports = {
-	exec: 'node',
-	env: [
-		'/lib/io.js'
-	],
-	tests: 'test/**.test'
+	suites: {
+		node: {
+			exec: 'node',
+			env: [
+				'/lib/io.js::IO'
+			],
+			tests: 'test/**.test'
+		}
+	}
 };

@@ -18,6 +18,8 @@
 	
 	factory(_global, _exports);
 	
+	module.exports = _exports.io;
+	
 }(this, function(global, exports){
 	"use strict";
 	
@@ -38,6 +40,7 @@
 	// import /src/file.js
 	// import /src/file.statics.js
 	// import /src/directory.js
+	// import /src/directory.statics.js
 	// import /src/file.hook.js
 	// import /src/file.factory.js
 	// import /src/watcher.js
