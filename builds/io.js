@@ -1,3 +1,4 @@
+// import /src/license.txt
 (function(root, factory){
 	"use strict";
 

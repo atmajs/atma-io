@@ -1,7 +1,7 @@
 /**
- *	IncludeJSBuild
+ *	Atma.Toolkit
  *
- *	``` $ includejs build.js ```
+ *	``` $ atma ```
  **/
 
 
@@ -13,6 +13,11 @@ module.exports = {
 			}
 		}
 	},
+	'add-handlers': {
+		action: 'custom',
+		script: 'tools/license-handler.js'
+	},
+	
 	'import': {
 		files: 'builds/**',
 		output: 'lib/'
@@ -34,7 +39,7 @@ module.exports = {
 		script: 'tools/publish'
 	},
 
-	'defaults': ['import', 'jshint', 'uglify']
+	'defaults': ['add-handlers', 'import', 'jshint', 'uglify']
 };
 
 
