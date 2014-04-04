@@ -85,7 +85,7 @@
         		handler = io.File.middleware[handler];
 			
 			_hooks = _hooks.filter(function(x){
-				return x.method !== method && x.handler !== handler;
+				return !(x.name === name && x.handler === handler);
 			});
         },
 		trigger: function(method, file, config) {
