@@ -61,20 +61,24 @@
 				
 			}
 			
-            if (this.contains(method, handler) === false){
+            if (this.contains(method, handler, regexp) === false){
                 _hooks.push(new Hook(regexp, method, handler, zIndex || 0));
             }
             return this;
 		},
-        contains: function(method, handler){
+        contains: function(method, handler, regexp){
 			var i = _hooks.length,
 				hook;
 				
 			while (--i > -1) {
 				hook = _hooks[i];
 				
-				if (hook.method === method && hook.handler === handler) 
+				if (hook.method === method && hook.handler === handler) {
+					if (regexp !== null && regexp.toString() !== hook.regexp.toString()) 
+						continue;
+					
 					return true;
+				}
 				
 			}
 			return false;
