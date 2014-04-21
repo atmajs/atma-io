@@ -5,7 +5,7 @@
         "name": "Alexander Kit",
         "email": "source.kit@gmail.com"
     },
-    "version": "0.1.74",
+    "version": "0.1.75",
     "main": "./lib/io.js",
     "repository": {},
     "license": "MIT",
@@ -14,7 +14,6 @@
         "atma-libs": "latest",
         "clean-css": "~1.0.12",
         "coffee-script": "latest",
-        "less": "~1.5.0",
         "yamljs": "latest",
         "uglify-js": "latest",
         "jshint": "latest"

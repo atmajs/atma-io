@@ -7,7 +7,6 @@
 	// import middleware/uglify.js
 	// import middleware/cssmin.js
 	// import middleware/coffee.js
-	// import middleware/less.js
 	// import middleware/condcomments.js
 	// import middleware/importer.js
 	// import middleware/yml.js

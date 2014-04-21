@@ -148,8 +148,8 @@ io
 Path is matched by the regexp. The greater `zIndex` ist the later it is called in a pipeline, otherwise the handlers are called in the order they were registerd.
 
 #### Embedded middlewares
+_Lately will be converted into plugins, @see [Plugins](#Middleware Plugins)_
 - read
-    - less ( -> css)
     - coffee ( -> javascript )
     - markdown ( -> html )
     - jshint ( -> run jshint )
@@ -157,9 +157,41 @@ Path is matched by the regexp. The greater `zIndex` ist the later it is called i
     - yml ( -> YAML parser is used )
     
 - write
-    - uglify ( -> Minify source before flushing )
+    - uglify ( -> Minify source before write)
+	- cssmin ( -> Minify source before write)
     - yml ( -> Stringify object to yml string )
     - json ( -> Stringify object to json )
+
+#### Middleware Plugins
+There additional `read`/`write` middlewares as atma plugins:
+
+###### `atma plugin install NAME`
+
+- `atma-loader-traceur` - [Traceur](https://github.com/atmajs/atma-loader-traceur)
+- `atma-loader-less` - [Less](https://github.com/atmajs/atma-loader-less)
+
+
+###### Combined middlewares
+For example, you want to use Traceur middelware and jshint for reading `js` files:
+_via javascript_
+```javascript
+io.File.registerExtensions({
+	js: ['hint:read', 'atma-loader-traceur:read' /* ... */],
+})
+```
+_via `package.json`_
+```json
+...
+"atma": {
+	"settings" : {
+		"io": {
+			"extensions": {
+				"js": [ "hint:read", "atma-loader-traceur:read" ]
+			}
+		}
+	}
+}
+```
 
 ### **Virtual** Files
 
