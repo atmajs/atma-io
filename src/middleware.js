@@ -28,10 +28,6 @@
 			'hint:read',
 			'uglify:write'
 		],
-		'less': [
-			'less:read',
-			'cssmin:write'
-		],
 		'yml': [
 			'yml:read',
 			'yml:write'
