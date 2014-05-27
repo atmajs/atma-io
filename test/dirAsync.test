@@ -6,12 +6,16 @@ var Directory = IO.Directory,
 UTest({
 	$before: function(){
 		io.Directory.remove('test/bin/');
+		io.Directory.remove('test/bin-cloned/');
+	},
+	$after: function(){
+		io.Directory.remove('test/bin/');
+		io.Directory.remove('test/bin-cloned/');
 	},
     
     'readFiles - directory': function(done){
 		
-		io
-			.Directory
+		Directory
 			.readFilesAsync('test/', '*.test')
 			.fail(assert.avoid())
 			.done(function(files){
@@ -25,8 +29,7 @@ UTest({
 			});
 		
 		function testAll(files) {
-			io
-				.Directory
+			Directory
 				.readFilesAsync('test/', '**.test')
 				.fail(assert.avoid())
 				.done(function(all){
@@ -34,24 +37,55 @@ UTest({
 					
 					eq_(hasFile(files, 'config.js'), false);
 					eq_(hasFile(all, 'json.test'), true);
-					done();
+					
+					All();
 				});
+		}
+		function All() {
+			Directory
+				.readFilesAsync('test/')
+				.fail(assert.avoid())
+				.done(function(all){
+					
+					eq_(hasFile(all, 'config.js'), true);
+					eq_(hasFile(all, 'json.test'), true);
+					done();
+				})
 		}
     },
     
     
     'ensure': function(done){
-		var DIR = 'test/bin/dir/sub/',
-            FILENAME = 'test.txt';
-			
+		var DIR = 'test/bin/dir/sub/';
 		Directory
 			.ensureAsync(DIR)
 			.fail(assert.avoid())
 			.done(function(){
 				
-				eq_(io.Directory.exists(DIR), true);
+				eq_(Directory.exists(DIR), true);
 				done();
 			})
+	},
+	'copyTo': function(done){
+		var DIR = 'test/bin/';
+		File.write(DIR + 'a.txt', 'A');
+		File.write(DIR + 'b.txt', 'B');
+		File.write(DIR + 'sub/a-sub.txt', 'A');
+		File.write(DIR + 'sub/b-sub.txt', 'B');
+		
+		Directory
+			.copyToAsync('test/bin/', 'test/bin-cloned/')
+			.always(done)
+			.fail(assert.avoid())
+			.done(function(){
+				
+				var files = Directory.readFiles('test/bin-cloned/').files;
+				eq_(hasFile(files, 'a.txt'), true);
+				eq_(hasFile(files, 'a-sub.txt'), true);
+				eq_(File.exists('test/bin-cloned/a.txt'), true);
+				eq_(File.exists('test/bin-cloned/c.txt'), false);
+				eq_(File.exists('test/bin-cloned/sub/a-sub.txt'), true);
+			});
 	},
     'remove': function(done){ 
         

@@ -7,9 +7,10 @@ Features:
 - File Class
 - Directory Class
 - File `read/write` Middleware
-- Sync
+- Sync + Async
 
-Mostly all operations are synchronous, and this is really useful in case of script applications or desktop applications, where the synchronous performance is not critical.
+
+> In comparison to NodeJS Sync-Async contract, all functions with generic name are synchronous, and the `**Async` are asynchronous with same interface and return deferred object.
 
 
 > This library is included into Atma.Toolkit, so creating custom scripts, you can use this API.
@@ -39,6 +40,17 @@ var content = file.read( <?Object> {
     skipHooks: Boolean //> false
 });
 ```
+##### readAsync
+```javascript
+file
+	.readAsync( <?Object> {
+		encoding: String | null, //> 'utf8'
+		skipHooks: Boolean //> false
+	})
+	.done(function(content, file))
+	.fail(function(error))
+```
+
 Read file's content. If `encoding` is set to null raw `Buffer` is returned.
 For each `read` middleware pipeline is used, to skip it, set `skipHooks` to true.
 
@@ -46,7 +58,16 @@ For each `read` middleware pipeline is used, to skip it, set `skipHooks` to true
 ```javascript
 file.write(String | Buffer, <?Object>{
     skipHooks: Boolean
-});
+})
+```
+##### writeAsync
+```javascript
+file
+	.writeAsync(String | Buffer, <?Object>{
+		skipHooks: Boolean
+	})
+	.done(function())
+	.fail(function(error))
 ```
 
 ##### exists
@@ -55,15 +76,28 @@ file.exists() //> Boolean;
 ```
 ##### copyTo
 ```javascript
-file.copyTo(<String> location) //> Boolean;
+file.copyTo(<String> path) //> Boolean;
 ```
+##### copyToAsync
+```javascript
+file.copyToAsync(<String> path) //> Deferred;
+```
+
 ##### rename
 ```javascript
 file.rename(<String> filename)
 ```
+##### renameAsync
+```javascript
+file.renameAsync(<String> filename) //> Deferred
+```
 ##### remove
 ```javascript
 file.remove()
+```
+##### removeAsync
+```javascript
+file.removeAsync() //> Deferred
 ```
 ##### watch
 ```javascript
@@ -99,10 +133,29 @@ There are some static methods, so that there is no need to initialize the File i
 io.File[method] //> Function(filepath, [..args])
 // methods:
         'exists'
+		'existsAsync'
         'read'
+		'readAsync'
         'write'
+		'writeAsync'
         'remove'
+		'removeAsync'
+		'rename'
+		'renameAsync'
         'copyTo'
+		'copyToAsync'
+
+// sample
+io
+	.File
+	.readAsync('/baz.txt')
+	.done(function(content){
+		console.log(content);
+	})
+	.fail(function(error){
+		console.error(error);
+	})
+	;
 ```
 
 ### File Middleware
@@ -227,6 +280,10 @@ Path is always relative to the cwd (_except windows os, when drive letter is use
 ```javascript
 dir.exists()//> Boolean
 ```
+##### existsAsync
+```javascript
+dir.existsAsync()//> Deferred
+```
 ##### readFiles
 ```javascript
 dir.readFiles(<?String> pattern).files // Array<io.Files>
@@ -242,28 +299,52 @@ pattern = '**/*.js'
 
 dir.readFiles(pattern).files
 ```
+##### readFilesAsync
+```javascript
+dir
+	.readFilesAsync(<?String> pattern)
+	.done(function(files))
+	.fail(function(error))
+```
 
 ##### copyTo
+Copy `files` to destination directory. Before copying `dir.readFiles` can be called to copy only specific files.
 ```javascript
-dir.copyTo(<String> destination);
+dir.copyTo(<String> destination)
+```
+##### copyToAsync
+```javascript
+dir.copyToAsync(<String> destination) //> Deferred
 ```
 
 ##### rename
 ```javascript
 dir.rename(<String> folderName);
 ```
-
-##### remove
+##### renameAsync
 ```javascript
-dir.remove()
+dir.renameAsync(<String> folderName) //> Deferred
 ```
-Removes all sub directories and all files.
+##### remove
+Removes all content recursively and the folder itself
+```javascript
+dir.remove() //> Boolean
+```
+
+##### removeAsync
+```javascript
+dir.removeAsync()
+```
 
 ##### ensure
 ```javascript
 dir.ensure()
 ```
 Creates directory structure, if not already exists.
+##### ensureAsync
+```javascript
+dir.ensureAsync()
+```
 
 ##### watch
 ```javascript
@@ -280,11 +361,16 @@ There are some static methods, so that there is no need to initialize the Direct
 ```javascript
 io.Directory[method] //> Function(dirpath, [..args])
 // methods:
-    'exists',
-    'readFiles',
-    'ensure',
-    'remove',
+    'exists'
+	'existsAsync'
+    'readFiles'
+	'readFilesAsync'
+    'ensure'
+	'ensureAsync'
+    'remove'
+	'removeAsync'
     'copyTo'
+	'copyToAsync'
 ```
 
 

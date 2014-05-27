@@ -47,11 +47,12 @@ var dir_ensure,
 				mkdir();
 		});
 		
-		function mkdir(error){
-			if (error) 
-				return cb();
-			
-			__fs.mkdir(path, cb);
+		function mkdir(){
+			__fs.mkdir(path, function(error){
+				if (error && error.errno === 47) 
+					error = null;
+				cb(error);
+			});
 		}
 	};
 
@@ -169,9 +170,7 @@ var dir_ensure,
 					return;
 				}
 				
-				__fs.unlink(path, function(error){
-					cb(error);
-				});
+				__fs.unlink(path, cb);
 			})
 		}
 		

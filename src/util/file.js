@@ -71,17 +71,18 @@ var file_save,
 				cb(error);
 				return;
 			}
-			
 			var readstream = __fs
 				.createReadStream(from)
 				.on('error', function(err){
-					cb && cb(error)
+					logger.log('readstream error', from, err);
+					cb && cb(err);
 					cb = null;
 				});
 			var writestream = __fs
 				.createWriteStream(to)
-				.on('error', function(error){
-					cb && cb(error)
+				.on('error', function(err){
+					logger.log('writestream error', to, err);
+					cb && cb(err)
 					cb = null;
 				})
 				.on('close', function(){

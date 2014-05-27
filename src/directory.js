@@ -85,11 +85,8 @@
 		 */
 		copyTo: function(target, options) {
 			var dfr = new Class.Deferred;
-			if (Array.isArray(this.files) === false) {
-				log_error('Directory copy: .files is not an Array. Run `readFiles(?pattern, ?exclude)` before');
-				dfr.reject('No files');
-				return dfr;
-			}
+			if (Array.isArray(this.files) === false) 
+				this.readFiles();
 			
 			options = options || {
 				verbose: false
@@ -140,7 +137,19 @@
 		copyToAsync: function(target, options) {
 			var dfr = new Class.Deferred;
 			if (Array.isArray(this.files) === false) {
-				dfr.reject('No files');
+				
+				var dir = this;
+				this
+					.readFilesAsync()
+					.done(function(){
+						dir
+							.copyToAsync(target, options)
+							.done(dfr.resolveDelegate())
+							.fail(dfr.rejectDelegate())
+							;
+					})
+					.fail(dfr.rejectDelegate())
+					;
 				return dfr;
 			}
 			
@@ -154,7 +163,6 @@
 				imax = files.length,
 				i = -1
 				;
-				
 			var await = new Class.Await;
 			while( ++i < imax ){
 				copy(i, await.delegate());
