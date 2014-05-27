@@ -1,6 +1,7 @@
 Atma Node.js IO Module
 ----
 [![Build Status](https://travis-ci.org/atmajs/atma-io.svg?branch=master)](https://travis-ci.org/atmajs/atma-io)
+[![NPM version](https://badge.fury.io/js/atma-io.svg)](http://badge.fury.io/js/atma-io)
 
 Features:
 
@@ -200,7 +201,7 @@ io
 Path is matched by the regexp. The greater `zIndex` ist the later it is called in a pipeline, otherwise the handlers are called in the order they were registerd.
 
 #### Embedded middlewares
-_Lately will be converted into plugins, @see [Plugins](#Middleware Plugins)_
+_Lately will be converted into plugins, @see [Plugins](#middleware-plugins)_
 - read
     - coffee ( -> javascript )
     - markdown ( -> html )
