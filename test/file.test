@@ -1,25 +1,27 @@
 var path_File = 'test/file.test',
-	path_Copy = 'test/bin/copied.js';
+	path_Copy = 'test/bin/copied.js',
+	File = IO.File;
+
 
 UTest({
 	
 	'$before': function() {
-		if (io.File.exists(path_Copy)) 
-			io.File.remove(path_Copy);
+		if (File.exists(path_Copy)) 
+			File.remove(path_Copy);
 	},
 	'$teardown': function(){
-		io.File.clearCache();
+		File.clearCache();
 	},
 	'exists': function() {
-		eq(io.File.exists(path_File), true);
-		eq(io.File.exists(path_Copy), false);
-		eq(io.File.exists('/path/not/exists'), false);
-		eq(io.File.exists('test'), false, 'file matched, but should be a directory');
+		eq_(File.exists(path_File), true);
+		eq_(File.exists(path_Copy), false);
+		eq_(File.exists('/path/not/exists'), false);
+		eq_(File.exists('test'), false, 'file matched, but should be a directory');
 	},
 	
 	'read': function(){
 		function check(path) {
-			has_(io.File.read(path), "'test/bin/copied.js'", path);
+			has_(File.read(path), "'test/bin/copied.js'", path);
 		}
 		
 		check(path_File);
@@ -27,10 +29,10 @@ UTest({
 	},
 	
 	'copy': function(){
-		io.File.copyTo(path_File, path_Copy);
+		File.copyTo(path_File, path_Copy);
 		
-		eq_(io.File.exists(path_Copy), true);
-		has_(io.File.read(path_Copy), "'test/bin/copied.js'");
+		eq_(File.exists(path_Copy), true);
+		has_(File.read(path_Copy), "'test/bin/copied.js'");
 	},
 	
 	'hook': function(){
@@ -39,18 +41,16 @@ UTest({
 			file.content = 'foo';
 		};
 		
-		io
-			.File
+		File
 			.getHookHandler()
 			.register(/./, 'read', hook)
 			;
 		
 		
 		
-		eq(io.File.read(path_File), 'foo');
+		eq_(File.read(path_File), 'foo');
 		
-		io
-			.File
+		File
 			.getHookHandler()
 			.unregister('read', hook);
             

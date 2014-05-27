@@ -1,14 +1,19 @@
+var Directory = IO.Directory,
+	File = IO.File,
+	glob = IO.glob
+	;
 
 UTest({
     
     'readFiles - directory': function(){
-        var dir = new io.Directory('test/'),
+        var dir = new Directory('test/'),
             files = dir.readFiles('*.test').files
             ;
         
         assert(files.length > 1);
         eq(hasFile(files, 'dir.test'), true);
         eq(hasFile(files, 'file.test'), true);
+        eq(hasFile(files, 'config.js'), false);
         
         
         var all = dir.readFiles('**.test').files;
@@ -19,7 +24,7 @@ UTest({
     },
     
     'readFiles - glob': function(){
-        var files = io.glob.readFiles('test/*.test');
+        var files = glob.readFiles('test/*.test');
         assert(files.length > 1);
         eq(hasFile(files, 'dir.test'), true);
         eq(hasFile(files, 'file.test'), true);
@@ -29,17 +34,16 @@ UTest({
         var DIR = 'test/bin/dir/sub/',
             FILENAME = 'test.txt';
             
-        io.Directory.ensure(DIR);
-        eq_(io.Directory.exists(DIR), true);
+        Directory.ensure(DIR);
+        eq_(Directory.exists(DIR), true);
         
-        new io
-            .File(DIR + FILENAME)
-            .write('FOO');
-        eq_(io.File.read(DIR + FILENAME), 'FOO');
+        File.write(DIR + FILENAME, 'FOO');
+		
+        eq_(File.read(DIR + FILENAME), 'FOO');
         
-        io.Directory.remove(DIR);
-        eq_(io.File.exists(DIR + FILENAME), false);
-        eq_(io.Directory.exists(DIR), false);
+        Directory.remove(DIR);
+        eq_(File.exists(DIR + FILENAME), false);
+        eq_(Directory.exists(DIR), false);
     }
     
 });

@@ -1,0 +1,80 @@
+var Directory = IO.Directory,
+	File = IO.File,
+	glob = IO.glob
+	;
+
+UTest({
+	$before: function(){
+		io.Directory.remove('test/bin/');
+	},
+    
+    'readFiles - directory': function(done){
+		
+		io
+			.Directory
+			.readFilesAsync('test/', '*.test')
+			.fail(assert.avoid())
+			.done(function(files){
+				
+				assert(files.length > 1);
+				eq_(hasFile(files, 'dir.test'), true);
+				eq_(hasFile(files, 'file.test'), true);
+				eq_(hasFile(files, 'config.js'), false);
+				
+				testAll(files);
+			});
+		
+		function testAll(files) {
+			io
+				.Directory
+				.readFilesAsync('test/', '**.test')
+				.fail(assert.avoid())
+				.done(function(all){
+					assert(all.length > files.length);
+					
+					eq_(hasFile(files, 'config.js'), false);
+					eq_(hasFile(all, 'json.test'), true);
+					done();
+				});
+		}
+    },
+    
+    
+    'ensure': function(done){
+		var DIR = 'test/bin/dir/sub/',
+            FILENAME = 'test.txt';
+			
+		Directory
+			.ensureAsync(DIR)
+			.fail(assert.avoid())
+			.done(function(){
+				
+				eq_(io.Directory.exists(DIR), true);
+				done();
+			})
+	},
+    'remove': function(done){ 
+        
+		io.File.write('test/bin/dir/sub/x.txt', 'Foo');
+		
+		eq_(File.read('test/bin/dir/sub/x.txt'), 'Foo');
+		eq_(Directory.exists('test/bin/'), true);
+		
+		Directory
+			.removeAsync('test/bin/')
+			.fail(assert.avoid())
+			.done(function(){
+				
+				eq_(Directory.exists('test/bin/'), false);
+				done();
+			});
+    }
+    
+});
+
+function hasFile(files, filename) {
+    
+    return files.some(function(file){
+        return file.uri.file === filename;
+    });
+}

@@ -36,6 +36,8 @@
 	// import /src/util/cfg.js
 	// import /src/util/glob.js
 	// import /src/util/rgx.js
+	// import /src/util/cli.js
+	// import /src/util/logger.js
 	
 	// import /src/env.js
 	// import /src/file.js

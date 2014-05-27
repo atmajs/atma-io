@@ -1,4 +1,25 @@
 
+function path_getUri(path, base){
+	if (typeof path !== 'string')
+		path = path.toString();
+
+	if (path[0] === '/') 
+		path = path.substring(1);
+	
+	var uri = new net.Uri(path);
+	if (uri.isRelative() === false)
+		return uri;
+	
+	if (base)
+		return new net.Uri(base).combine(uri);
+
+	if (io.env) 
+		return io.env.currentDir.combine(uri);
+	
+	return new net.Uri('file://' + process.cwd() + '/')
+		.combine(uri);
+}
+
 function path_combine(_1, _2) {
     if (!_1)
         return _2;

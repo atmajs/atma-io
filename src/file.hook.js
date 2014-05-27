@@ -17,11 +17,33 @@
 				if (typeof this.handler !== 'function') {
 					if (this.handler[method])
 						this.handler[method](file, config);
-					
 					return;
 				}
-				
 				this.handler(file, config);
+			},
+			runAsync: function(method, file, config, done){
+				if (method !== this.method) {
+					done();
+					return;
+				}
+				if (this.regexp.test(file.uri.toString()) === false) {
+					done();
+					return;
+				}
+				var Hander = this.handler;
+				if (typeof Hander !== 'function') {
+					if (Hander[method + 'Async']) {
+						Hander[method + 'Async'](file, config, done);
+						return;
+					}
+					if (Handler[method])
+						Handler[method](file, config);
+					
+					done();	
+					return;
+				}
+				Handler(file, config);
+				done();
 			},
 			canHandle: function(path, method){
 				if (method != null && method !== this.method) 
@@ -96,23 +118,19 @@
 			
 			this
 				.getHooksForPath(file.uri.toString(), method)
-				.sort(function(a, b){
-					var az = a.zIndex,
-						bz = b.zIndex
-						;
-					if (az === bz) 
-						return 0;
-					
-					return a.zIndex < b.zIndex
-						? 1
-						: -1
-						;
-				})
 				.forEach(function(x) {
 					x.run(method, file, config);
 				});
 				
             return this;
+		},
+		triggerAsync: function(method, file, config, cb){
+			var path = file.uri.toString(),
+				hooks = this.getHooksForPath(path, method)
+				;
+			
+			new AsyncHooks(hooks)
+				.process(method, file, config, cb);
 		},
         clear: function(){
             _hooks = [];
@@ -121,9 +139,60 @@
 		
 		getHooksForPath: function(path, method){
 			
-			return _hooks.filter(function(x) {
-				return x.canHandle(path, method);
-			});
+			return _hooks
+				.filter(function(x) {
+					return x.canHandle(path, method);
+				})
+				.sort(function(a, b){
+					var az = a.zIndex,
+						bz = b.zIndex;
+					if (az === bz) 
+						return 0;
+					return a.zIndex < b.zIndex
+						? 1
+						: -1
+						;
+				});
 		}
 	});
+	
+	var AsyncHooks = Class.Collection(Hook, {
+		
+		index: -1,
+		cb: null,
+		method: null,
+		file: null,
+		config: null,
+		process: function(method, file, config, cb){
+			this.index = -1;
+			this.cb = cb;
+			
+			this.method = method;
+			this.file = file;
+			this.config = config;
+			
+			this.next();
+		},
+		Self: {
+			next: function(error){
+				if (error) {
+					this.cb(error);
+					return;
+				}
+				
+				if (++this.index >= this.length) {
+					this.cb();
+					return;
+				}
+				var hook = this[this.index];
+				
+				hook.runAsync(
+					this.method,
+					this.file,
+					this.config,
+					this.next
+				);
+			}
+		}
+	})
 }());

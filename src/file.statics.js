@@ -2,15 +2,22 @@
         
     [
         'exists',
+        'existsAsync',
         'read',
+        'readAsync',
         'write',
+        'writeAsync',
         'remove',
-        'copyTo'
+        'removeAsync',
+        'rename',
+        'renameAsync',
+        'copyTo',
+        'copyToAsync'
     ].forEach(function(method){
         
         io.File[method] = function(){
             var path = arguments[0],
-                args = Array.prototype.slice.call(arguments, 1),
+                args = _Array_slice.call(arguments, 1),
                 file = new io.File(path)
                 ;
             

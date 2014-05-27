@@ -2,10 +2,17 @@
         
     [
         'exists',
+        'existsAsync',
         'readFiles',
+        'readFilesAsync',
         'ensure',
+        'ensureAsync',
+        'rename',
+        'renameAsync',
         'remove',
-        'copyTo'
+        'removeAsync',
+        'copyTo',
+        'copyToAsync'
     ].forEach(function(method){
         
         io.Directory[method] = function(){
