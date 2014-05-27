@@ -10,8 +10,7 @@ Features:
 - Sync + Async
 
 
-> In comparison to NodeJS Sync-Async contract, all functions with generic name are synchronous, and the `**Async` are asynchronous with same interface and return deferred object.
-
+> In comparison to NodeJS sync-async contract: all functions with generic name are synchronous, and the `**Async` are asynchronous with the same interface and return deferred object. Sync versions never throw exceptions and are designed to be used in not performance critical applications, like bash scripts, etc.
 
 > This library is included into Atma.Toolkit, so creating custom scripts, you can use this API.
 
@@ -34,12 +33,16 @@ var file = new io.File('test.txt');
 Path is always relative to the cwd (_except windows os, when drive letter is used_). To specify system absolute path, use `file://` protocol.
 
 ##### read
+Read file's content. If `encoding` is set to null raw `Buffer` is returned.
+For each `read` middleware pipeline is used, to skip it, set `skipHooks` to true.
+
 ```javascript
 var content = file.read( <?Object> {
     encoding: String | null, //> 'utf8'
     skipHooks: Boolean //> false
 });
 ```
+
 ##### readAsync
 ```javascript
 file
@@ -50,10 +53,6 @@ file
 	.done(function(content, file))
 	.fail(function(error))
 ```
-
-Read file's content. If `encoding` is set to null raw `Buffer` is returned.
-For each `read` middleware pipeline is used, to skip it, set `skipHooks` to true.
-
 ##### write
 ```javascript
 file.write(String | Buffer, <?Object>{
@@ -371,6 +370,13 @@ io.Directory[method] //> Function(dirpath, [..args])
 	'removeAsync'
     'copyTo'
 	'copyToAsync'
+	
+// sample
+io
+	.Directory
+	.readFilesAsync('sub/', '**.js')
+	.done(function(files))
+	.fail(function(error))
 ```
 
 

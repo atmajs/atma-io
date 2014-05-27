@@ -5,23 +5,26 @@
         "name": "Alexander Kit",
         "email": "source.kit@gmail.com"
     },
-    "version": "0.1.80",
-    "main": "./lib/io.js",
-    "repository": {},
+    "version": "0.1.81",
+    "main": "./lib/io.min.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/atmajs/atma-io.git"
+    },
     "license": "MIT",
     "dependencies": {
-        "atma-logger": "latest",
-        "atma-libs": "latest",
+        "atma-logger": ">0.0.81",
+        "atma-libs": ">0.9.34",
         "clean-css": "~1.0.12",
-        "coffee-script": "latest",
-        "yamljs": "latest",
-        "uglify-js": "latest",
-        "jshint": "latest"
+        "coffee-script": ">0.0.0",
+        "yamljs": ">0.1.0",
+        "uglify-js": ">2.4.0",
+        "jshint": ">2.5.0"
     },
     "devDependencies": {
         "atma": "latest"
     },
     "scripts": {
-        "test": "node_modules/.bin/atma test"
+        "test": "atma test"
     }
 }
