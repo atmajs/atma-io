@@ -30,10 +30,10 @@
 					done();
 					return;
 				}
-				var Hander = this.handler;
-				if (typeof Hander !== 'function') {
-					if (Hander[method + 'Async']) {
-						Hander[method + 'Async'](file, config, done);
+				var Handler = this.handler;
+				if (typeof Handler !== 'function') {
+					if (Handler[method + 'Async']) {
+						Handler[method + 'Async'](file, config, done);
 						return;
 					}
 					if (Handler[method])
@@ -157,7 +157,7 @@
 	});
 	
 	var AsyncHooks = Class.Collection(Hook, {
-		
+		Base: Class.Serializable,
 		index: -1,
 		cb: null,
 		method: null,

@@ -1,4 +1,4 @@
-Atma Node.js IO Module
+Atma Node.js FileSystem Module
 ----
 [![Build Status](https://travis-ci.org/atmajs/atma-io.svg?branch=master)](https://travis-ci.org/atmajs/atma-io)
 [![NPM version](https://badge.fury.io/js/atma-io.svg)](http://badge.fury.io/js/atma-io)
