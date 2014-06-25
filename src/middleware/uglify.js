@@ -15,14 +15,13 @@
 			config = cfg_get();
 		
 
-		var minify = config.minify;
+		var minify = config.minify,
+			sourceMap = minify && config.sourceMap;
 
 		
 		if (!minify && typeof file.content === 'string') 
 			return;
 		
-
-
 		logger
 			.log('Uglify... [start]')
 			.log('');
@@ -92,14 +91,26 @@
 			ast.figure_out_scope();
 			ast.compute_char_frequency();
 			ast.mangle_names();
-
 			//ast = pro.ast_squeeze(ast);
 		}
-
-		file.content = ast.print_to_string({
+		
+		var stream, source_map;
+		if (sourceMap) {
+			source_map = uglify.SourceMap({
+				file: file.uri.file
+			});
+		}
+		stream = uglify.OutputStream({
 			beautify: !minify,
-			comments: /^!/
+			comments: /^!/,
+			source_map: source_map
 		});
+		ast.print(stream);
+		
+		file.content = stream.toString();
+		if (sourceMap) 
+			file.sourceMap = source_map.toString();
+		
 
 		logger.log('Uglify... [end %sms]', Date.now() - start);
 	};
