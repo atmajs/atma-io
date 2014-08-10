@@ -2,21 +2,17 @@ function cfg_get() {
     var settings = io.env.settings,
         cfg = {};
         
-    if (settings) {
-        for (var key in settings) {
-            cfg[key] = settings[key];
-        }
+    for (var key in settings) {
+        cfg[key] = settings[key];
     }
     
-    if (!!(global.app && app.config && app.config.tasks) === false) 
+    if (global.app == null || app.config == null || app.config.tasks == null)
         return cfg;
     
-    var task = app.current || app.config.tasks[0];
-    
-    if (task) {
-        for (var key in task) {
-            cfg[key] = task[key];
-        }
+    var task = app.current || app.config.tasks[0],
+        key;
+    for(key in task) {
+        cfg[key] = task[key];
     }
     
     return cfg;

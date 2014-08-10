@@ -113,8 +113,11 @@
 		copyTo: function(target) {
 			
 			var from = this.uri.toLocalFile(),
-				to = path_getUri(target).toLocalFile()
-				;
+				uri = path_getUri(target),
+				to = uri.file
+					? uri.toLocalFile()
+					: uri.combine(this.uri.file).toLocalFile()
+					;
 			var _from = from.substr(-25)
 					.replace(/([^\/]+)$/, 'green<bold<$1>>')
 					.color
@@ -220,6 +223,14 @@
 			},
 			getHookHandler: function() {
 				return _hook;
+			},
+			
+			get Factory () {
+				return _factory
+			},
+			
+			get Middleware () {
+				return _hook
 			}
 		}
 	});

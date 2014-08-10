@@ -1,4 +1,3 @@
-
 (function(){
 	
 	var _yaml;	
@@ -11,7 +10,7 @@
 				_yaml = require('yamljs');
 		
 			if (typeof file.content !== 'string') 
-				file.content = file.content.toString();
+				return;
 			
 			
 			try {
