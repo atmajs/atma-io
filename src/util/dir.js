@@ -64,26 +64,27 @@ var dir_ensure,
 			cb(error, stat && stat.isDirectory())
 		});
 	};
-
-	dir_files = function(path, patterns, excludes) {
-		return dir_walk(path, '', {
+	
+	dir_files = function(path, patterns, excludes, data) {
+		return dir_walk(path, '', obj_extend(data, {
 			depth: 0,
 			maxdepth: rgxs_getDepth(patterns),
 			patterns: patterns,
 			excludes: excludes
-		});
+		}));
 	};
-	dir_filesAsync = function(path/* [, ?patterns, ?excludes], cb */){
+	dir_filesAsync = function(path/* [, ?patterns, ?excludes, ?data], cb */){
 		var args = _Array_slice.call(arguments, 1),
 			cb = args.pop(),
 			patterns = args.shift(),
-			excludes = args.shift()
+			excludes = args.shift(),
+			data     = args.shift()
 			;
-		dir_walkAsync(path, '', 0, {
+		dir_walkAsync(path, '', 0, obj_extend(data, {
 			maxdepth: rgxs_getDepth(patterns),
 			patterns: patterns,
 			excludes: excludes
-		}, [], cb);
+		}), [], cb);
 	};
 	
 	dir_symlink = function(source, target) {
@@ -193,11 +194,14 @@ var dir_ensure,
 		if (root == null)
 			root = '';
 
-		if (data == null)
+		if (data == null) {
 			data = {
 				depth: 0,
-				maxdepth: Infinity
-		};
+				maxdepth: Infinity,
+				directories: false,
+				symlinks: false
+			};
+		}
 
 
 		var currentDepth = data.depth,
@@ -217,11 +221,14 @@ var dir_ensure,
 			if (stats.isDirectory()) {
 				if (stats.isSymbolicLink())
 					continue;
-
+				
+				if (data.directories) {
+					results.push(path_combine(dir, x) + '/');
+				}
+				
 				if (data.depth >= data.maxdepth)
 					continue;
-
-
+				
 				var dirroot = path_combine(root, x);
 
 				if (patterns) {
@@ -249,15 +256,11 @@ var dir_ensure,
 					if (dirCanBeMatched === false)
 						continue;
 				}
-
+				
 				logger(90).warn('<glob> match sub-', dirroot);
-
-				results = results
-					.concat(
-					dir_walk(
-					path_combine(dir, x),
-					dirroot,
-					data));
+				results = results.concat(dir_walk(
+					path_combine(dir, x), dirroot, data
+				));
 
 				continue;
 			}
@@ -295,11 +298,10 @@ var dir_ensure,
 	 * - dir: String directory to get the filelist from
 	 * - root: String current subdirectory
 	 * - depth: Number current subdirectory depth
-	 * - data: Object { maxdepth, patterns, excludes }
+	 * - data: Object { maxdepth, patterns, excludes, directories }
 	 * - result: Array current filelist
 	 */
 	function dir_walkAsync(dir, root, depth, data, results, cb) {
-		
 		var currentDepth = depth,
 			maxdepth = data.maxdepth,
 			patterns = data.patterns,
@@ -349,7 +351,10 @@ var dir_ensure,
 		function processDirectory(name, stat, cb){
 			if (stat.isSymbolicLink())
 				return cb();
-
+			
+			if (data.directories) 
+				results.push(path_combine(root, name) + '/');
+			
 			if (depth >= maxdepth)
 				return cb();
 
@@ -372,6 +377,7 @@ var dir_ensure,
 					return cb();
 				}
 			}
+			
 			dir_walkAsync(
 				path_combine(dir, name)
 				, dirroot

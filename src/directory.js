@@ -58,6 +58,28 @@
 	
 			return this;
 		},
+		read: function(pattern, exclude) {
+	
+			var patterns = glob_parsePatterns(pattern),
+				excludes = glob_parsePatterns(exclude),
+				that = this
+				;
+	
+			return dir_files(
+					this.uri.toLocalDir()
+					, patterns
+					, excludes
+					, { directories: true }
+				)
+				.map(function(x) {
+					var path = that.uri.combine(x);
+					if (x[x.length - 1] === '/') 
+						return new io.Directory(path);
+					
+					return new io.File(path);
+				});
+		},
+		
 		readFilesAsync: function(pattern, exclude){
 			var patterns = glob_parsePatterns(pattern),
 				excludes = glob_parsePatterns(exclude);
@@ -74,6 +96,36 @@
 						return new io.File(dir.uri.combine(x));
 					});
 					dfr.resolve(dir.files, dir);
+				})
+			});
+		},
+		
+		
+		readAsync: function(pattern, exclude){
+			var patterns = glob_parsePatterns(pattern),
+				excludes = glob_parsePatterns(exclude);
+			
+			return dfr_factory(this, function(dfr, dir, path){
+				dir_filesAsync(
+					path
+					, patterns
+					, exclude
+					, { directories: true }
+					, function(error, files){
+						if (error) {
+							dfr.reject(error);
+							return;
+						}
+						
+						
+						var arr = files.map(function(x){
+							var path = dir.uri.combine(x);
+							if (x[x.length - 1] === '/') 
+								return new io.Directory(path);
+							
+							return new io.File(path);
+						});
+						dfr.resolve(arr, dir);
 				})
 			});
 		},

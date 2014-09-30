@@ -26,9 +26,20 @@ UTest({
     'readFiles - glob': function(){
         var files = glob.readFiles('test/*.test');
         assert(files.length > 1);
-        eq(hasFile(files, 'dir.test'), true);
-        eq(hasFile(files, 'file.test'), true);
+        eq_(hasFile(files, 'dir.test'), true);
+        eq_(hasFile(files, 'file.test'), true);
     },
+	
+	'readAny': function(){
+		var entries = glob.read('test/*');
+		eq_(hasDirectory(entries, 'middleware'), true);
+	},
+	'readAnyAsync': function(done){
+		glob.readAsync('test/*', function(error, entries){
+			eq_(hasDirectory(entries, 'middleware'), true);
+			done();
+		});
+	},
     
     'ensure+remove': function(){
         var DIR = 'test/bin/dir/sub/',
@@ -49,8 +60,13 @@ UTest({
 });
 
 function hasFile(files, filename) {
-    
     return files.some(function(file){
         return file.uri.file === filename;
+    });
+}
+function hasDirectory(arr, name) {
+	var rgx = new RegExp(name +'/?$');
+    return arr.some(function(x){
+		return rgx.test(x.uri.path) && !x.uri.file;
     });
 }
