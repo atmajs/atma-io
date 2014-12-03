@@ -5,6 +5,8 @@
         'existsAsync',
         'readFiles',
         'readFilesAsync',
+        'read',
+        'readAsync',
         'ensure',
         'ensureAsync',
         'rename',

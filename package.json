@@ -2,10 +2,10 @@
     "name": "atma-io",
     "description": "File / Directory Classes",
     "author": {
-        "name": "Alexander Kit",
-        "email": "source.kit@gmail.com"
+        "name": "Alex Kit",
+        "email": "alex.kit@atmajs.com"
     },
-    "version": "0.1.87",
+    "version": "0.1.92",
     "main": "./lib/io.min.js",
     "repository": {
         "type": "git",
@@ -13,13 +13,13 @@
     },
     "license": "MIT",
     "dependencies": {
-        "atma-logger": ">0.0.81",
         "atma-libs": ">0.9.34",
+        "atma-logger": ">0.0.81",
         "clean-css": "~1.0.12",
         "coffee-script": ">0.0.0",
-        "yamljs": ">0.1.0",
-        "uglify-js": ">2.4.0",
-        "jshint": ">2.5.0"
+        "jshint": "~2.5.0",
+        "uglify-js": "^2.4.15",
+        "yamljs": "~0.1.0"
     },
     "devDependencies": {
         "atma": "latest"

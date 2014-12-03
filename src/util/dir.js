@@ -214,10 +214,13 @@ var dir_ensure,
 		for (var i = 0, x, imax = files.length; i < imax; i++) {
 			x = files[i];
 
-			var stats = __fs.lstatSync(path_combine(dir, x)),
+			var stats = lstat_(path_combine(dir, x)),
 				path = path_combine(root, x),
 				match = true;
-
+			
+			if (stats == null) 
+				continue;
+			
 			if (stats.isDirectory()) {
 				if (stats.isSymbolicLink())
 					continue;
@@ -338,7 +341,7 @@ var dir_ensure,
 			
 			__fs.lstat(path, function(error, stat){
 				if (error) 
-					return cb(error);
+					return cb();
 				
 				if (stat.isDirectory()) 
 					return processDirectory(fsname, stat, cb);
@@ -432,6 +435,13 @@ var dir_ensure,
 			err = err || error;
 			if (--count < 1) 
 				cb(err);
+		}
+	}
+	function lstat_(path) {
+		try {
+			return __fs.lstatSync(path);
+		} catch(e) {
+			return null;
 		}
 	}
 }());

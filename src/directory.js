@@ -261,7 +261,7 @@
 			return dfr;
 		},
 		getName: function() {
-			return this.uri.getName();
+			return /([^\/]+)\/?$/.exec(this.uri.path)[1];
 		},
 		rename: function(name) {
 			if (!name) {

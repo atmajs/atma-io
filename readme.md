@@ -90,6 +90,24 @@ file.rename(<String> filename)
 ##### renameAsync
 ```javascript
 file.renameAsync(<String> filename) //> Deferred
+
+##### replace
+Reads the content as string, replaces the matches and writes the result.
+
+`@arguments`: same as for JavaScripts String `replace`.
+
+`@return`: new content
+```javascript
+var str = file.replace('foo', 'bar');
+```
+##### replaceAsync
+```javascript
+file
+	.replaceAsync('foo', 'bar')
+	.done(function(newContent) {})
+	.fail(function(error) {});
+```
+
 ```
 ##### remove
 ```javascript
@@ -139,7 +157,9 @@ io.File[method] //> Function(filepath, [..args])
         'write'
 		'writeAsync'
         'remove'
-		'removeAsync'
+		'removeAsync',
+		'replace',
+		'replaceAsync',
 		'rename'
 		'renameAsync'
         'copyTo'

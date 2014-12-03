@@ -30,8 +30,6 @@ io.glob = {
 };
 
 io.settings = function(settings){
-    
     if (settings.extensions) 
-        io.File.registerExtensions(settings);
-    
+        io.File.registerExtensions(settings.extensions);
 };

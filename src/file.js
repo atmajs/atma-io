@@ -9,7 +9,7 @@
 			
 			path = this.uri.toLocalFile();
 			
-			if (_cacheEnabled && _cache.hasOwnProperty(path)) 
+			if (_cacheEnabled && _cache.hasOwnProperty(path) && false !== (data && data.cached)) 
 				return _cache[path];
 			
 			if (this.__proto__ === io.File.prototype) {
@@ -175,6 +175,30 @@
 				);
 			});
 		},
+		
+		replace: function(a, b, setts){
+			var content = this.read(setts);
+			content = content.replace(a, b);
+			this.write(content);
+			return content;
+		},
+		replaceAsync: function(a, b, setts){
+			return dfr_factory(this, function(dfr, file){
+				file
+					.readAsync(setts)
+					.fail(dfr.failDelegate())
+					.done(function(content){
+						content = content.replace(a, b);
+						file
+							.writeAsync()
+							.fail(dfr.failDelegate())
+							.done(function(){
+								dfr.resolve(null, content);
+							});
+					});
+			});
+		},
+		
 		watch: function(callback){
 			io
 				.watcher
@@ -190,21 +214,36 @@
 			return fs_getStat(this.uri.toLocalFile());
 		},
 		Static: {
-			clearCache: function(path) {
-				if (path == null) {
+			clearCache: function(mix) {
+				if (arguments.length === 0) {
 					_cache = {};
+					return;
+				}
+				
+				var path = mix instanceof io.File
+					? mix.uri.toLocalFile()
+					: mix
+					;
+				
+				if (_cache.hasOwnProperty(path)) {
+					delete _cache[path];
+					return;
+				}
+				path = path_getUri(path);
+				if (_cache.hasOwnProperty(path)) {
+					delete _cache[path];
 					return;
 				}
 				if (path.charCodeAt(0) === 47) {
 					// /
 					path = net.Uri.combine(__cwd, path);
 				}
-				if (_cache.hasOwnProperty(path) === false) {
-					logger.log('io.File - not in cache -', path);
+				if (_cache.hasOwnProperty(path)) {
+					delete _cache[path];
 					return;
 				}
 				
-				delete _cache[path];
+				logger.log('io.File - not in cache -', path);
 			},
 			disableCache: function(){
 				_cacheEnabled = false
