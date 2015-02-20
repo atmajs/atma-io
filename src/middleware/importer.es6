@@ -53,7 +53,7 @@
 			var lastC = path[path.length - 1];
 			var uri;
 			if (lastC === '/') {
-				uri = uri_joinBase(path) + 'exports.' + extension;
+				uri = uri_joinBase(path + 'exports.' + extension);
 				if (io.File.exists(uri)) {
 					return uri;
 				}
@@ -80,9 +80,12 @@
 			uri = path_resolveUri(path);
 			path = uri.toLocalFile();
 			if (path.indexOf('*') !== -1) {
-				
-				files = new io
-					.Directory(glob_getStrictPath(path))
+				var dir = new io.Directory(glob_getStrictPath(path));
+				if (dir.exists() === false) {
+					log_error('Directory not found', dir.uri.toLocalDir());
+					return full;
+				}
+				files = dir
 					.readFiles(glob_getRelativePath(path))
 					.files;
 			}
@@ -103,7 +106,7 @@
 				content = files.map(function(file, index){
 					var msg = 'File Import %1 into %2'
 						.green
-						.format(uri.file, baseUri.file);
+						.format(uri.file, currentUri.file);
 						
 					logger.log(msg);
 					
@@ -134,7 +137,7 @@
 				'bower.json',
 				'component.json',
 				'package.yml'
-			], x => io.File.exists(path));
+			], x => io.File.exists(x));
 			if (path == null) {
 				log_error('Version requested but no "package" found');
 				return '0.0.0';
