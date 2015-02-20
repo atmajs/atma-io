@@ -5,7 +5,7 @@
         "name": "Alex Kit",
         "email": "alex.kit@atmajs.com"
     },
-    "version": "0.2.2",
+    "version": "0.2.3",
     "main": "./lib/io.min.js",
     "repository": {
         "type": "git",
@@ -22,9 +22,20 @@
         "yamljs": "~0.1.0"
     },
     "devDependencies": {
-        "atma": "latest"
+        "atma": "latest",
+        "atma-loader-babel": ">0.0.0"
     },
     "scripts": {
         "test": "atma test"
+    },
+    "atma": {
+        "plugins": [
+            "atma-loader-babel"
+        ],
+        "settings": {
+            "atma-loader-babel": {
+                "extensions": ["es6", "test"]
+            }
+        }
     }
 }

@@ -1,21 +1,39 @@
-
-
 include
     .inject('/lib/io.js')
     .done(function(){
-        
         io
             .File
             .getHookHandler()
             .register(/./, 'read', 'importer');
         
-        var file = new io.File('test/middleware/data/importer.js');
         UTest({
-            'read': function(){
+            'read simple' () {
                 
-                var source = file.read();
+                var source = io
+                    .File
+                    .read('test/middleware/data/importer.js');
                 
-                assert(source.indexOf('bar') > -1);
+                has_(source, "'bar'");
+                has_(source, "'a'");
+                has_(source, "'b'");
+            },
+            
+            'read with settings' () {
+                var source = io
+                    .File
+                    .read('test/middleware/data/importer-settings.js');
+                
+                has_(source, "'a'");
+                has_(source, "'b'");
+                has_(source, "'c'");
+            },
+            'read exports file' () {
+                var source = io
+                    .File
+                    .read('test/middleware/data/importer-exports.js');
+                
+                has_(source, "'a'");
+                has_(source, "'b'");
             }
         })
     })

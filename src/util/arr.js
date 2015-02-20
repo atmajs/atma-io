@@ -1,49 +1,53 @@
-function arr_eachOrSingle(mix, callback) {
-    var isarray = arr_isArray(mix),
-        imax = isarray
-            ? mix.length
-            : 1,
-        i = 0,   
-        x = null;
+var arr_eachOrSingle,
+    arr_each,
+    arr_any,
+    arr_find,
+    arr_isArray;
 
-    for (; i < imax; i++) {
-        x = isarray
-            ? mix[i]
-            : mix;
-            
-        if (callback(x, i) === false)
-            break;
-    }
-    
-    return mix;
-}
+(function(){
 
+    arr_eachOrSingle = function (mix, fn) {
+        if (arr_isArray(mix) === false) {
+            fn(mix);
+            return mix;
+        }
+        return arr_each(mix, fn);
+    };
 
-function arr_any(array, matcher) {
-    if (arr_isArray(array) === false) 
+    arr_any = function (arr, matcher) {
+        if (arr_isArray(arr) === false) 
+            return false;
+        
+        var imax = arr.length,
+            i = -1;
+        while ( ++i < imax ) {
+            if (matcher(arr[i], i)) 
+                return true;
+        }
         return false;
+    };
     
-    for (var i = 0, x, imax = array.length; i < imax; i++){
-        x = array[i];
-        
-        if (matcher(x, i)) 
-            return true;
-    }
+    arr_each = function (arr, fn) {
+        if (arr == null) return arr;
+        var imax = arr.length,
+            i = -1;
+        while( ++i < imax && fn(arr[i], i) !== false);
+        return arr;
+    };
     
-    return false;
-}
-
-function arr_each(array, callback) {
-    for (var i = 0, x, imax = array.length; i < imax; i++){
-        x = array[i];
-        
-        if (callback(x, i) === false) 
-            break;
-    }
+    arr_find = function (arr, fn) {
+        if (arr == null) return arr;
+        var imax = arr.length,
+            i = -1;
+        while( ++i < imax) {
+            if (fn(arr[i], i))
+                return arr[i];
+        }
+        return null;
+    };
     
-    return array;
-}
-
-function arr_isArray(array) {
-    return Array.isArray(array);
-}
+    arr_isArray = function (x) {
+        return Array.isArray(x);
+    };
+    
+}());

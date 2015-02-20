@@ -8,7 +8,7 @@
 	// import middleware/cssmin.js
 	// import middleware/coffee.js
 	// import middleware/condcomments.js
-	// import middleware/importer.js
+	// import middleware/importer.es6
 	// import middleware/yml.js
 	// import middleware/json.js
 
