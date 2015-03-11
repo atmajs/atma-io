@@ -186,5 +186,5 @@ var file_save,
 		}
 		__fs.closeSync(fdr);
 		return __fs.closeSync(fdw);
-	};
+	}
 }());

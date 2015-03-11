@@ -15,7 +15,7 @@
 		}
 		
 		if (rgx_version.test(code)) 
-			code = processVersion(code);
+			file.content = code = processVersion(code);
 			
 		if (rgx_importStatement.test(code)) 
 			file.content = process(file.uri, code);

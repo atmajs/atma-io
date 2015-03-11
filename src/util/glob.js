@@ -76,7 +76,7 @@ var glob_getCalculatedPath,
 			return out;
 		}
 	
-		logger.error('<glob> Unsupported pattern', pattern);
+		logger.error('<glob> Unsupported pattern', mix);
 		return out;
 	};
 	
