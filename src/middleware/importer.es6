@@ -1,11 +1,14 @@
+/**
+ * Import any file into processed file
+ */
 (function() {
 	var log_error = logger.error.bind(logger, 'AtmaIO[importer]:'.cyan);
-	/**
-	 * Import any file into processed file
-	 */
-	io.File.middleware['importer'] = Importer;
 	
-		
+	// import importer/utils.es6
+	// import importer/functions.es6
+	
+	io.File.middleware['importer'] = Importer;	
+
 	function Importer(file) {
 		var code = file.content,
 			defines;
@@ -16,7 +19,10 @@
 		
 		if (rgx_version.test(code)) 
 			file.content = code = processVersion(code);
-			
+		
+		if (rgx_importFunction.test(code)) 
+			file.content = code = processFunctions(code);
+		
 		if (rgx_importStatement.test(code)) 
 			file.content = process(file.uri, code);
 	}
@@ -24,13 +30,21 @@
 
 	var rgx_importStatement = /^[\t ]*\/\/[ #]*import(:string)?[ ]+(([^\s'"]+)|('|"([^'"]+))'|")[ \t]*$/gm,
 		rgx_sourceStatement = /^[\t ]*\/\/[ #]*source(:string)?[ ]+(([^\s'"]+)|('|"([^'"]+))'|")[ \t]*$/gm,
-		rgx_version = /\/\*[ #]*import[ ]+version[ ]*\*\//gi,
+		
 		rgx_importBase = /^[\t ]*\/\/[ #]*import:base[ ]([^\s'"]+)$/m,
-		rgx_importExtension = /^[\t ]*\/\/[ #]*import:extension[ ]([^\s'"]+)$/m;
+		rgx_importExtension = /^[\t ]*\/\/[ #]*import:extension[ ]([^\s'"]+)$/m,
+		rgx_importFunction  = /%IMPORT\(([\w\- _\/]+)\)%/g,
+		
+		// deprecate
+		rgx_version = /\/\*[ #]*import[ ]+version[ ]*\*\//gi
+		
+		;
 
 	function process(currentUri, code) {
 		var baseUri = currentUri;
 		var extension = 'js';
+		var newline = u_getNewLine(code);
+		
 		if (rgx_importBase.test(code)) {
 			code = code.replace(rgx_importBase, function(full, path){
 				baseUri = uri_joinBase(path);
@@ -68,9 +82,9 @@
 		
 		return code.replace(rgx_importStatement, function(full, isString, match1, full2, match2) {
 
-			var uri,
-				file, files,
-				path = match1 || match2;
+			var path = match1 || match2,
+				uri, files, indent, content
+				;
 	
 			if (!path) {
 				log_error('Path can not be extracted', full);
@@ -79,102 +93,49 @@
 	
 			uri = path_resolveUri(path);
 			path = uri.toLocalFile();
-			if (path.indexOf('*') !== -1) {
-				var dir = new io.Directory(glob_getStrictPath(path));
-				if (dir.exists() === false) {
-					log_error('Directory not found', dir.uri.toLocalDir());
-					return full;
-				}
-				files = dir
-					.readFiles(glob_getRelativePath(path))
-					.files;
-			}
-	
-			if (files == null) {
-				
-				var file = new io.File(uri);
-				if (file.exists() === false) {
-					log_error('File does not exists', file.uri.toLocalFile());
-					log_error('Base:', baseUri.toString(), io.env.currentDir.toLocalFile());
-					return full;
-				}
-				
-				files = [ file ];
-			}
-	
-			var indent = full.substring(0, full.indexOf('//')),
-				content = files.map(function(file, index){
+			files = u_getFilesFromPath(path);
+			indent = u_getIndent(full);
+			content = files
+				.map(file => {
 					var msg = 'File Import %1 into %2'
 						.green
-						.format(uri.file, currentUri.file);
+						.format(file.uri.file, currentUri.file);
 						
 					logger.log(msg);
-					
-					return get_fileContent(file, indent, files.length > 1);
-				}).join(io.env.newLine);
+					return u_readFile(file, indent, files.length > 1);
+				})
+				.join(newline);
 			
 			if (isString) {
-				content = content
-					.replace(/[\n\r]/g, '\\n')
-					.replace(/"/g, '\\"');
-					
-				content = '"' + content + '"';
+				content = u_asString(content);
 			}
 	
 			return full.replace('import', 'source')
-				+ io.env.newLine
+				+ newline
 				+ content
-				+ io.env.newLine
+				+ newline
 				+ full.replace('import', 'end:source')
 				;
 		});
 	}
 	
-	function processVersion(code) {
-		return code.replace(rgx_version, function(){
-			var path = arr_find([
-				'package.json',
-				'bower.json',
-				'component.json',
-				'package.yml'
-			], x => io.File.exists(x));
-			if (path == null) {
-				log_error('Version requested but no "package" found');
-				return '0.0.0';
+	function processFunctions(code) {
+		return code.replace(rgx_importFunction, (full, name) => {
+			var fn = Functions[name];
+			if (fn == null) {
+				log_error('Uknown IMPORT function', name)				
+				return full;
 			}
-			var json = io.File.read(path);
-			var version = json && json.version;
-			if (version == null) {
-				log_error('Invalid package', path);
-				return '0.0.0';
-			}
-			return `'${version}'`;
+			return fn();
 		});
 	}
 	
-	function get_fileContent(file, indent, insertFileName) {
-		var content = file.read().toString();
-		
-		if (indent) {
-			var newLineMatch = /(\r\n)|(\r)|(\n)/.exec(content),
-				newLine = newLineMatch && newLineMatch[0];
-
-			content = content
-				.split(newLine)
-				.map(line => indent + line)
-				.join(newLine);
-		}
-		
-		if (insertFileName) {
-			content = indent
-				+ '// source '
-				+ file.uri.file
-				+ io.env.newLine
-				+ content;
-		}
-		return content;
+	function processVersion(code) {
+		return code.replace(rgx_version, function(){
+			log_error('"import version" is deprecated. Use importer function: %IMPORT(VERSION)%');
+			return "'" + Functions.version() + "'";
+		});
 	}
-
 	
 	function map_parse(fileContent, filename) {
 		
