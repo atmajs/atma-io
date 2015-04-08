@@ -11,10 +11,7 @@ module.exports = {
 			}
 		}
 	},
-	'add-handlers': {
-		action: 'custom',
-		script: 'tools/license-handler.js'
-	},
+
 	
 	'import': {
 		files: 'builds/**',
@@ -37,7 +34,7 @@ module.exports = {
 		script: 'tools/publish'
 	},
 
-	'defaults': ['add-handlers', 'import', 'jshint', 'uglify']
+	'defaults': ['import', 'jshint', 'uglify']
 };
 
 

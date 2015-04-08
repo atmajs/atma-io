@@ -2,7 +2,7 @@
  * Import any file into processed file
  */
 (function() {
-	var log_error = logger.error.bind(logger, 'AtmaIO[importer]:'.cyan);
+	var log_error = logger.error.bind(logger, 'AtmaIO[importer]:'.error);
 	
 	// import importer/utils.es6
 	// import importer/functions.es6
@@ -92,7 +92,7 @@
 			}
 	
 			uri = path_resolveUri(path);
-			path = uri.toLocalFile();
+			path = uri.toString();
 			files = u_getFilesFromPath(path);
 			indent = u_getIndent(full);
 			content = files
@@ -123,7 +123,7 @@
 		return code.replace(rgx_importFunction, (full, name) => {
 			var fn = Functions[name];
 			if (fn == null) {
-				log_error('Uknown IMPORT function', name)				
+				log_error('Unknown IMPORT function', name)				
 				return full;
 			}
 			return fn();
@@ -132,7 +132,7 @@
 	
 	function processVersion(code) {
 		return code.replace(rgx_version, function(){
-			log_error('"import version" is deprecated. Use importer function: %IMPORT(VERSION)%');
+			log_error('"import version" is deprecated. Use importer function: %IMPORT'+'(VERSION)%');
 			return "'" + Functions.version() + "'";
 		});
 	}
