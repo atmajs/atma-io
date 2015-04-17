@@ -215,6 +215,9 @@
 		},
 		Static: {
 			clearCache: function(mix) {
+				if (_cacheEnabled === false) {
+					return;
+				}
 				if (arguments.length === 0) {
 					_cache = {};
 					return;
@@ -224,7 +227,7 @@
 
 				var path;
 				if (typeof mix === 'string') {
-					path = path_getUri(mix);
+					path = path_getUri(mix).toLocalFile();
 					if (_cache.hasOwnProperty(path) === false && mix.charCodeAt(0) === 47) {
 						path = net.Uri.combine(__cwd, mix);
 					}
@@ -242,6 +245,7 @@
 				delete _cache[path];
 			},
 			disableCache: function(){
+				_cache = {};
 				_cacheEnabled = false
 			},
 			enableCache: function(){
