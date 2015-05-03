@@ -97,9 +97,11 @@
 			indent = u_getIndent(full);
 			content = files
 				.map(file => {
+					var _virtualUri = { file: 'VIRTUAL'.bold.yellow };
+					var _from = (file.uri || _virtualUri).file;					
 					var msg = 'File Import %1 into %2'
 						.green
-						.format(file.uri.file, currentUri.file);
+						.format(_from, currentUri.file);
 						
 					logger.log(msg);
 					return u_readFile(file, indent, files.length > 1);
