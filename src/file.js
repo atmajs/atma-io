@@ -229,7 +229,7 @@
 				if (typeof mix === 'string') {
 					path = path_getUri(mix).toLocalFile();
 					if (_cache.hasOwnProperty(path) === false && mix.charCodeAt(0) === 47) {
-						path = net.Uri.combine(__cwd, mix);
+						path = Uri.combine(__cwd, mix);
 					}
 				} else if (mix.uri) {
 					path = mix.uri.toLocalFile();

@@ -1,33 +1,33 @@
 
-var mainFile = new net.Uri(normalizePath(process.mainModule.filename)),
+var mainFile = new Uri(normalizePath(process.mainModule.filename)),
 	platform = process.platform,
-	
+
 	__cwd = toDir(process.cwd())
 	;
 
 
 io.env = {
-	applicationDir: new net.Uri(mainFile.toDir()),
-	currentDir: new net.Uri(__cwd),
-	
+	applicationDir: new Uri(mainFile.toDir()),
+	currentDir: new Uri(__cwd),
+
 	get newLine (){
-		
+
 		Object.defineProperty(this, 'newLine', {
 			value: require('os').EOL
 		});
 		return this.newLine;
 	},
-		
+
 	get appdataDir() {
-		
+
 		var path;
-		
+
         switch(platform){
             case 'win32':
             case 'win64':
                 path = process.env.APPDATA || process.env.HOME;
 				break;
-            
+
             case 'darwin':
                 path = process.env.HOME;
 				break;
@@ -35,23 +35,23 @@ io.env = {
                 path = process.env.HOME;
 				break;
         }
-		
+
 		if (path == null) {
 			logger.error('<io.env> Unknown AppData Dir');
-			
+
 			Object.defineProperty(this, 'appdataDir', {
 				value: this.applicationDir
 			});
 			return this.applicationDir;
 		}
-		
-		path = new net.Uri(toDir(path));
-		
-		if (platform === 'darwin') 
+
+		path = new Uri(toDir(path));
+
+		if (platform === 'darwin')
 			path = path.combine('Library/Application Support/');
-		
+
 		path = path.combine('.' + mainFile.file + '/');
-		
+
 		Object.defineProperty(this, 'appdataDir', {
 			value: path
 		});
@@ -60,7 +60,7 @@ io.env = {
 };
 
 function toDir(path){
-	return net.Uri.combine(normalizePath(path), '/');
+	return Uri.combine(normalizePath(path), '/');
 }
 
 function normalizePath(path){

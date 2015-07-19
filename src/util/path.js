@@ -6,17 +6,17 @@ function path_getUri(path, base){
 	if (path[0] === '/') 
 		path = path.substring(1);
 	
-	var uri = new net.Uri(path);
+	var uri = new Uri(path);
 	if (uri.isRelative() === false)
 		return uri;
 	
 	if (base)
-		return new net.Uri(base).combine(uri);
+		return new Uri(base).combine(uri);
 
 	if (io.env) 
 		return io.env.currentDir.combine(uri);
 	
-	return new net.Uri('file://' + process.cwd() + '/')
+	return new Uri('file://' + process.cwd() + '/')
 		.combine(uri);
 }
 
@@ -64,7 +64,7 @@ function path_resolveUri(url, parentLocation, base) {
 		url = url.substring(1);
 	}
 	
-	var uri = new net.Uri(url);
+	var uri = new Uri(url);
 	
 	return uri.isRelative() 
 		? (new net.URI(parentLocation)).combine(uri) 
