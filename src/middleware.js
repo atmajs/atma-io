@@ -74,10 +74,8 @@
 			return;
 		}
 		
-		if (typeof middleware === 'object') {
-			middleware = middleware[funcName];
-			
-			if (middleware == null) {
+		if (typeof middleware === 'object') {			
+			if (middleware[funcName] == null && middleware[funcName + 'Async'] == null) {
 				logger.error(
 					'Middleware not defined for action'
 					, funcName
