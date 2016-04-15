@@ -1,5 +1,5 @@
 (function(){
-        
+
     [
         'exists',
         'existsAsync',
@@ -14,15 +14,18 @@
         'copyTo',
         'copyToAsync'
     ].forEach(function(method){
-        
+
         io.File[method] = function(){
             var path = arguments[0],
                 args = _Array_slice.call(arguments, 1),
-                file = new io.File(path)
+                file = new io.File(path),
+                fn = file[method]
                 ;
-            
-            return file[method].apply(file, args);
+            if (fn == null) {
+				throw Error('Virtual File not implements method ' + method);
+			}
+            return fn.apply(file, args);
         }
-    });    
-    
+    });
+
 }());
