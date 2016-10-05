@@ -68,7 +68,16 @@
 
 		
 		var middleware = io.File.middleware[handler];
-		
+		if (middleware == null) {
+			try {
+				var x = require(handler);
+				middleware = io.File.middleware[handler];
+				if (middleware == null) {
+					middleware = x;
+				}
+			} catch(error) {}
+		}
+
 		if (middleware == null) {
 			logger.error('Middleware not defined', handler);
 			return;

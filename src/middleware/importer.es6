@@ -99,10 +99,7 @@
 				.map(file => {
 					var _virtualUri = { file: 'VIRTUAL'.bold.yellow };
 					var _from = (file.uri || _virtualUri).file;					
-					var msg = 'File Import %1 into %2'
-						.green
-						.format(_from, currentUri.file);
-						
+					var msg = `File Import ${_from} into ${currentUri.file}`;
 					logger.log(msg);
 					return u_readFile(file, indent, files.length > 1);
 				})
