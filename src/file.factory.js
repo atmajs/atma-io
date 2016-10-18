@@ -6,8 +6,9 @@
 			this.handlers = [];
 		},
 		registerHandler: function(regexp, Handler) {
+			normalizeHandler(Handler);
 			this.handlers.push({
-				handler: normalizeHandler(Handler),
+				handler: Handler,
 				regexp: regexp
 			});
 		},
