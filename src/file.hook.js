@@ -35,9 +35,15 @@
 					Handler[method + 'Async'](file, config, done);
 					return;
 				}
-				if (Handler[method])
-					Handler[method](file, config);
-
+				if (Handler[method]) {
+					try {
+						Handler[method](file, config);
+					}
+					catch (error) {
+						done(error);
+						return;
+					}
+				}
 				done();
 				return;
 			}
