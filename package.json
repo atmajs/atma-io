@@ -5,7 +5,7 @@
     "name": "Alex Kit",
     "email": "alex.kit@atmajs.com"
   },
-  "version": "0.2.19",
+  "version": "0.2.20",
   "main": "./lib/io.min.js",
   "repository": {
     "type": "git",

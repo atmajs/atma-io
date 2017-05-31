@@ -9,7 +9,7 @@
 
 			path = this.uri.toLocalFile();
 
-			if (_cacheEnabled && _cache.hasOwnProperty(path) && false !== (opts && opts.cached))
+			if (isFromCache(path, opts))
 				return _cache[path];
 
 			if (this.__proto__ === io.File.prototype) {
@@ -66,6 +66,10 @@
 					if (error)
 						return dfr.reject(error);
 					dfr.resolve(file.content, file);
+				}
+			}, function onError(file, path){
+				if (isFromCache(path)) {
+					delete _cache[path];
 				}
 			});
 		},
@@ -275,9 +279,15 @@
 		}
 	});
 
-	function dfr_factory(file, fn) {
+	function dfr_factory(file, fn, onError) {
 		var dfr = new Class.Deferred;
-		fn(dfr, file, file.uri.toLocalFile());
+		var path = file.uri.toLocalFile();
+		if (onError != null) {
+			dfr.fail(function () {
+				onError(file, path);
+			});
+		}
+		fn(dfr, file, path);
 		return dfr;
 	}
 	function dfr_pipeDelegate(dfr){
@@ -331,6 +341,9 @@
 			return;
 		}
 		hooks.trigger(method, file, config);
+	}
+	function isFromCache (path, opts) {
+		return _cacheEnabled && _cache.hasOwnProperty(path) && false !== (opts != null && opts.cached);
 	}
 
 }());

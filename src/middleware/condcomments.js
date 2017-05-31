@@ -42,9 +42,9 @@
 
 
 	var reg_commentEnd = /\*\//g,
-		reg_inlineEnd = /\/\*[ \t]*if[^\n\r]+\*\//g,
-		reg_endIf = /(\/\*[\t ]*endif[\t ]*\*\/)|([ \t]*\/\/[ \t]*endif[ \t]*$)/gm,
-		reg_expression = /^[ \t]*((\/\/)|(\/\*))[ \t]*if[ \t]*(([^\s]+$)|(\([^)\n\r]+\)))/gm;
+		reg_inlineEnd = /\/\*[ \t#]*if[^\n\r]+\*\//g,
+		reg_endIf = /(\/\*[\t #]*endif[\t ]*\*\/)|([ \t]*\/\/[ \t#]*endif[ \t]*$)/gm,
+		reg_expression = /^[ \t]*((\/\/)|(\/\*))[ \t#]*if[ \t]*(([^\s]+$)|(\([^)\n\r]+\)))/gm;
 
 	function process(code, index, defines) {
 
