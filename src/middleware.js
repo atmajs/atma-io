@@ -71,6 +71,9 @@
 		if (middleware == null) {
 			try {
 				var x = require(handler);
+				if (x && x.register) {
+					x.register(io);
+				}
 				middleware = io.File.middleware[handler];
 				if (middleware == null) {
 					middleware = x;
@@ -79,7 +82,7 @@
 		}
 
 		if (middleware == null) {
-			logger.error('Middleware not defined', handler);
+			logger.error('Middleware neither defined nor installed', handler);
 			return;
 		}
 		
