@@ -1,6 +1,11 @@
 (function(){
 	
-	io.File.middleware = {};
+	obj_extend(io.File, {
+		middleware: {},
+		registerExtensions: registerMiddleware,
+		setMiddlewares: setMiddlewares
+	});
+		
 		
 	
 	// import middleware/hint.js
@@ -12,7 +17,6 @@
 	// import middleware/yml.js
 	// import middleware/json.js
 
-	io.File.registerExtensions = registerMiddleware;
 	
 	registerMiddleware({
 		'js': [
@@ -39,78 +43,93 @@
 	});
 	
 	
-	function registerMiddleware(extensions){
-		
+	function registerMiddleware(extensions, shouldCleanPrevious, settings){		
 		var hook = io.File.getHookHandler();
-	
-		for (var key in extensions) {
-			var handlers = extensions[key];
-	
+		for (var ext in extensions) {
+			var handlers = extensions[ext];
 			if (arr_isArray(handlers) === false) {
-				logger.warn('Middleware list for %s is not an array', key);
+				logger.warn('Middleware list for %s is not an array', ext);
 				continue;
 			}
-	
-			arr_each(handlers, registerHookDelegate(hook, key));
+			if (shouldCleanPrevious) {
+				unregisterHook(ext);
+			}
+			arr_each(handlers, registerHookDelegate(hook, ext, settings));
 		}
 	}
+	function setMiddlewares (extensions, settings) {
+		registerMiddleware(extensions, true, settings);		
+	}
 	
-	function registerHookDelegate(hook, extension) {
+	function registerHookDelegate(hook, extension, appSettings) {
 		return function(handlerDefinition){
-			registerHook(hook, extension, handlerDefinition);
+			registerHook(hook, extension, handlerDefinition, appSettings);
 		};
 	}
 	
-	function registerHook(hook, extension, handlerDefinition) {
+	function registerHook(hook, extension, handlerDefinition, appSettings) {
 		var parts = handlerDefinition.split(':'),
-			handler = parts[0],
+			handlerName = parts[0],
 			funcName = parts[1];
 
-		
-		var middleware = io.File.middleware[handler];
+		var middleware = ensureMiddleware(handlerName, funcName);	
+		if (middleware == null) {
+			return;
+		}
+		if (appSettings != null) {
+			var options = appSettings[handlerName];
+			if (options && middleware.setOptions) {
+				middleware.setOptions(options);
+			}
+		}
+		var rgx = getRegexp(extension);
+		hook.register(rgx, funcName, middleware);
+	}
+	function unregisterHook(hook, extension) {
+		var rgx = getRegexp(extension);
+		hook.unregisterByRegexp(rgx);
+	}
+
+	function ensureMiddleware (name, funcName) {
+		var middleware = io.File.middleware[name];
 		if (middleware == null) {
 			try {
-				var x = require(handler);
+				var x = require(name);
 				if (x && x.register) {
 					x.register(io);
 				}
-				middleware = io.File.middleware[handler];
+				middleware = io.File.middleware[name];
 				if (middleware == null) {
 					middleware = x;
 				}
 			} catch(error) {}
 		}
-
 		if (middleware == null) {
-			logger.error('Middleware neither defined nor installed', handler);
-			return;
+			logger.error('Middleware is not installed', name);
+			return null;
 		}
-		
 		if (typeof middleware === 'object') {			
 			if (middleware[funcName] == null && middleware[funcName + 'Async'] == null) {
 				logger.error(
 					'Middleware not defined for action'
 					, funcName
-					, handler
+					, name
 				);
-				return;
+				return null;
 			}
 		}
-		
-		extension = rgx_prepairString(extension);
-		var rgx_end = '\\.' + extension + '$',
-			rgx_query = '\\.' + extension + '\\?',
-			rgx_hash = '\\.' + extension + '#',
-			
-			rgx = rgx_end
-				+ '|'
-				+ rgx_query
-				+ '|'
-				+ rgx_hash
-				;
-		
-		
-		hook.register(new RegExp(rgx), funcName, middleware);
+		return middleware;
 	}
-
+	function getRegexp (misc) {
+		if (misc[0] === '/') {
+			var str = misc.substring(1);
+			var end = str.lastIndexOf('/');
+			var flags = str.substring(end + 1);
+			str = str.substring(0, end);
+			return new RegExp(str, flags);
+		}
+		var ext = rgx_prepairString(misc);
+		var rgx = '\\.' + ext + '($|\\?|#)';
+		return new RegExp(rgx);
+	}
 }());

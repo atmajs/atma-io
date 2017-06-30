@@ -97,31 +97,45 @@
             return this;
 		},
         contains: function(method, handler, regexp){
-			var i = this.hooks.length,
-				hook;
-
-			while (--i > -1) {
-				hook = this.hooks[i];
-
-				if (hook.method === method && hook.handler === handler) {
-					if (regexp !== null && regexp.toString() !== hook.regexp.toString())
-						continue;
-
-					return true;
+			var str = regexp && regexp.toString() || null;
+			var imax = this.hooks.length;
+			var i = -1;
+			while( ++i < imax) {
+				var hook = this.hooks[i];
+				if (hook.method !== method) {
+					continue;
 				}
-
-			}
+				if (hook.handler !== handler) {
+					continue;
+				}
+				if (str != null && str !== hook.regexp.toString()) {
+					continue;
+				}
+				return true;
+			}			
 			return false;
         },
-        unregister: function(method, handler){
-
-        	if (typeof handler === 'string')
+        unregister: function(method, handler) {
+        	if (typeof handler === 'string') {
         		handler = io.File.middleware[handler];
-
+			}
 			this.hooks = this.hooks.filter(function(x){
 				return !(x.method === method && x.handler === handler);
 			});
         },
+		unregisterByRegexp: function (regexp) {
+			var str = regexp.toString();
+			var imax = this.hooks.length;
+			var i = -1;
+			while( ++i < imax) {
+				var hook = this.hooks[i];
+				if (hook.regexp.toString() === str) {
+					this.hooks.splice(i, 1);
+					i--;
+					imax--;
+				}
+			}
+		},
 		trigger: function(method, file, config) {
 
 			this
@@ -146,7 +160,6 @@
         },
 
 		getHooksForPath: function(path, method){
-
 			return this.hooks
 				.filter(function(x) {
 					return x.canHandle(path, method);
