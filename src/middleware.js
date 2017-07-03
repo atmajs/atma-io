@@ -52,7 +52,7 @@
 				continue;
 			}
 			if (shouldCleanPrevious) {
-				unregisterHook(ext);
+				unregisterHook(hook, ext);
 			}
 			arr_each(handlers, registerHookDelegate(hook, ext, settings));
 		}

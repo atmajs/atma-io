@@ -275,6 +275,10 @@
 
 			get Middleware () {
 				return _hooks
+			},
+
+			processHooks: function (method, file, config, onComplete) {
+				processHooks(method, file, null, config, onComplete);
 			}
 		}
 	});
@@ -330,12 +334,14 @@
 		return setts;
 	}
 	function processHooks(method, file, setts, config, cb){
-		var hooks = setts.hooks || _hooks;
-		if (hooks == null || setts.skipHooks === true) {
-			cb && cb();
-			return;
+		var hooks = _hooks;
+		if (setts != null) {
+			hooks = setts.hooks || hooks;
+			if (hooks == null || setts.skipHooks === true) {
+				cb && cb();
+				return;
+			}
 		}
-
 		if (cb) {
 			hooks.triggerAsync(method, file, config, cb);
 			return;
