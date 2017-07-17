@@ -1,0 +1,5 @@
+{
+    "name": "atma-io",
+    "main": "typings/index.d.ts",
+    "global": true
+}
