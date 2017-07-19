@@ -1,3 +1,7 @@
+declare module "atma-io" {
+    export = io;
+}
+
 declare namespace io {
     
     interface IReadOptions {
