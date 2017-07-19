@@ -1,4 +1,5 @@
-import fs from "fs";
+import fs from "fs"
+
 export declare namespace io {
     
     interface IReadOptions {
