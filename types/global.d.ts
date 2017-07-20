@@ -52,6 +52,7 @@ declare namespace io {
         static registerFactory (factory: IFactory)
         static getFactory () : IFactory
         
+        static middleware: { [name: string]: any }
         static Middleware: IHookCollection
         static processHooks (method: 'read' | 'write', file: File, config: any, onComplete: (file: File) => void): void
 
