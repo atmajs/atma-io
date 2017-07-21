@@ -174,7 +174,6 @@ export namespace glob {
 
 type DfrRunner =  (resolve: Function, reject?: Function) => void | Deferred
 export class Deferred {
-    constructor (runner?: DfrRunner | any)
     then(onOk: (...args: any[]) => void | Deferred | PromiseLike<any>, onFail?: (...args: any[]) => void | Deferred | PromiseLike<any>)
     done (done: (...args: any[]) => void | Deferred): this
     fail (fail: (error: any | Error) => void): this
