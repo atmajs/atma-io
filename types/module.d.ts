@@ -17,25 +17,25 @@ export class File {
     sourceMap?: string
 
     read (options?: IReadOptions): IContent
-    readAsync (options?: IReadOptions): Deferred<IContent>
+    readAsync (options?: IReadOptions): Deferred | Promise<IContent>
 
     write (content: IContent, options?: IReadOptions) : this
-    writeAsync (content: IContent, options?: IReadOptions): Deferred<void>
+    writeAsync (content: IContent, options?: IReadOptions): Deferred | Promise<void>
 
     copyTo (targetPath: string): this
-    copyToAsync (targetPath: string): Deferred<void>
+    copyToAsync (targetPath: string): Deferred | Promise<void>
 
     exists () : boolean
-    existsAsync () : Deferred<boolean>
+    existsAsync () : Deferred | Promise<boolean>
 
     rename (fileName: string) : boolean
-    renameAsync (fileName: string) : Deferred<boolean>
+    renameAsync (fileName: string) : Deferred | Promise<boolean>
 
     remove () : boolean
-    removeAsync () : Deferred<boolean>
+    removeAsync () : Deferred | Promise<boolean>
 
     replace (match: string | RegExp | Function, withValue?: string, options?: IReadOptions): IContent
-    replaceAsync (match: string | RegExp | Function, withValue?: string, options?: IReadOptions): Deferred<IContent>
+    replaceAsync (match: string | RegExp | Function, withValue?: string, options?: IReadOptions): Deferred | Promise<IContent>
 
     watch (onChange: (path: string ) => void)
     unwatch (onChange: Function)
@@ -53,22 +53,22 @@ export class File {
     static processHooks (method: 'read' | 'write', file: File, config: any, onComplete: (file: File) => void): void
 
     static read (path: string | Uri, options?: IReadOptions): IContent
-    static readAsync (path: string | Uri,options?: IReadOptions): Deferred<IContent>
+    static readAsync (path: string | Uri,options?: IReadOptions): Deferred | Promise<IContent>
 
     static write (path: string | Uri,content: IContent, options?: IReadOptions) : File
-    static writeAsync (path: string | Uri,content: IContent, options?: IReadOptions): Deferred<void>
+    static writeAsync (path: string | Uri,content: IContent, options?: IReadOptions): Deferred | Promise<void>
 
     static copyTo (path: string | Uri, targetPath: string): File
-    static copyToAsync (path: string | Uri, targetPath: string): Deferred<void>
+    static copyToAsync (path: string | Uri, targetPath: string): Deferred | Promise<void>
 
     static exists (path: string | Uri) : boolean
-    static existsAsync (path: string | Uri) : Deferred<boolean>
+    static existsAsync (path: string | Uri) : Deferred | Promise<boolean>
 
     static rename (path: string | Uri, fileName: string) : boolean
-    static renameAsync (path: string | Uri, fileName: string) : Deferred<boolean>
+    static renameAsync (path: string | Uri, fileName: string) : Deferred | Promise<boolean>
 
     static remove (path: string | Uri,) : boolean
-    static removeAsync (path: string | Uri,) : Deferred<boolean>
+    static removeAsync (path: string | Uri,) : Deferred | Promise<boolean>
 
     /** Registers additional middlewares for the extension(s) */
     static registerExtensions (definition: {
@@ -115,23 +115,23 @@ export class Directory {
     /** Path must ends with slash */        
     constructor (path: string)
     exists () : boolean
-    existsAsync () : Deferred<boolean>
+    existsAsync () : Deferred | Promise<boolean>
     ensure () : this
-    ensureAsync () : Deferred<this>
+    ensureAsync () : Deferred | Promise<this>
     readFiles (globPattern: string, globPatternExclude?: string): this
-    readFilesAsync (globPattern: string, globPatternExclude?: string): Deferred<this>
+    readFilesAsync (globPattern: string, globPatternExclude?: string): Deferred | Promise<this>
 
     read (globPattern: string, globPatternExclude?: string): File[]
-    readAsync (globPattern: string, globPatternExclude?: string): Deferred<File[]>
+    readAsync (globPattern: string, globPatternExclude?: string): Deferred | Promise<File[]>
 
     copyTo(target: string, options?: { verbose: boolean }): boolean
-    copyToAsync(target: string, options?: { verbose: boolean }): Deferred<boolean>
+    copyToAsync(target: string, options?: { verbose: boolean }): Deferred | Promise<boolean>
 
     getName (): string
     rename (newName: string): void
-    renameAsync (newName: string): Deferred<void>
+    renameAsync (newName: string): Deferred | Promise<void>
     remove () : void
-    removeAsync () : Deferred<void>
+    removeAsync () : Deferred | Promise<void>
 
     watch (callback: Function)
     unwatch (callback: Function)
@@ -168,22 +168,29 @@ export class Uri {
 
 export namespace glob {
     export function read (globPattern: string): File[]
-    export function readAsync (globPattern: string): Deferred<File[]>
+    export function readAsync (globPattern: string): Deferred | Promise<File[]>
 }
 
-export class Deferred<T> extends Promise<T> {
-    done (done: (result: T) => void | Deferred<any>): this
+
+type DfrRunner =  (resolve: Function, reject?: Function) => void | Deferred
+export class Deferred {
+    constructor (runner?: DfrRunner | any)
+    then(onOk: (...args: any[]) => void | Deferred | PromiseLike<any>, onFail?: (...args: any[]) => void | Deferred | PromiseLike<any>)
+    done (done: (...args: any[]) => void | Deferred): this
     fail (fail: (error: any | Error) => void): this
-    reject(error: any | Error) 
-    resolve(result?: T): this
+    reject(error: any | Error) : this
+    resolve(...args: any[]): this
     always (always: Function): this
 
     defer (): this
     isResolved (): boolean
     isRejected (): boolean
     isBusy (): boolean
-    resolveDelegate (): (result: T | any) => void | any
+    resolveDelegate (): (result: any) => void | any
     rejectDelegate (): (result: Error | any) => void | any
 
-    static run<T> (fn: (resolve: Function, reject?: Function) => void, ctx?: any): Deferred<T>        
+    static run (fn: DfrRunner, ctx?: any): Deferred
+    static resolve (...args: any[]): Deferred
+    static reject (...args: any[]): Deferred
 }
+
