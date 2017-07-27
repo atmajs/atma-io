@@ -198,4 +198,9 @@ declare namespace io {
         static reject (...args: any[]): DeferredLike
     }
 
+    export namespace watcher {
+        export function watch(path: string, callback: (x: string) => void): void
+        export function unwatch(path: string, callback?): void
+    }
+
 }

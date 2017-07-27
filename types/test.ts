@@ -1,3 +1,3 @@
-import {io} from './index'
+import * as io from './module'
 
 var x = new io.File('x');

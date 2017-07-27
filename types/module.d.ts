@@ -1,5 +1,6 @@
-import fs from "fs"
-    
+import * as fs from "fs"
+
+
 interface IReadOptions {
     skipHooks?: boolean
     /** Default: utf8 */
@@ -192,4 +193,9 @@ export class Deferred {
     static run (fn: (resolve: Function, reject?: Function) => void | Deferred, ctx?: any): DeferredLike
     static resolve (...args: any[]): DeferredLike
     static reject (...args: any[]): DeferredLike
+}
+
+export namespace watcher {
+    export function watch(path: string, callback: (x: string) => void): void
+    export function unwatch(path: string, callback?): void
 }
