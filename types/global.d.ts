@@ -21,25 +21,25 @@ declare namespace io {
         sourceMap?: string
 
         read (options?: IReadOptions): IContent
-        readAsync (options?: IReadOptions): Deferred | PromiseLike<IContent>
+        readAsync (options?: IReadOptions): Deferred
 
         write (content: IContent, options?: IReadOptions) : this
-        writeAsync (content: IContent, options?: IReadOptions): Deferred | PromiseLike<void>
+        writeAsync (content: IContent, options?: IReadOptions): Deferred
 
         copyTo (targetPath: string): this
-        copyToAsync (targetPath: string): Deferred | PromiseLike<void>
+        copyToAsync (targetPath: string): Deferred
 
         exists () : boolean
-        existsAsync () : Deferred | PromiseLike<boolean>
+        existsAsync () : Deferred
 
         rename (fileName: string) : boolean
-        renameAsync (fileName: string) : Deferred | PromiseLike<boolean>
+        renameAsync (fileName: string) : Deferred
 
         remove () : boolean
-        removeAsync () : Deferred | PromiseLike<boolean>
+        removeAsync () : Deferred
 
         replace (match: string | RegExp | Function, withValue?: string, options?: IReadOptions): IContent
-        replaceAsync (match: string | RegExp | Function, withValue?: string, options?: IReadOptions): Deferred | PromiseLike<IContent>
+        replaceAsync (match: string | RegExp | Function, withValue?: string, options?: IReadOptions): Deferred
 
         watch (onChange: (path: string ) => void)
         unwatch (onChange: Function)
@@ -57,22 +57,22 @@ declare namespace io {
         static processHooks (method: 'read' | 'write', file: File, config: any, onComplete: (file: File) => void): void
 
         static read (path: string | Uri, options?: IReadOptions): IContent
-        static readAsync (path: string | Uri,options?: IReadOptions): Deferred | PromiseLike<IContent>
+        static readAsync (path: string | Uri,options?: IReadOptions): Deferred
 
         static write (path: string | Uri,content: IContent, options?: IReadOptions) : File
-        static writeAsync (path: string | Uri,content: IContent, options?: IReadOptions): Deferred | PromiseLike<void>
+        static writeAsync (path: string | Uri,content: IContent, options?: IReadOptions): Deferred
 
         static copyTo (path: string | Uri, targetPath: string): File
-        static copyToAsync (path: string | Uri, targetPath: string): Deferred | PromiseLike<void>
+        static copyToAsync (path: string | Uri, targetPath: string): Deferred
 
         static exists (path: string | Uri) : boolean
-        static existsAsync (path: string | Uri) : Deferred | PromiseLike<boolean>
+        static existsAsync (path: string | Uri) : Deferred
 
         static rename (path: string | Uri, fileName: string) : boolean
-        static renameAsync (path: string | Uri, fileName: string) : Deferred | PromiseLike<boolean>
+        static renameAsync (path: string | Uri, fileName: string) : Deferred
 
         static remove (path: string | Uri,) : boolean
-        static removeAsync (path: string | Uri,) : Deferred | PromiseLike<boolean>
+        static removeAsync (path: string | Uri,) : Deferred
 
         /** Registers additional middlewares for the extension(s) */
         static registerExtensions (definition: {
@@ -119,48 +119,48 @@ declare namespace io {
         /** Path must ends with slash */        
         constructor (path: string)
         exists () : boolean
-        existsAsync () : Deferred | PromiseLike<boolean>
+        existsAsync () : Deferred
         ensure () : this
-        ensureAsync () : Deferred | PromiseLike<this>
+        ensureAsync () : Deferred
         readFiles (globPattern: string, globPatternExclude?: string): this
-        readFilesAsync (globPattern: string, globPatternExclude?: string): Deferred | PromiseLike<this>
+        readFilesAsync (globPattern: string, globPatternExclude?: string): Deferred
 
         read (globPattern: string, globPatternExclude?: string): File[]
-        readAsync (globPattern: string, globPatternExclude?: string): Deferred | PromiseLike<File[]>
+        readAsync (globPattern: string, globPatternExclude?: string): Deferred
 
         copyTo(target: string, options?: { verbose: boolean }): boolean
-        copyToAsync(target: string, options?: { verbose: boolean }): Deferred | PromiseLike<boolean>
+        copyToAsync(target: string, options?: { verbose: boolean }): Deferred
 
         getName (): string
         rename (newName: string): void
-        renameAsync (newName: string): Deferred | PromiseLike<void>
+        renameAsync (newName: string): Deferred
         remove () : void
-        removeAsync () : Deferred | PromiseLike<void>
+        removeAsync () : Deferred
 
         watch (callback: Function)
         unwatch (callback: Function)
 
-        static symlink (newSymlink: string, targetPath: string)        
-            
-        static exists (path: string) : boolean
-        static existsAsync (path: string) : Deferred | PromiseLike<boolean>
-        static readFiles (path: string, globPattern: string, globPatternExclude?: string): Directory
-        static readFilesAsync (path: string, globPattern: string, globPatternExclude?: string): Deferred | PromiseLike<Directory>
+        static symlink (newSymlink: string, targetPath: string)
         
-        static read (path: string, globPattern: string, globPatternExclude?: string): File[]
-        static readAsync (path: string, globPattern: string, globPatternExclude?: string): Deferred | PromiseLike<File[]>
+        static exists (path: string) : boolean
+        static existsAsync (path: string) : Deferred
+        static readFiles (path: string, globPattern: string, globPatternExclude?: string): Directory
+        static readFilesAsync (path: string, globPattern: string, globPatternExclude?: string): Deferred
+        
+        static read (path: string, globPattern: string, globPatternExclude?: string): (File | Directory)[]
+        static readAsync (path: string, globPattern: string, globPatternExclude?: string): Deferred
 
 
         static ensure (path: string) : Directory
-        static ensureAsync (path: string) : Deferred | PromiseLike<this>
+        static ensureAsync (path: string) : Deferred
         
         static rename (path: string, newName: string): void
-        static renameAsync (path: string, newName: string): Deferred | PromiseLike<void>
+        static renameAsync (path: string, newName: string): Deferred
         static remove (path: string) : void
-        static removeAsync (path: string) : Deferred | PromiseLike<void>
+        static removeAsync (path: string) : Deferred
 
         static copyTo(path: string, target: string, options?: { verbose: boolean }): boolean
-        static copyToAsync(path: string, target: string, options?: { verbose: boolean }): Deferred | PromiseLike<boolean>
+        static copyToAsync(path: string, target: string, options?: { verbose: boolean }): Deferred
     }
 
     export class Uri {
@@ -192,7 +192,7 @@ declare namespace io {
 
     export namespace glob {
         export function read (globPattern: string): File[]
-        export function readAsync (globPattern: string): Deferred | PromiseLike<File[]>
+        export function readAsync (globPattern: string): Deferred
     }
 
 
