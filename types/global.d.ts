@@ -141,6 +141,26 @@ declare namespace io {
         unwatch (callback: Function)
 
         static symlink (newSymlink: string, targetPath: string)        
+            
+        static exists (path: string) : boolean
+        static existsAsync (path: string) : Deferred | PromiseLike<boolean>
+        static readFiles (path: string, globPattern: string, globPatternExclude?: string): Directory
+        static readFilesAsync (path: string, globPattern: string, globPatternExclude?: string): Deferred | PromiseLike<Directory>
+        
+        static read (path: string, globPattern: string, globPatternExclude?: string): File[]
+        static readAsync (path: string, globPattern: string, globPatternExclude?: string): Deferred | PromiseLike<File[]>
+
+
+        static ensure (path: string) : Directory
+        static ensureAsync (path: string) : Deferred | PromiseLike<this>
+        
+        static rename (path: string, newName: string): void
+        static renameAsync (path: string, newName: string): Deferred | PromiseLike<void>
+        static remove (path: string) : void
+        static removeAsync (path: string) : Deferred | PromiseLike<void>
+
+        static copyTo(path: string, target: string, options?: { verbose: boolean }): boolean
+        static copyToAsync(path: string, target: string, options?: { verbose: boolean }): Deferred | PromiseLike<boolean>
     }
 
     export class Uri {
