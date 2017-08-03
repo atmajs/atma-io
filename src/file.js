@@ -349,7 +349,13 @@
 		hooks.trigger(method, file, config);
 	}
 	function isFromCache (path, opts) {
-		return _cacheEnabled && _cache.hasOwnProperty(path) && false !== (opts != null && opts.cached);
+		if (_cacheEnabled === false) {
+			return false;
+		}
+		if (opts != null && opts.cached === false) {
+			return false;
+		}
+		return _cache.hasOwnProperty(path) && _cache[path] != null;
 	}
 
 }());
