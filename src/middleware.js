@@ -82,6 +82,9 @@
 				middleware.setOptions(options);
 			}
 		}
+		if (middleware.setIo) {
+			middleware.setIo(io);
+		}
 		var rgx = getRegexp(extension);
 		hook.register(rgx, funcName, middleware);
 	}
