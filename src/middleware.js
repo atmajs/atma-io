@@ -18,30 +18,6 @@
 	// import middleware/json.js
 
 	
-	registerMiddleware({
-		'js': [
-			'condcomments:read',
-			'hint:read',
-			'uglify:write'
-		],
-		'css': [
-			'cssmin:write'
-		],
-		'coffee': [
-			'coffee:read',
-			'hint:read',
-			'uglify:write'
-		],
-		'yml': [
-			'yml:read',
-			'yml:write'
-		],
-		'json': [
-			'json:read',
-			'json:write'
-		]
-	});
-	
 	
 	function registerMiddleware(extensions, shouldCleanPrevious, settings){		
 		var hook = io.File.getHookHandler();
@@ -154,4 +130,31 @@
 		var rgx = '\\.' + ext + '($|\\?|#)';
 		return new RegExp(rgx);
 	}
+
+
+	
+	registerMiddleware({
+		'js': [
+			'condcomments:read',
+			'hint:read',
+			'uglify:write'
+		],
+		'css': [
+			'cssmin:write'
+		],
+		'coffee': [
+			'coffee:read',
+			'hint:read',
+			'uglify:write'
+		],
+		'yml': [
+			'yml:read',
+			'yml:write'
+		],
+		'json': [
+			'json:read',
+			'json:write'
+		]
+	});
+	
 }());
