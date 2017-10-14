@@ -58,7 +58,7 @@
 			throw Error('Invalid handler Definition in registerHook');
 		};
 		function registerHookByStr (hook, extension, handlerDefinition, appSettings) {
-			var parts = /^(.+)(:(read|write))?$/.exec(handlerDefinition),
+			var parts = /^(.+?)(:(read|write))?$/.exec(handlerDefinition),
 				handlerName = parts[1],
 				funcName = parts[3],
 				middleware = ensureMiddleware(handlerName, funcName);
