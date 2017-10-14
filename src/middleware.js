@@ -66,28 +66,47 @@
 			registerHook(hook, extension, handlerDefinition, appSettings);
 		};
 	}
-	
-	function registerHook(hook, extension, handlerDefinition, appSettings) {
-		var parts = handlerDefinition.split(':'),
-			handlerName = parts[0],
-			funcName = parts[1];
-
-		var middleware = ensureMiddleware(handlerName, funcName);	
-		if (middleware == null) {
-			return;
-		}
-		if (appSettings != null) {
-			var options = appSettings[handlerName];
-			if (options && middleware.setOptions) {
-				middleware.setOptions(options);
+	var registerHook;
+	(function(){
+		registerHook = function (hook, extension, handlerDefinition, appSettings) {
+			if (typeof handlerDefinition === 'string') {
+				registerHookByStr(hook, extension, handlerDefinition, appSettings);
+				return;
 			}
+			if (Array.isArray(handlerDefinition)) {
+				var midd = handlerDefinition[0],
+					funcName = handlerDefinition[1];
+				setMidd(hook, midd, extension, null, funcName, appSettings);
+				return;
+			}
+			throw Error('Invalid handler Definition in registerHook');
+		};
+		function registerHookByStr (hook, extension, handlerDefinition, appSettings) {
+			var parts = /^(.+)(:(read|write))?$/.exec(handlerDefinition),
+				handlerName = parts[1],
+				funcName = parts[3],
+				middleware = ensureMiddleware(handlerName, funcName);
+	
+			setMidd(hook, middleware, extension, handlerName, funcName, appSettings);
 		}
-		if (middleware.setIo) {
-			middleware.setIo(io);
+		function setMidd (hook, middleware, extension, handlerName, funcName, appSettings) {
+			if (middleware == null) {
+				return;
+			}
+			if (appSettings != null && handlerName != null) {
+				var options = appSettings[handlerName];
+				if (options && middleware.setOptions) {
+					middleware.setOptions(options);
+				}
+			}
+			if (middleware.setIo) {
+				middleware.setIo(io);
+			}
+			var rgx = getRegexp(extension);
+			hook.register(rgx, funcName, middleware);
 		}
-		var rgx = getRegexp(extension);
-		hook.register(rgx, funcName, middleware);
-	}
+	}());
+	
 	function unregisterHook(hook, extension) {
 		var rgx = getRegexp(extension);
 		hook.unregisterByRegexp(rgx);

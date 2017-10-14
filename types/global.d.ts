@@ -76,12 +76,12 @@ declare namespace io {
         /** Registers additional middlewares for the extension(s) */
         static registerExtensions (definition: {
             /** MIDD_NAME:method */
-            [extension: string]: string[]
+            [extension: string]: any[]
         })
         /** Set only middlewares for the extension(s) */
         static setMiddlewares (definition: {
             /** MIDD_NAME:method */
-            [extension: string]: string[]
+            [extension: string]: any[]
         })
     }
 
