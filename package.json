@@ -5,41 +5,67 @@
     "name": "Alex Kit",
     "email": "alex.kit@atmajs.com"
   },
-  "version": "0.2.40",
-  "main": "./lib/io.min.js",
-  "types": "./types/module.d.ts",
+  "version": "1.0.0",
+  "main": "./lib/io.js",
+  "types": "./lib/io.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/atmajs/atma-io.git"
   },
   "license": "MIT",
   "dependencies": {
-    "atma-class": "^1.1.69",
+    "atma-class": "^1.1.82",
     "atma-logger": ">0.0.81",
-    "atma-utils": "^0.1.6",
-    "clean-css": "~1.0.12",
-    "coffee-script": ">0.0.0",
-    "jshint": "~2.5.0",
-    "uglify-js": "^2.4.15",
-    "yamljs": "~0.1.0"
+    "atma-utils": "^0.1.13"
   },
   "devDependencies": {
-    "@types/node": "^8.0.14",
+    "@types/node": "^8.5.10",
+    "app-bundler": "0.0.40",
     "atma": "latest",
-    "atma-loader-babel": ">0.0.0"
+    "atma-loader-ts": "^1.0.0",
+    "dts-bundle": "^0.7.3"
   },
   "scripts": {
     "test": "atma test",
-    "build": "atma"
+    "build": "app-bundler && npm run build-dts",
+    "watch": "app-bundler --watch",
+    "server": "atma server",
+    "build-dts": "tsc -p . & atma custom tools/build-dts"
+  },
+  "app-bundler": {
+    "file": "src/export.ts",
+    "outputMain": "lib/io.js",
+    "package": {
+      "module": "commonjs",
+      "commonjs": {
+        "output": "simplified"
+      }
+    },
+    "defaultExtensions": {
+      "js": "ts"
+    },
+    "middlewares": {
+      "ts": [
+        "atma-loader-ts:read"
+      ]
+    },
+    "dynamicDependencies": [
+      "atma-logger",
+      "atma-utils",
+      "atma-class",
+      "fs",
+      "os",
+      "readline"
+    ]
   },
   "atma": {
     "plugins": [
-      "atma-loader-babel"
+      "atma-loader-ts"
     ],
     "settings": {
-      "atma-loader-babel": {
+      "atma-loader-ts": {
         "extensions": [
-          "es6",
+          "ts",
           "test"
         ]
       }

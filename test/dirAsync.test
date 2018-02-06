@@ -18,8 +18,9 @@ UTest({
 		Directory
 			.readFilesAsync('test/', '*.test')
 			.fail(assert.avoid())
-			.done(function(files){
-				
+			.done(function(dir){
+				let files = dir.files;
+
 				assert(files.length > 1);
 				eq_(hasFile(files, 'dir.test'), true);
 				eq_(hasFile(files, 'file.test'), true);
@@ -32,7 +33,8 @@ UTest({
 			Directory
 				.readFilesAsync('test/', '**.test')
 				.fail(assert.avoid())
-				.done(function(all){
+				.done(function(dir){
+					let all = dir.files;
 					assert(all.length > files.length);
 					
 					eq_(hasFile(files, 'config.js'), false);
@@ -45,8 +47,8 @@ UTest({
 			Directory
 				.readFilesAsync('test/')
 				.fail(assert.avoid())
-				.done(function(all){
-					
+				.done(function(dir){
+					let all = dir.files;
 					eq_(hasFile(all, 'config.js'), true);
 					eq_(hasFile(all, 'json.test'), true);
 					done();
