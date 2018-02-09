@@ -22,6 +22,7 @@
     "@types/node": "^8.5.10",
     "app-bundler": "0.0.40",
     "atma": "latest",
+    "atma-io-middleware-importer": "^1.1.30",
     "atma-loader-ts": "^1.0.0",
     "dts-bundle": "^0.7.3"
   },
