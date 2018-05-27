@@ -230,6 +230,7 @@ declare module 'io/FileHooks' {
         writeAsync?(file: File, config: any, done: Function): any;
     }
     export interface IFileMiddleware extends IHookObject {
+        name?: string;
         setOptions?(opts: any): void;
         setIo?(io: any): void;
         register?(io: any): void;

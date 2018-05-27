@@ -11,6 +11,7 @@ export interface IHookObject {
 }
 
 export interface IFileMiddleware extends IHookObject {
+	name?: string
 	setOptions? (opts: any): void
 	setIo? (io): void
 	register? (io): void
@@ -229,7 +230,16 @@ const AsyncHooks = Class.Collection(HookRunner, {
 				this.cb();
 				return;
 			}
-			var hook = this[this.index];
+			let hook = this[this.index];
+
+			//@FIX prevent same hook to be run twice
+			let name = hook.handler.name;
+			for (let i = this.index - 1; i > -1; i--) {
+				if (name && name === this[i].handler.name) {
+					this.next();
+					return;
+				}
+			}
 
 			hook.runAsync(
 				this.method,

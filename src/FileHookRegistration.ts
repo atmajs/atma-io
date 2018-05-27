@@ -94,6 +94,9 @@ function ensureMiddleware(name: string, funcName: 'read' | 'write'): IFileMiddle
         return null;
     }
     if (typeof middleware === 'object') {
+        if (middleware.name == null) {
+            middleware.name = name;
+        }
         if (middleware[funcName] == null && middleware[funcName + 'Async'] == null) {
             logger.error(
                 'Middleware not defined for action'
