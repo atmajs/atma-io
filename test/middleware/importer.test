@@ -8,7 +8,7 @@ io
     .register(/./, 'read', 'importer');
 
 UTest({
-    'read simple'() {
+    '!read simple'() {
 
         var source = io
             .File

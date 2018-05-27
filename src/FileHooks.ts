@@ -103,15 +103,14 @@ export class FileHooks {
 
 		if (typeof handler === 'string') {
 			let hook = File.middleware[handler] as IHook;
-			if (handler == null) {
+			if (hook == null) {
 				logger.error('<io.File> Hook handler not found', handler);
 				return this;
 			}
 
-			if (typeof handler !== 'function' && handler[method] == null) {
+			if (typeof hook !== 'function' && hook[method] == null) {				
 				logger.error(
-					'<io.File> Hook handler does not support `%s` method'
-					, method
+					`<io.File> Hook handler '${handler}' does not support '${method}' method`
 				);
 				return this;
 			}
@@ -236,8 +235,8 @@ const AsyncHooks = Class.Collection(HookRunner, {
 			let name = hook.handler.name;
 			for (let i = this.index - 1; i > -1; i--) {
 				if (name && name === this[i].handler.name) {
-					this.next();
-					return;
+					// this.next();
+					// return;
 				}
 			}
 
