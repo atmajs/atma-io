@@ -232,11 +232,15 @@ const AsyncHooks = Class.Collection(HookRunner, {
 			let hook = this[this.index];
 
 			//@FIX prevent same hook to be run twice
-			let name = hook.handler.name;
-			for (let i = this.index - 1; i > -1; i--) {
-				if (name && name === this[i].handler.name) {
-					// this.next();
-					// return;
+			if (typeof hook.handler !== 'function') {
+				let name = hook.handler.name;
+				if (name) {
+					for (let i = this.index - 1; i > -1; i--) {
+						if (name === this[i].handler.name) {
+							this.next();
+							return;
+						}
+					}
 				}
 			}
 
