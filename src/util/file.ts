@@ -83,12 +83,12 @@ export function file_exists(path) {
 	return __fs.existsSync(path) && __fs.statSync(path).isFile();
 };
 export function file_existsAsync(path, cb) {
-	__fs.stat(path, function (error, stat) {
-		var exists = stat && stat.isFile();
-		if (error && error.errno === 34) {
-			exists = false;
-			error = null;
-		}
+	__fs.stat(path, function (error, stat) {		
+		if (Errno.isNotFound(error)) {
+			cb(null, false);
+			return;
+		}		
+		let exists = stat && stat.isFile();
 		cb(error, exists);
 	});
 };
@@ -119,9 +119,9 @@ export function file_remove(path) {
 };
 export function file_removeAsync(path, cb) {
 	__fs.unlink(path, function (error) {
-		if (error && error.errno === 34)
+		if (Errno.isNotFound(error)) {
 			error = null;
-
+		}
 		cb(error);
 	});
 };
@@ -147,7 +147,7 @@ export function file_renameAsync(path, filename, cb) {
 };
 
 //= private
-var writeOpts = {
+const writeOpts = {
 	encoding: 'utf8'
 };
 
@@ -157,7 +157,7 @@ function getDir(path) {
 
 function copySync(from, to) {
 
-	var BUF_LENGTH = 64 * 1024,
+	let BUF_LENGTH = 64 * 1024,
 		buff = new Buffer(BUF_LENGTH),
 		bytesRead = 1,
 		fdr = __fs.openSync(from, "r"),
@@ -171,4 +171,12 @@ function copySync(from, to) {
 	}
 	__fs.closeSync(fdr);
 	return __fs.closeSync(fdw);
+}
+namespace Errno {
+	export function isNotFound(error) {
+		if (error != null && (error.errno === 34 || error.errno === -4058 || error.code === 'ENOENT')) {
+			return true;
+		}
+		return false;
+	}
 }
