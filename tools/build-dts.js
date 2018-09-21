@@ -1,7 +1,7 @@
 var dts = require('dts-bundle');
 
 dts.bundle({
-	name: 'io',
+	name: 'atma-io',
 	main: './ts-temp/export.d.ts',
 	out: './typings/index.d.ts'
 });

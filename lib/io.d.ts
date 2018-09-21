@@ -3,20 +3,20 @@
 //   ../atma-utils
 //   ../fs
 
-declare module 'io' {
+declare module 'atma-io' {
     import './middleware/Registration';
-    import { Io } from 'io/IIo';
+    import { Io } from 'atma-io/IIo';
     const _default: Io;
     export = _default;
 }
 
-declare module 'io/IIo' {
+declare module 'atma-io/IIo' {
     import { class_Uri } from 'atma-utils';
-    import { Watcher } from 'io/Watcher';
-    import { Directory } from 'io/Directory';
-    import { File } from 'io/File';
-    import { ExportsGlob } from 'io/ExportsGlob';
-    import { setSettings } from 'io/ExportsSetts';
+    import { Watcher } from 'atma-io/Watcher';
+    import { Directory } from 'atma-io/Directory';
+    import { File } from 'atma-io/File';
+    import { ExportsGlob } from 'atma-io/ExportsGlob';
+    import { setSettings } from 'atma-io/ExportsSetts';
     export interface Io {
         env: {
             currentDir: class_Uri;
@@ -30,18 +30,18 @@ declare module 'io/IIo' {
     }
 }
 
-declare module 'io/Watcher' {
+declare module 'atma-io/Watcher' {
     export const Watcher: {
         watch: (path: string, callback: (path?: string) => any) => void;
         unwatch: (path: string, callback?: Function) => void;
     };
 }
 
-declare module 'io/Directory' {
+declare module 'atma-io/Directory' {
     import { class_Uri } from 'atma-utils';
-    import { dir_symlink } from 'io/util/dir';
-    import { File } from 'io/File';
-    import { IDeferred } from 'io/IDeferred';
+    import { dir_symlink } from 'atma-io/util/dir';
+    import { File } from 'atma-io/File';
+    import { IDeferred } from 'atma-io/IDeferred';
     export class Directory {
         uri: class_Uri;
         files: File[];
@@ -91,12 +91,12 @@ declare module 'io/Directory' {
     }
 }
 
-declare module 'io/File' {
+declare module 'atma-io/File' {
     import { class_Uri } from 'atma-utils';
-    import { IDeferred } from 'io/IDeferred';
+    import { IDeferred } from 'atma-io/IDeferred';
     import { Stats } from 'fs';
-    import { FileFactory } from 'io/FileFactory';
-    import { FileHooks, IFileMiddleware } from 'io/FileHooks';
+    import { FileFactory } from 'atma-io/FileFactory';
+    import { FileHooks, IFileMiddleware } from 'atma-io/FileHooks';
     export class File {
         uri: class_Uri;
         content: Buffer | string;
@@ -165,11 +165,11 @@ declare module 'io/File' {
     }
 }
 
-declare module 'io/ExportsGlob' {
-    import { glob_matchPath } from 'io/util/glob';
-    import { Directory } from 'io/Directory';
-    import { File } from 'io/File';
-    import { IDeferred } from 'io/IDeferred';
+declare module 'atma-io/ExportsGlob' {
+    import { glob_matchPath } from 'atma-io/util/glob';
+    import { Directory } from 'atma-io/Directory';
+    import { File } from 'atma-io/File';
+    import { IDeferred } from 'atma-io/IDeferred';
     export const ExportsGlob: {
         matchPath: typeof glob_matchPath;
         readFiles(path: string): File[];
@@ -178,13 +178,13 @@ declare module 'io/ExportsGlob' {
     };
 }
 
-declare module 'io/ExportsSetts' {
+declare module 'atma-io/ExportsSetts' {
     export function setSettings(settings: {
         extensions?: any;
     }): void;
 }
 
-declare module 'io/util/dir' {
+declare module 'atma-io/util/dir' {
     export function dir_ensure(path: any): any;
     export function dir_ensureAsync(path: any, cb: any): void;
     export function dir_exists(path: any): boolean;
@@ -196,7 +196,7 @@ declare module 'io/util/dir' {
     export function dir_removeAsync(path: any, cb: any): void;
 }
 
-declare module 'io/IDeferred' {
+declare module 'atma-io/IDeferred' {
     export interface IDeferred<T> extends PromiseLike<T> {
         done(done: (...args: any[]) => void | IDeferred<any>): this;
         fail(fail: (error: any | Error) => void): this;
@@ -212,7 +212,7 @@ declare module 'io/IDeferred' {
     }
 }
 
-declare module 'io/FileFactory' {
+declare module 'atma-io/FileFactory' {
     export class FileFactory {
         handlers: any[];
         registerHandler(regexp: RegExp, handler: any): void;
@@ -221,8 +221,8 @@ declare module 'io/FileFactory' {
     }
 }
 
-declare module 'io/FileHooks' {
-    import { File } from 'io/File';
+declare module 'atma-io/FileHooks' {
+    import { File } from 'atma-io/File';
     export interface IHookObject {
         read(file: File, config: any): any;
         readAsync?(file: File, config: any, done: Function): any;
@@ -267,7 +267,7 @@ declare module 'io/FileHooks' {
     }
 }
 
-declare module 'io/util/glob' {
+declare module 'atma-io/util/glob' {
     export function glob_getCalculatedPath(path: any, glob: any): any;
     export function glob_matchPath(pattern: any, path: any): boolean;
     export function glob_parsePatterns(mix: string | RegExp | (string | RegExp)[], out?: GlobRegExp[]): GlobRegExp[];
