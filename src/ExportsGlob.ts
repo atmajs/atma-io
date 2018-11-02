@@ -10,7 +10,7 @@ export const ExportsGlob = {
         var strict = glob_getStrictPath(path),
             rel = glob_getRelativePath(path);
             
-        return new Directory(strict).readFiles(rel).files;
+        return new Directory(strict).readFiles(rel);
     },
     read (path: string): (File | Directory)[] {
         var strict = glob_getStrictPath(path),

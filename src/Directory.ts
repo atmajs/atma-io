@@ -8,6 +8,7 @@ import { cli_prompt } from './util/cli';
 import * as __fs from 'fs';
 import { Watcher } from './Watcher';
 import { IDeferred } from './IDeferred';
+import { stack_formatCaller } from './util/stack';
 
 export class Directory {
     uri: class_Uri
@@ -67,21 +68,33 @@ export class Directory {
     static ensureAsync(path: string): IDeferred<Directory> {
         return new Directory(path).ensureAsync();
     }
-    readFiles(pattern?: string | RegExp | (string | RegExp)[], exclude?: string | RegExp | (string | RegExp)[]): this {
+    readFiles(pattern?: string | RegExp | (string | RegExp)[], exclude?: string | RegExp | (string | RegExp)[]): File[] {
 
-        var patterns = glob_parsePatterns(pattern),
-            excludes = glob_parsePatterns(exclude),
-            that = this
+        let patterns = glob_parsePatterns(pattern),
+            excludes = glob_parsePatterns(exclude)
             ;
 
-        this.files = dir_files(this.uri.toLocalDir(), patterns, excludes)
-            .map(function (x) {
-                return new File(that.uri.combine(x));
+        let arr = this.files = dir_files(
+            this.uri.toLocalDir()
+            , patterns
+            , excludes
+        )
+            .map(path => {
+                return new File(this.uri.combine(path));
             });
 
-        return this;
+        
+        /** Obsolete (Backward compatible: Directory was returned) */
+        Object.defineProperty(arr, 'files', {
+            get () {
+                console.log('Warn: obsolete. io.Directory::readFiles returns now the array of files');
+                stack_formatCaller();
+                return arr;
+            }
+        });
+        return arr;
     }
-    static readFiles(path: string, pattern?: string | RegExp | (string | RegExp)[], exclude?: string | RegExp | (string | RegExp)[]): Directory {
+    static readFiles(path: string, pattern?: string | RegExp | (string | RegExp)[], exclude?: string | RegExp | (string | RegExp)[]): File[] {
         return new Directory(path).readFiles(pattern, exclude);
     }
     read (pattern?: string | RegExp | (string | RegExp)[], exclude?: string | RegExp | (string | RegExp)[]): (File | Directory)[] {

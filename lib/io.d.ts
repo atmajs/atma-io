@@ -54,8 +54,8 @@ declare module 'atma-io/Directory' {
         static ensure(path: string): Directory;
         ensureAsync(): IDeferred<Directory>;
         static ensureAsync(path: string): IDeferred<Directory>;
-        readFiles(pattern?: string | RegExp | (string | RegExp)[], exclude?: string | RegExp | (string | RegExp)[]): this;
-        static readFiles(path: string, pattern?: string | RegExp | (string | RegExp)[], exclude?: string | RegExp | (string | RegExp)[]): Directory;
+        readFiles(pattern?: string | RegExp | (string | RegExp)[], exclude?: string | RegExp | (string | RegExp)[]): File[];
+        static readFiles(path: string, pattern?: string | RegExp | (string | RegExp)[], exclude?: string | RegExp | (string | RegExp)[]): File[];
         read(pattern?: string | RegExp | (string | RegExp)[], exclude?: string | RegExp | (string | RegExp)[]): (File | Directory)[];
         static read(path: string, pattern?: string | RegExp | (string | RegExp)[], exclude?: string | RegExp | (string | RegExp)[]): (File | Directory)[];
         readFilesAsync(pattern?: string | RegExp | (string | RegExp)[], exclude?: string | RegExp | (string | RegExp)[]): IDeferred<this>;
