@@ -14,5 +14,6 @@ export interface Io {
     glob: typeof ExportsGlob
     settings: typeof setSettings
     File: typeof File
+    Uri: typeof class_Uri
     Directory: typeof Directory
 }
