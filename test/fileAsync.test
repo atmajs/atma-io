@@ -1,4 +1,4 @@
-var path_File = 'test/file.test',
+var path_File = 'test/assets/file.txt',
 	path_Copy = 'test/bin/copied.js',
 	path_Write = 'test/bin/write.txt',
 	File = IO.File;
@@ -51,10 +51,10 @@ UTest({
 				});
 		}
 		
-		this.checkRead(path_File, "'test/bin/copied.js'", done);
+		this.checkRead(path_File, "Lorem", done);
 	},
 	'read - 2': function(done){
-		this.checkRead('/' + path_File, "'test/bin/copied.js'", done);
+		this.checkRead('/' + path_File, "Lorem", done);
 	},
 	'write': function(done){
 		this.checkWrite = function(path, content, done){

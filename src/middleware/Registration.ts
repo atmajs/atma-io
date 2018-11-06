@@ -10,6 +10,7 @@ if (global.io && global.io.File && typeof global.io.File.getFactory === 'functio
     let globalFile = global.io.File as (typeof File);
     File.registerFactory(globalFile.getFactory());
     File.registerHookHandler(globalFile.getHookHandler());
+    File.middleware = globalFile.middleware;
 
 } else {
 

@@ -1,21 +1,18 @@
+import { File } from '../../src/File'
+import '../../src/middleware/Registration'
 
-include
-    .inject('/lib/io.js')
-    .done(function(){
+const file = new File('test/bin/json.json');
+
+UTest({
+    'write and read' () {
+        const time = Date.now() + '';
         
-        var file = new io.File('test/middleware/data/json.json');
-        UTest({
-            'read': function(){
-                
-                eq(typeof file.read().foo, 'string');
-            },
-            'write': function(){
-                var time = Date.now() + '';
-                
-                file.write({foo: time})
-                
-                delete file.content
-                eq(file.read().foo, time);
-            }
-        })
-    })
+        file.write({ foo: time } as any)
+        
+        delete file.content
+
+        const json = file.read() as any;
+
+        eq_(json.foo, time);
+    }
+})
