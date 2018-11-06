@@ -181,13 +181,11 @@ export class FileHooks {
 		this.hooks = [];
 		return this;
 	}
-
 	getHooksForPath(path: string, method: 'read' | 'write') {
-		return this.hooks
-			.filter(function (x) {
-				return x.canHandle(path, method);
-			})
-			.sort(function (a, b) {
+        return this
+            .hooks
+			.filter(x => x.canHandle(path, method))
+			.sort((a, b) => {
 				var az = a.zIndex,
 					bz = b.zIndex;
 				if (az === bz)

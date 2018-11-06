@@ -31,7 +31,7 @@ namespace Registration {
         };
     }
 
-    function registerHook(hook, extension, handlerDefinition: string | [string, string], appSettings) {
+    function registerHook(hook, extension, handlerDefinition: string | [string | IFileMiddleware, string], appSettings) {
         if (typeof handlerDefinition === 'string') {
             registerHookByStr(hook, extension, handlerDefinition, appSettings);
             return;
