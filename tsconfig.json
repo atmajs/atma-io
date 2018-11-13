@@ -9,8 +9,7 @@
     "outDir": "ts-temp",
     "typeRoots": [
       "./node_modules/@types",
-      "./typings/",
-      "./typings-other/"
+      "./typings/"
     ],
     "types": [
       "atma-class",

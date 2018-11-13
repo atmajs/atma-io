@@ -1,4 +1,4 @@
-var dts = require('dts-bundle');
+const dts = require('dts-bundle');
 
 dts.bundle({
 	name: 'atma-io',
@@ -6,4 +6,10 @@ dts.bundle({
 	out: './typings/index.d.ts'
 });
 
-io.File.copyTo('./ts-temp/typings/index.d.ts', './lib/io.d.ts');
+
+let content = io.File.read('./ts-temp/typings/index.d.ts', {skipHooks: true});
+
+content = content.replace(/^import ['"][^\n]+/gm, '');
+content = content.replace(`export = _default;`, `export = _default; export as namespace io;`);
+
+io.File.write('./lib/io.d.ts', content, { skipHooks: true });

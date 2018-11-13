@@ -7,7 +7,7 @@ declare module 'atma-io' {
     import './middleware/Registration';
     import { Io } from 'atma-io/IIo';
     const _default: Io;
-    export = _default;
+    export = _default; export as namespace io;
 }
 
 declare module 'atma-io/IIo' {
