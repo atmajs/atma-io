@@ -1,33 +1,29 @@
 import { File } from './File'
 import { logger, Class } from './global'
+import { FileHookRegistration } from './FileHookRegistration';
 
-export interface IHookObject {
-
-	read(file: File, config: any)
-	readAsync?(file: File, config: any, done: Function)
-
-	write(file: File, config: any)
-	writeAsync?(file: File, config: any, done: Function)
-}
-
-export interface IFileMiddleware extends IHookObject {
+export interface IFileMiddleware {
 	name?: string
 	setOptions? (opts: any): void
 	setIo? (io): void
-	register? (io): void
+    register? (io): void
+    
+    read?(file: File, config: any)
+	readAsync?(file: File, config: any, done: Function)
+
+	write?(file: File, config: any)
+	writeAsync?(file: File, config: any, done: Function)
 }
 
 export interface IHookFunction {
 	(file: File, config: any): void | any
 }
 
-export declare type IHook = IHookObject | IHookFunction
-
 export class HookRunner {
 	constructor(
 		public regexp: RegExp,
 		public method: 'read' | 'write',
-		public handler: IHook,
+		public handler: IFileMiddleware | IHookFunction,
 		public zIndex: number) {
 	}
 
@@ -85,9 +81,9 @@ export class FileHooks {
 	hooks: HookRunner[] = []
 
 	register(
-		mix: RegExp | { regexp: RegExp, method: 'read' | 'write', handler: string | IHook | IFileMiddleware, zIndex?: number },
+		mix: RegExp | { regexp: RegExp, method: 'read' | 'write', handler: string | IFileMiddleware, zIndex?: number },
 		method: 'read' | 'write',
-		handler: string | IHook,
+		handler: string | IFileMiddleware,
 		zIndex?: number) {
 
 		let regexp: RegExp;
@@ -102,20 +98,11 @@ export class FileHooks {
 		}
 
 		if (typeof handler === 'string') {
-			let hook = File.middleware[handler] as IHook;
+			let hook = FileHookRegistration.ensureMiddleware(handler, method);
 			if (hook == null) {
-				logger.error('<io.File> Hook handler not found', handler);
-				return this;
-			}
-
-			if (typeof hook !== 'function' && hook[method] == null) {				
-				logger.error(
-					`<io.File> Hook handler '${handler}' does not support '${method}' method`
-				);
 				return this;
 			}
 			handler = hook;
-
 		}
 
 		if (this.contains(method, handler, regexp) === false) {
@@ -123,7 +110,7 @@ export class FileHooks {
 		}
 		return this;
 	}
-	contains(method: 'read' | 'write', handler: IHook, regexp: RegExp) {
+	contains(method: 'read' | 'write', handler: IFileMiddleware, regexp: RegExp) {
 		var str = regexp && regexp.toString() || null;
 		var imax = this.hooks.length;
 		var i = -1;
@@ -142,7 +129,7 @@ export class FileHooks {
 		}
 		return false;
 	}
-	unregister(method: 'read' | 'write', handler: IHook | string) {
+	unregister(method: 'read' | 'write', handler: IFileMiddleware | string) {
 		if (typeof handler === 'string') {
 			handler = File.middleware[handler];
 		}

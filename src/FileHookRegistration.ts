@@ -18,6 +18,9 @@ export const FileHookRegistration = {
             }
             arr_each(handlers, Registration.registerHookDelegate(hook, ext, settings));
         }
+    },
+    ensureMiddleware (name: string, method: 'read' | 'write'): IFileMiddleware {
+        return ensureMiddleware(name, method);
     }
 };
 
@@ -75,7 +78,7 @@ function unregisterHook(hook: FileHooks, extension: string) {
     hook.unregisterByRegexp(rgx);
 }
 
-function ensureMiddleware(name: string, funcName: 'read' | 'write'): IFileMiddleware {
+function ensureMiddleware(name: string, funcName?: 'read' | 'write'): IFileMiddleware {
     let middleware = File.middleware[name];
     if (middleware == null) {
         try {
@@ -97,7 +100,7 @@ function ensureMiddleware(name: string, funcName: 'read' | 'write'): IFileMiddle
         if (middleware.name == null) {
             middleware.name = name;
         }
-        if (middleware[funcName] == null && middleware[funcName + 'Async'] == null) {
+        if (funcName != null && middleware[funcName] == null && middleware[funcName + 'Async'] == null) {
             logger.error(
                 'Middleware not defined for action'
                 , funcName

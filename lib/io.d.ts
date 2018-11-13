@@ -224,28 +224,25 @@ declare module 'atma-io/FileFactory' {
 
 declare module 'atma-io/FileHooks' {
     import { File } from 'atma-io/File';
-    export interface IHookObject {
-        read(file: File, config: any): any;
-        readAsync?(file: File, config: any, done: Function): any;
-        write(file: File, config: any): any;
-        writeAsync?(file: File, config: any, done: Function): any;
-    }
-    export interface IFileMiddleware extends IHookObject {
+    export interface IFileMiddleware {
         name?: string;
         setOptions?(opts: any): void;
         setIo?(io: any): void;
         register?(io: any): void;
+        read?(file: File, config: any): any;
+        readAsync?(file: File, config: any, done: Function): any;
+        write?(file: File, config: any): any;
+        writeAsync?(file: File, config: any, done: Function): any;
     }
     export interface IHookFunction {
         (file: File, config: any): void | any;
     }
-    export type IHook = IHookObject | IHookFunction;
     export class HookRunner {
         regexp: RegExp;
         method: 'read' | 'write';
-        handler: IHook;
+        handler: IFileMiddleware | IHookFunction;
         zIndex: number;
-        constructor(regexp: RegExp, method: 'read' | 'write', handler: IHook, zIndex: number);
+        constructor(regexp: RegExp, method: 'read' | 'write', handler: IFileMiddleware | IHookFunction, zIndex: number);
         run(method: 'read' | 'write', file: File, config?: any): void;
         runAsync(method: any, file: any, config: any, done: any): void;
         canHandle(path: string, method: 'read' | 'write'): boolean;
@@ -255,11 +252,11 @@ declare module 'atma-io/FileHooks' {
         register(mix: RegExp | {
             regexp: RegExp;
             method: 'read' | 'write';
-            handler: string | IHook | IFileMiddleware;
+            handler: string | IFileMiddleware;
             zIndex?: number;
-        }, method: 'read' | 'write', handler: string | IHook, zIndex?: number): this;
-        contains(method: 'read' | 'write', handler: IHook, regexp: RegExp): boolean;
-        unregister(method: 'read' | 'write', handler: IHook | string): void;
+        }, method: 'read' | 'write', handler: string | IFileMiddleware, zIndex?: number): this;
+        contains(method: 'read' | 'write', handler: IFileMiddleware, regexp: RegExp): boolean;
+        unregister(method: 'read' | 'write', handler: IFileMiddleware | string): void;
         unregisterByRegexp(regexp: RegExp): void;
         trigger(method: 'read' | 'write', file: File, config?: any): void;
         triggerAsync(method: 'read' | 'write', file: File, config: any, cb: Function): void;
