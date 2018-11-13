@@ -9,7 +9,6 @@ dts.bundle({
 
 let content = io.File.read('./ts-temp/typings/index.d.ts', {skipHooks: true});
 
-content = content.replace(/^import ['"][^\n]+/gm, '');
-content = content.replace(`export = _default;`, `export = _default; export as namespace io;`);
+content = content.replace(/^\s*import ['"][^\n]+/gm, '');
 
 io.File.write('./lib/io.d.ts', content, { skipHooks: true });

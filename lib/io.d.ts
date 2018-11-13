@@ -4,10 +4,9 @@
 //   ../fs
 
 declare module 'atma-io' {
-    import './middleware/Registration';
     import { Io } from 'atma-io/IIo';
     const _default: Io;
-    export = _default; export as namespace io;
+    export = _default;
 }
 
 declare module 'atma-io/IIo' {

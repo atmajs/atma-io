@@ -5,7 +5,7 @@
         "name": "Alex Kit",
         "email": "alex.kit@atmajs.com"
     },
-    "version": "1.1.5",
+    "version": "1.1.6",
     "main": "./lib/io.js",
     "types": "./lib/io.d.ts",
     "repository": {
@@ -15,12 +15,13 @@
     "license": "MIT",
     "dependencies": {
         "atma-class": "^1.1.82",
+        "atma-io-middleware-uglify": "^1.1.24",
         "atma-logger": ">0.0.81",
         "atma-utils": "^0.1.13"
     },
     "devDependencies": {
         "@types/node": "^8.5.10",
-        "app-bundler": "0.0.40",
+        "app-bundler": "0.0.58",
         "atma": "^0.11.10",
         "atma-io-middleware-importer": "^1.1.32",
         "atma-loader-ts": "^1.0.0",
@@ -30,34 +31,52 @@
         "test": "atma test",
         "build": "app-bundler && npm run build-dts",
         "watch": "app-bundler --watch",
+        "build-io": "app-bundler --app io",
         "server": "atma server",
         "build-dts": "tsc -p . & atma custom tools/build-dts"
     },
     "app-bundler": {
-        "file": "src/export.ts",
-        "outputMain": "lib/io.js",
-        "package": {
-            "module": "commonjs",
-            "commonjs": {
-                "output": "simplified"
+        "apps": {
+            "io": {
+                "outputMain": "lib/io.js"
+            },
+            "minified": {
+                "outputMain": "lib/io.min.js",
+                "middlewares": {
+                    "ts": [
+                        "atma-loader-ts:read"
+                    ],
+                    "js": [
+                        "atma-io-middleware-uglify:write"
+                    ]
+                }
             }
         },
-        "defaultExtensions": {
-            "js": "ts"
-        },
-        "middlewares": {
-            "ts": [
-                "atma-loader-ts:read"
+        "common": {
+            "file": "src/export.ts",
+            "package": {
+                "module": "commonjs",
+                "commonjs": {
+                    "output": "simplified"
+                }
+            },
+            "defaultExtensions": {
+                "js": "ts"
+            },
+            "middlewares": {
+                "ts": [
+                    "atma-loader-ts:read"
+                ]
+            },
+            "dynamicDependencies": [
+                "atma-logger",
+                "atma-utils",
+                "atma-class",
+                "fs",
+                "os",
+                "readline"
             ]
-        },
-        "dynamicDependencies": [
-            "atma-logger",
-            "atma-utils",
-            "atma-class",
-            "fs",
-            "os",
-            "readline"
-        ]
+        }
     },
     "atma": {
         "plugins": [
@@ -77,6 +96,7 @@
                 ],
                 "typescript": {
                     "compilerOptions": {
+                        "sourceMap": false,
                         "#if (TEST)": {
                             "module": "AMD"
                         },

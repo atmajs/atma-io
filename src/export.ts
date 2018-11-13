@@ -24,6 +24,5 @@ if (global.io == null) {
     obj_extend(global.io, io);
 }
 
-
 export = io as Io;
 
