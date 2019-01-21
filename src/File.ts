@@ -1,6 +1,20 @@
 import { class_Uri } from 'atma-utils'
 import { path_getUri } from './util/path';
-import { file_read, file_readAsync, file_save, file_saveAsync, file_copy, file_copyAsync, file_exists, file_existsAsync, file_renameAsync, file_rename, file_remove, file_removeAsync } from './util/file';
+import { 
+    transport_read, 
+    transport_readAsync, 
+    transport_save, 
+    transport_saveAsync, 
+    transport_copy, 
+    transport_copyAsync, 
+    transport_exists, 
+    transport_existsAsync, 
+    transport_renameAsync, 
+    transport_rename, 
+    transport_remove, 
+    transport_removeAsync 
+} from './transport/transport';
+
 import { Class, logger } from './global'
 import { log_info } from './util/logger'
 import { fs_getStat } from './util/filesystem-util'
@@ -11,6 +25,7 @@ import { Stats } from 'fs'
 import { FileFactory } from './FileFactory'
 import { FileHooks, IFileMiddleware } from './FileHooks';
 import { FileHookRegistration } from './FileHookRegistration';
+import { ITransport, CustomTransport } from './transport/custom';
 
 let _cache = {},
 	_cacheEnabled = true,
@@ -23,9 +38,9 @@ export class File {
 	sourceMap?: string
 
 	constructor(path: string | class_Uri, opts?: IFileSettings) {
-		this.uri = path_getUri(path);
-
-		path = this.uri.toLocalFile();
+		this.uri = path_getUri(path);        
+        
+        path = uri_toPath(this.uri);
 
 		if (isFromCache(path, opts))
 			return _cache[path];
@@ -45,10 +60,10 @@ export class File {
 			return this.content;
 
 		var setts = getSetts(mix),
-			path = this.uri.toLocalFile()
+			path = uri_toPath(this.uri)
 			;
 
-		this.content = file_read(path, setts.encoding);
+		this.content = transport_read(path, setts.encoding);
 		processHooks('read', this, setts, mix);
 
 		return this.content;
@@ -64,7 +79,7 @@ export class File {
 			}
 
 			var setts = getSetts(mix);
-			file_readAsync(
+			transport_readAsync(
 				path
 				, setts.encoding
 				, onReadComplete
@@ -106,11 +121,11 @@ export class File {
 			return this;
 		}
 
-		var path = this.uri.toLocalFile(),
+		var path = uri_toPath(this.uri),
 			setts = getSetts(mix);
 
 		processHooks('write', this, setts, mix);
-		file_save(path, this.content, setts);
+		transport_save(path, this.content, setts);
 		return this;
 	}
 	static write(path: string, content: string | Buffer, mix?: IOperationOptions) {
@@ -134,7 +149,7 @@ export class File {
 				, onHookComplete);
 
 			function onHookComplete() {
-				file_saveAsync(
+				transport_saveAsync(
 					path
 					, file.content
 					, setts
@@ -147,11 +162,11 @@ export class File {
 	}
 	copyTo(target: string): this {
 
-		let from = this.uri.toLocalFile(),
+		let from = uri_toPath(this.uri),
 			uri = path_getUri(target),
 			to = uri.file
-				? uri.toLocalFile()
-				: uri.combine(this.uri.file).toLocalFile()
+				? uri_toPath(uri)
+				: uri_toPath(uri.combine(this.uri.file))
 			;
 		let _from = (from
 			.substr(-25)
@@ -163,7 +178,7 @@ export class File {
 			;
 
 		log_info('copy:', _from, _to);
-		file_copy(from, to);
+		transport_copy(from, to);
 		return this;
 	}
 	static copyTo(path: string, target: string) {
@@ -172,9 +187,9 @@ export class File {
 
 	copyToAsync(target: string): IDeferred<this> {
 		return dfr_factory(this, function (dfr, file, path) {
-			file_copyAsync(
+			transport_copyAsync(
 				path,
-				path_getUri(target).toLocalFile(),
+				uri_toPath(path_getUri(target)),
 				dfr_pipeDelegate(dfr)
 			);
 		});
@@ -183,14 +198,14 @@ export class File {
 		return new File(path).copyToAsync(target);
 	}
 	exists(): boolean {
-		return file_exists(this.uri.toLocalFile());
+		return transport_exists(uri_toPath(this.uri));
 	}
 	static exists(path: string) {
 		return new File(path).exists();
 	}
 	existsAsync(): IDeferred<boolean> {
 		return dfr_factory(this, function (dfr, file, path) {
-			file_existsAsync(
+			transport_existsAsync(
 				path,
 				dfr_pipeDelegate(dfr)
 			);
@@ -200,14 +215,14 @@ export class File {
 		return new File(path).existsAsync();
 	}
 	rename(fileName: string): boolean {
-		return file_rename(this.uri.toLocalFile(), fileName);
+		return transport_rename(uri_toPath(this.uri), fileName);
 	}
 	static rename(path: string, fileName: string): boolean {
 		return new File(path).rename(fileName);
 	}
 	renameAsync(filename): IDeferred<boolean> {
 		return dfr_factory(this, function (dfr, file, path) {
-			file_renameAsync(
+			transport_renameAsync(
 				path,
 				filename,
 				dfr_pipeDelegate(dfr)
@@ -218,14 +233,14 @@ export class File {
 		return new File(path).renameAsync(fileName);
 	}
 	remove(): boolean {
-		return file_remove(this.uri.toLocalFile());
+		return transport_remove(uri_toPath(this.uri));
 	}
 	static remove(path: string): boolean {
 		return new File(path).remove();
 	}
 	removeAsync(): IDeferred<boolean> {
 		return dfr_factory(this, function (dfr, file, path) {
-			file_removeAsync(
+			transport_removeAsync(
 				path,
 				dfr_pipeDelegate(dfr)
 			);
@@ -267,20 +282,20 @@ export class File {
 	}
 
 	watch(callback: (path?: string) => void | any): void {
-		Watcher.watch(this.uri.toLocalFile(), callback);
+		Watcher.watch(uri_toPath(this.uri), callback);
 	}
 	static watch(path: string, callback: (path?: string) => void | any): void {
 		new File(path).watch(callback);
 	}
 	unwatch(callback?): void {
 		// - callback: if undefined remove all listeners
-		Watcher.unwatch(this.uri.toLocalFile(), callback);
+		Watcher.unwatch(uri_toPath(this.uri), callback);
 	}
 	static unwatch(path: string, callback?): void {
 		new File(path).unwatch(callback);
 	}
 	stats(): Stats {
-		return fs_getStat(this.uri.toLocalFile());
+		return fs_getStat(uri_toPath(this.uri));
 	}
 	static stats(path: string) {
 		return new File(path).stats();
@@ -298,15 +313,15 @@ export class File {
 
 		var path;
 		if (typeof mix === 'string') {
-			path = path_getUri(mix).toLocalFile();
+			path = uri_toPath(path_getUri(mix));
 			if (_cache.hasOwnProperty(path) === false && mix.charCodeAt(0) === 47) {
 				path = class_Uri.combine(Env.cwd, mix);
 			}
 		} else if (mix.uri) {
-			path = mix.uri.toLocalFile();
+			path = uri_toPath(mix.uri);
 
 		} else if (mix.toLocalFile) {
-			path = mix.toLocalFile();
+			path = uri_toPath(mix);
 		}
 
 		if (_cache.hasOwnProperty(path) === false) {
@@ -333,7 +348,10 @@ export class File {
 	}
 	static getHookHandler() {
 		return _hooks;
-	}
+    }
+    static registerTransport(protocol: string, transport: ITransport) {
+        CustomTransport.register(protocol, transport);
+    }
 
 	static get Factory() {
 		return _factory
@@ -359,7 +377,7 @@ export class File {
 
 function dfr_factory<T>(file: File, fn: (dfr: Class.Deferred, file: File, path: string) => any | void, onError?: Function) {
 	var dfr = new Class.Deferred;
-	var path = file.uri.toLocalFile();
+	var path = uri_toPath(file.uri);
 	if (onError != null) {
 		dfr.fail(function () {
 			onError(file, path);
@@ -376,6 +394,12 @@ function dfr_pipeDelegate(dfr) {
 		}
 		dfr.resolve(...args);
 	}
+}
+function uri_toPath (uri: class_Uri) {
+    if (uri.protocol == null || uri.protocol === 'file') {
+        return uri.toLocalFile();
+    }    
+    return uri.toString();
 }
 function getSetts(mix, defaults?) {
 	var setts = defaults || {

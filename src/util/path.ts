@@ -1,6 +1,14 @@
 import { io } from '../global'
 import { class_Uri } from 'atma-utils'
 
+export function path_getProtocol (path: string) {
+    let i = path.indexOf(':');
+    if (i === -1 || path[i + 1] !== '/' || path[i + 2] !== '/') {
+        return null;
+    }
+    return path.substring(0, i);
+}
+
 export function path_getUri(path: string | class_Uri, base?: string){
 	if (typeof path !== 'string')
 		path = path.toString();

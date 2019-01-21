@@ -97,6 +97,7 @@ declare module 'atma-io/File' {
     import { Stats } from 'fs';
     import { FileFactory } from 'atma-io/FileFactory';
     import { FileHooks, IFileMiddleware } from 'atma-io/FileHooks';
+    import { ITransport } from 'atma-io/transport/custom';
     export class File {
         uri: class_Uri;
         content: Buffer | string;
@@ -143,6 +144,7 @@ declare module 'atma-io/File' {
         static getFactory(): FileFactory;
         static registerHookHandler(hook: FileHooks): void;
         static getHookHandler(): FileHooks;
+        static registerTransport(protocol: string, transport: ITransport): void;
         static readonly Factory: FileFactory;
         static readonly Middleware: FileHooks;
         static processHooks(method: any, file: any, config: any, onComplete: any): void;
@@ -261,6 +263,30 @@ declare module 'atma-io/FileHooks' {
         triggerAsync(method: 'read' | 'write', file: File, config: any, cb: Function): void;
         clear(): this;
         getHooksForPath(path: string, method: 'read' | 'write'): HookRunner[];
+    }
+}
+
+declare module 'atma-io/transport/custom' {
+    export interface ITransport {
+        save(path: string, content: any, options?: any): void;
+        saveAsync(path: any, content: any, options: any, cb: any): void;
+        copy(from: any, to: any): any;
+        copyAsync(from: any, to: any, cb: (err: Error) => void): any;
+        exists(path: any): boolean;
+        existsAsync(path: any, cb: (err: Error, x: boolean) => void): any;
+        read(path: any, encoding?: any): string | Buffer;
+        readAsync(path: any, encoding: any, cb: (err: Error, x: string | Buffer) => void): any;
+        remove(path: any): boolean;
+        removeAsync(path: any, cb: (err: Error) => void): any;
+        rename(path: any, filename: any): any;
+        renameAsync(path: any, filename: any, cb: any): any;
+    }
+    export const Repository: {
+        [protocol: string]: ITransport;
+    };
+    export class CustomTransport {
+        static register(protocol: string, transport: ITransport): void;
+        static tryForPath(path: string): ITransport;
     }
 }
 
