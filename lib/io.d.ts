@@ -286,7 +286,7 @@ declare module 'atma-io/transport/custom' {
     };
     export class CustomTransport {
         static register(protocol: string, transport: ITransport): void;
-        static tryForPath(path: string): ITransport;
+        static get(protocol: string): ITransport;
     }
 }
 
