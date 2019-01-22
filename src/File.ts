@@ -50,8 +50,10 @@ export class File {
 			var Handler = factory && factory.resolveHandler(this.uri);
 			if (Handler != null)
 				return new Handler(this.uri, opts);
-		}
-
+        }
+        if (opts != null && opts.cached === false) {
+            return this;
+        }
 		return (_cache[path] = this);
 	}
 	read(mix?: IOperationOptions): string | Buffer {
