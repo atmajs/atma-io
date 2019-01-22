@@ -156,7 +156,7 @@ declare module 'atma-io/File' {
     }
     export interface IFileSettings {
         cached?: boolean;
-        factory: FileFactory;
+        factory?: FileFactory;
     }
     export interface IOperationOptions {
         skipHooks?: boolean;

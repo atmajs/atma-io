@@ -42,19 +42,20 @@ export class File {
         
         path = uri_toPath(this.uri);
 
-		if (isFromCache(path, opts))
-			return _cache[path];
-
+		if (isFromCache(path, opts)) {
+            return _cache[path];
+        }
 		if ((this as any).__proto__ === File.prototype) {
 			var factory = opts && opts.factory || _factory;
 			var Handler = factory && factory.resolveHandler(this.uri);
 			if (Handler != null)
 				return new Handler(this.uri, opts);
         }
-        if (opts != null && opts.cached === false) {
-            return this;
-        }
-		return (_cache[path] = this);
+
+        return isCacheEnabled(opts) === false
+            ? (this)
+            : (_cache[path] = this)
+            ;
 	}
 	read(mix?: IOperationOptions): string | Buffer {
 
@@ -457,10 +458,19 @@ function isFromCache(path: string, opts?: IFileSettings) {
 	}
 	return _cache.hasOwnProperty(path) && _cache[path] != null;
 }
+function isCacheEnabled(opts?: IFileSettings) {
+	if (_cacheEnabled === false) {
+		return false;
+	}
+	if (opts != null && opts.cached === false) {
+		return false;
+	}
+	return true;
+}
 
 export interface IFileSettings {
 	cached?: boolean
-	factory: FileFactory
+	factory?: FileFactory
 }
 
 export interface IOperationOptions {
