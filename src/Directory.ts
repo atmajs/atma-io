@@ -1,14 +1,15 @@
-import { io, logger, Class } from './global'
+import { logger, Class } from './global'
 import { class_Uri } from 'atma-utils';
-import { dir_exists, dir_existsAsync, dir_ensure, dir_ensureAsync, dir_files, dir_filesAsync, dir_remove, dir_removeAsync, dir_symlink } from './util/dir';
+import { dir_exists, dir_existsAsync, dir_ensure, dir_ensureAsync, dir_files, dir_filesAsync, dir_remove, dir_removeAsync, dir_symlink, dir_rename, dir_renameAsync } from './transport/dir_transport';
 import { glob_parsePatterns } from './util/glob';
 import { File } from './File';
 import { path_getUri } from './util/path';
 import { cli_prompt } from './util/cli';
-import * as __fs from 'fs';
+
 import { Watcher } from './Watcher';
 import { IDeferred } from './IDeferred';
 import { stack_formatCaller } from './util/stack';
+import { Env } from './Env'
 
 export class Directory {
     uri: class_Uri
@@ -19,7 +20,7 @@ export class Directory {
             return directory;
 
         if (directory == null || directory === '/') {
-            this.uri = io.env.currentDir;
+            this.uri = Env.currentDir;
             return;
         }
 
@@ -33,8 +34,8 @@ export class Directory {
 
         this.uri = new class_Uri(directory);
 
-        if (this.uri.isRelative() && io.env) {
-            this.uri = io.env.currentDir.combine(<string><any>this.uri);
+        if (this.uri.isRelative()) {
+            this.uri = Env.currentDir.combine(<string><any>this.uri);
         }
 
         delete this.uri.file;
@@ -177,7 +178,7 @@ export class Directory {
      *
      * options {Object} { verbose: Boolean} Confirm target file rewrite
      */
-    copyTo(target: string, options: {verbose?: boolean} = { verbose: false}): IDeferred<void> {
+    copyTo(target: string, options: {verbose?: boolean} = { verbose: false }): IDeferred<void> {
         var dfr = new Class.Deferred;
         if (Array.isArray(this.files) === false) {
             this.readFiles();
@@ -269,7 +270,8 @@ export class Directory {
                 to
                 ;
             to = targetUri.combine(relPath);
-
+         
+            
             if (options.verbose !== true && File.exists(to)) {
                 var message = `File already exists: ${relPath}. Replace? `;
 
@@ -313,7 +315,7 @@ export class Directory {
 
         logger.log('<dir:rename>', oldpath, newpath);
 
-        __fs.renameSync(oldpath, newpath);
+        dir_rename(oldpath, newpath);
     }
     static rename(path: string, name: string): void {
         new Directory(path).rename(name);
@@ -326,7 +328,7 @@ export class Directory {
             }
             var newpath = path.replace(/[^\/]+\/?$/g, name);
 
-            __fs.rename(path, newpath, dfr_pipeDelegate(dfr));
+            dir_renameAsync(path, newpath, dfr_pipeDelegate(dfr));
         });
     }
     static renameAsync(path: string, name: string): IDeferred<any> {

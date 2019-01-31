@@ -3,7 +3,7 @@ import { Directory } from './Directory'
 import { File } from './File'
 import { IDeferred } from './IDeferred';
 
-export const ExportsGlob = {
+export const Glob = {
     matchPath: glob_matchPath,
     readFiles (path: string): File[] {
         

@@ -39,7 +39,7 @@ declare module 'atma-io/Watcher' {
 
 declare module 'atma-io/Directory' {
     import { class_Uri } from 'atma-utils';
-    import { dir_symlink } from 'atma-io/util/dir';
+    import { dir_symlink } from 'atma-io/transport/dir_transport';
     import { File } from 'atma-io/File';
     import { IDeferred } from 'atma-io/IDeferred';
     export class Directory {
@@ -186,16 +186,18 @@ declare module 'atma-io/ExportsSetts' {
     }): void;
 }
 
-declare module 'atma-io/util/dir' {
-    export function dir_ensure(path: any): any;
+declare module 'atma-io/transport/dir_transport' {
+    export function dir_ensure(path: any): string;
     export function dir_ensureAsync(path: any, cb: any): void;
     export function dir_exists(path: any): boolean;
     export function dir_existsAsync(path: any, cb: any): void;
     export function dir_files(path: any, patterns: any, excludes: any, data?: any): string[];
-    export function dir_filesAsync(path: any, ...args: any[]): void;
+    export function dir_filesAsync(path: any, patternsOrCb?: any, excludesOrCb?: any, dataOrCb?: any, Cb?: any): any;
     export function dir_symlink(source: string, target: string): void;
     export function dir_remove(path: any): boolean;
-    export function dir_removeAsync(path: any, cb: any): void;
+    export function dir_removeAsync(path: any, cb: any): any;
+    export function dir_rename(oldPath: string, newPath: string): any;
+    export function dir_renameAsync(oldPath: string, newPath: string, cb: any): any;
 }
 
 declare module 'atma-io/IDeferred' {
@@ -267,7 +269,7 @@ declare module 'atma-io/FileHooks' {
 }
 
 declare module 'atma-io/transport/custom' {
-    export interface ITransport {
+    export interface IFileTransport {
         save(path: string, content: any, options?: any): void;
         saveAsync(path: any, content: any, options: any, cb: any): void;
         copy(from: any, to: any): any;
@@ -280,6 +282,23 @@ declare module 'atma-io/transport/custom' {
         removeAsync(path: any, cb: (err: Error) => void): any;
         rename(path: any, filename: any): any;
         renameAsync(path: any, filename: any, cb: any): any;
+    }
+    export interface IDirectoryTransport {
+        ensure(path: any): string;
+        ensureAsync(path: any, cb: any): void;
+        ceateSymlink(source: string, target: string): any;
+        exists(path: any): boolean;
+        existsAsync(path: any, cb: (err: Error, x: boolean) => void): any;
+        readFiles(path: any, patterns?: any, excludes?: any, data?: any): string[];
+        readFilesAsync(path: any, patternsOrCb?: any, excludesOrCb?: any, dataOrCb?: any, Cb?: any): any;
+        remove(path: any): boolean;
+        removeAsync(path: any, cb: (err: Error) => void): any;
+        rename(oldPath: any, newPath: any): any;
+        renameAsync(oldPath: any, newPath: any, cb: (err: Error) => void): any;
+    }
+    export interface ITransport {
+        File: IFileTransport;
+        Directory: IDirectoryTransport;
     }
     export const Repository: {
         [protocol: string]: ITransport;

@@ -1,19 +1,19 @@
 import { class_Uri } from 'atma-utils'
 import { path_getUri } from './util/path';
 import { 
-    transport_read, 
-    transport_readAsync, 
-    transport_save, 
-    transport_saveAsync, 
-    transport_copy, 
-    transport_copyAsync, 
-    transport_exists, 
-    transport_existsAsync, 
-    transport_renameAsync, 
-    transport_rename, 
-    transport_remove, 
-    transport_removeAsync 
-} from './transport/transport';
+    file_read, 
+    file_readAsync, 
+    file_save, 
+    file_saveAsync, 
+    file_copy, 
+    file_copyAsync, 
+    file_exists, 
+    file_existsAsync, 
+    file_renameAsync, 
+    file_rename, 
+    file_remove, 
+    file_removeAsync 
+} from './transport/file_transport';
 
 import { Class, logger } from './global'
 import { log_info } from './util/logger'
@@ -26,6 +26,9 @@ import { FileFactory } from './FileFactory'
 import { FileHooks, IFileMiddleware } from './FileHooks';
 import { FileHookRegistration } from './FileHookRegistration';
 import { ITransport, CustomTransport } from './transport/custom';
+import { JsonMiddleware } from './middleware/json';
+import { global } from './global'
+
 
 let _cache = {},
 	_cacheEnabled = true,
@@ -66,7 +69,7 @@ export class File {
 			path = uri_toPath(this.uri)
 			;
 
-		this.content = transport_read(path, setts.encoding);
+		this.content = file_read(path, setts.encoding);
 		processHooks('read', this, setts, mix);
 
 		return this.content;
@@ -82,7 +85,7 @@ export class File {
 			}
 
 			var setts = getSetts(mix);
-			transport_readAsync(
+			file_readAsync(
 				path
 				, setts.encoding
 				, onReadComplete
@@ -115,7 +118,7 @@ export class File {
 	static readAsync(path: string, mix?: IOperationOptions) {
 		return new File(path).readAsync(mix);
 	}
-	write(content: string | Buffer, mix?: IOperationOptions): this {
+	write(content: string | Buffer | any, mix?: IOperationOptions): this {
 		if (content != null)
 			this.content = content;
 
@@ -128,7 +131,7 @@ export class File {
 			setts = getSetts(mix);
 
 		processHooks('write', this, setts, mix);
-		transport_save(path, this.content, setts);
+		file_save(path, this.content, setts);
 		return this;
 	}
 	static write(path: string, content: string | Buffer, mix?: IOperationOptions) {
@@ -152,7 +155,7 @@ export class File {
 				, onHookComplete);
 
 			function onHookComplete() {
-				transport_saveAsync(
+				file_saveAsync(
 					path
 					, file.content
 					, setts
@@ -181,7 +184,7 @@ export class File {
 			;
 
 		log_info('copy:', _from, _to);
-		transport_copy(from, to);
+		file_copy(from, to);
 		return this;
 	}
 	static copyTo(path: string, target: string) {
@@ -190,7 +193,7 @@ export class File {
 
 	copyToAsync(target: string): IDeferred<this> {
 		return dfr_factory(this, function (dfr, file, path) {
-			transport_copyAsync(
+			file_copyAsync(
 				path,
 				uri_toPath(path_getUri(target)),
 				dfr_pipeDelegate(dfr)
@@ -201,14 +204,14 @@ export class File {
 		return new File(path).copyToAsync(target);
 	}
 	exists(): boolean {
-		return transport_exists(uri_toPath(this.uri));
+		return file_exists(uri_toPath(this.uri));
 	}
 	static exists(path: string) {
 		return new File(path).exists();
 	}
 	existsAsync(): IDeferred<boolean> {
 		return dfr_factory(this, function (dfr, file, path) {
-			transport_existsAsync(
+			file_existsAsync(
 				path,
 				dfr_pipeDelegate(dfr)
 			);
@@ -218,14 +221,14 @@ export class File {
 		return new File(path).existsAsync();
 	}
 	rename(fileName: string): boolean {
-		return transport_rename(uri_toPath(this.uri), fileName);
+		return file_rename(uri_toPath(this.uri), fileName);
 	}
 	static rename(path: string, fileName: string): boolean {
 		return new File(path).rename(fileName);
 	}
 	renameAsync(filename): IDeferred<boolean> {
 		return dfr_factory(this, function (dfr, file, path) {
-			transport_renameAsync(
+			file_renameAsync(
 				path,
 				filename,
 				dfr_pipeDelegate(dfr)
@@ -236,14 +239,14 @@ export class File {
 		return new File(path).renameAsync(fileName);
 	}
 	remove(): boolean {
-		return transport_remove(uri_toPath(this.uri));
+		return file_remove(uri_toPath(this.uri));
 	}
 	static remove(path: string): boolean {
 		return new File(path).remove();
 	}
 	removeAsync(): IDeferred<boolean> {
 		return dfr_factory(this, function (dfr, file, path) {
-			transport_removeAsync(
+			file_removeAsync(
 				path,
 				dfr_pipeDelegate(dfr)
 			);
@@ -303,7 +306,7 @@ export class File {
 	static stats(path: string) {
 		return new File(path).stats();
 	}
-	static clearCache(mix) {
+	static clearCache(mix?) {
 		if (_cacheEnabled === false) {
 			return;
 		}
@@ -479,4 +482,25 @@ export interface IOperationOptions {
 	encoding?: 'buffer' | 'utf8' | string
 	hooks?: FileHooks
 	[other: string]: any
+}
+
+/** REGISTER */
+if (global.io && global.io.File && typeof global.io.File.getFactory === 'function') {
+
+    let globalFile = global.io.File as (typeof File);
+    File.registerFactory(globalFile.getFactory());
+    File.registerHookHandler(globalFile.getHookHandler());
+    File.middleware = globalFile.middleware;
+
+} else {
+
+    File.registerFactory(new FileFactory());
+    File.registerHookHandler(new FileHooks());
+    File.registerExtensions({
+        'json': [
+            [JsonMiddleware, 'read'],
+            [JsonMiddleware, 'write'],
+        ]
+    });
+    
 }

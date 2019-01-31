@@ -1,6 +1,5 @@
-import { path_getProtocol } from '../util/path';
 
-export interface ITransport {
+export interface IFileTransport {
     save(path: string, content: any, options?): void
     saveAsync(path, content, options, cb): void
     copy(from, to)
@@ -14,6 +13,27 @@ export interface ITransport {
     rename(path, filename)
     renameAsync(path, filename, cb)
 }
+export interface IDirectoryTransport {
+    ensure(path): string
+    ensureAsync(path, cb): void
+
+    ceateSymlink(source: string, target: string)
+
+    exists(path): boolean
+    existsAsync(path, cb: (err: Error, x: boolean) => void)
+    readFiles (path, patterns?, excludes?, data?): string[]
+    readFilesAsync (path, patternsOrCb?, excludesOrCb?, dataOrCb?, Cb?)
+    remove(path): boolean
+    removeAsync(path, cb: (err: Error) => void)
+
+    rename(oldPath, newPath)
+    renameAsync(oldPath, newPath, cb: (err: Error) => void)
+    
+}
+export interface ITransport {
+    File: IFileTransport
+    Directory: IDirectoryTransport
+}
 
 export const Repository: {[protocol: string]: ITransport} = {
 
@@ -23,7 +43,10 @@ export class CustomTransport {
     static register (protocol: string, transport: ITransport) {
         Repository[protocol] = transport;
     }
-    static get (protocol: string) {
+    static get (protocol: string) {        
         return Repository[protocol];
+    }
+    static all () {
+        return Repository;
     }
 }

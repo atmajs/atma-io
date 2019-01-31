@@ -1,20 +1,8 @@
 {
-  "files": [
-    "src/export.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ],
+  
   "compilerOptions": {
-    "outDir": "ts-temp",
-    "typeRoots": [
-      "./node_modules/@types",
-      "./typings/"
-    ],
-    "types": [
-      "atma-class",
-      "node"
-    ],
+    "baseUrl": "./",
+    "outDir": "ts-temp",    
     "declaration": true,
     "target":"es5",
     "module": "commonjs",

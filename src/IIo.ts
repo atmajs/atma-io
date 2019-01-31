@@ -2,7 +2,7 @@ import { class_Uri } from 'atma-utils'
 import { Watcher } from './Watcher';
 import { Directory } from './Directory';
 import { File } from './File';
-import { ExportsGlob } from './ExportsGlob';
+import { Glob } from './ExportsGlob';
 import { setSettings } from './ExportsSetts';
 
 export interface Io {
@@ -11,7 +11,7 @@ export interface Io {
         settings: any
     }
     watcher: typeof Watcher
-    glob: typeof ExportsGlob
+    glob: typeof Glob
     settings: typeof setSettings
     File: typeof File
     Uri: typeof class_Uri

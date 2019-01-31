@@ -16,7 +16,7 @@ export interface IFileMiddleware {
 }
 
 export interface IHookFunction {
-	(file: File, config: any): void | any
+	(file: File, config?: any): void | any
 }
 
 export class HookRunner {
@@ -81,9 +81,9 @@ export class FileHooks {
 	hooks: HookRunner[] = []
 
 	register(
-		mix: RegExp | { regexp: RegExp, method: 'read' | 'write', handler: string | IFileMiddleware, zIndex?: number },
+		mix: RegExp | { regexp: RegExp, method: 'read' | 'write', handler: string | IFileMiddleware | IHookFunction, zIndex?: number },
 		method: 'read' | 'write',
-		handler: string | IFileMiddleware,
+		handler: string | IFileMiddleware | IHookFunction,
 		zIndex?: number) {
 
 		let regexp: RegExp;
@@ -110,7 +110,7 @@ export class FileHooks {
 		}
 		return this;
 	}
-	contains(method: 'read' | 'write', handler: IFileMiddleware, regexp: RegExp) {
+	contains(method: 'read' | 'write', handler: IFileMiddleware | IHookFunction, regexp: RegExp) {
 		var str = regexp && regexp.toString() || null;
 		var imax = this.hooks.length;
 		var i = -1;
@@ -129,7 +129,7 @@ export class FileHooks {
 		}
 		return false;
 	}
-	unregister(method: 'read' | 'write', handler: IFileMiddleware | string) {
+	unregister(method: 'read' | 'write', handler: IFileMiddleware | string | IHookFunction) {
 		if (typeof handler === 'string') {
 			handler = File.middleware[handler];
 		}
