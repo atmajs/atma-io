@@ -33,6 +33,7 @@
         "watch": "app-bundler --watch",
         "build-io": "app-bundler --app io",
         "server": "atma server",
+        "release": "atma bump && npm run build && git add -A && git commit -am \"bump\" && npm publish && git push",
         "build-dts": "tsc -p . & atma custom tools/build-dts"
     },
     "app-bundler": {
