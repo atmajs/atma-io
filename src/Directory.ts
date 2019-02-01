@@ -41,7 +41,7 @@ export class Directory {
         delete this.uri.file;
     }
     exists(): boolean {
-        return dir_exists(this.uri.toLocalDir());
+        return dir_exists(uri_toDirectory(this.uri));
     }
     static exists(path: string): boolean {
         return new Directory(path).exists();
@@ -55,7 +55,7 @@ export class Directory {
         return new Directory(path).existsAsync();
     }
     ensure(): this {
-        dir_ensure(this.uri.toLocalDir());
+        dir_ensure(uri_toDirectory(this.uri));
         return this;
     }
     static ensure(path: string): Directory {
@@ -76,7 +76,7 @@ export class Directory {
             ;
 
         let arr = this.files = dir_files(
-            this.uri.toLocalDir()
+            uri_toDirectory(this.uri)
             , patterns
             , excludes
         )
@@ -104,7 +104,7 @@ export class Directory {
             excludes = glob_parsePatterns(exclude);
 
         return dir_files(
-            this.uri.toLocalDir()
+            uri_toDirectory(this.uri)
             , patterns
             , excludes
             , { directories: true }
@@ -335,7 +335,7 @@ export class Directory {
         return new Directory(path).renameAsync(name);
     }
     remove(): void {
-        dir_remove(this.uri.toLocalDir());
+        dir_remove(uri_toDirectory(this.uri));
     }
     static remove(path: string): void {
         new Directory(path).remove();
@@ -368,7 +368,7 @@ export class Directory {
 
 function dfr_factory<T>(dir: Directory, fn:  (dfr: Class.Deferred, dir: Directory, path: string) => any | void) {
     let dfr = new Class.Deferred;
-    fn(dfr, dir, dir.uri.toLocalDir());
+    fn(dfr, dir, uri_toDirectory(dir.uri));
     return dfr as IDeferred<T>;
 }
 function dfr_pipeDelegate(dfr, ...argsBefore) {
@@ -379,4 +379,17 @@ function dfr_pipeDelegate(dfr, ...argsBefore) {
         }
         dfr.resolve(...argsBefore, ...args);
     }
+}
+
+
+function uri_toDirectory (uri: class_Uri) {
+    let path = uri.protocol == null || uri.protocol === 'file' 
+        ? uri.toLocalFile()
+        : uri.toString();
+    
+    let i = path.lastIndexOf('/');
+    if (i < path.length - 1) {
+        path = path.substring(0, i + 1);
+    }
+    return path;
 }
