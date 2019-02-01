@@ -121,7 +121,7 @@ export class Directory {
         return new Directory(path).read(pattern, exclude);
     }
 
-    readFilesAsync(pattern?: string | RegExp | (string | RegExp)[], exclude?: string | RegExp | (string | RegExp)[]): IDeferred<this> {
+    readFilesAsync(pattern?: string | RegExp | (string | RegExp)[], exclude?: string | RegExp | (string | RegExp)[]): IDeferred<File[]> {
         let patterns = glob_parsePatterns(pattern),
             excludes = glob_parsePatterns(exclude);
 
@@ -134,11 +134,11 @@ export class Directory {
                 dir.files = files.map((x) => {
                     return new File(dir.uri.combine(x));
                 });
-                dfr.resolve(dir);
+                dfr.resolve(dir.files);
             });
         });
     }
-    static readFilesAsync(path: string, pattern?: string | RegExp | (string | RegExp)[], exclude?: string | RegExp | (string | RegExp)[]): IDeferred<Directory> {
+    static readFilesAsync(path: string, pattern?: string | RegExp | (string | RegExp)[], exclude?: string | RegExp | (string | RegExp)[]): IDeferred<File[]> {
         return new Directory(path).readFilesAsync(pattern, exclude);
     }
     readAsync(pattern?: string | RegExp | (string | RegExp)[], exclude?: string | RegExp | (string | RegExp)[]): IDeferred<(File | Directory)[]> {
