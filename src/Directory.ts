@@ -383,13 +383,16 @@ function dfr_pipeDelegate(dfr, ...argsBefore) {
 
 
 function uri_toDirectory (uri: class_Uri) {
-    let path = uri.protocol == null || uri.protocol === 'file' 
-        ? uri.toLocalFile()
-        : uri.toString();
+    let fs = uri.protocol == null || uri.protocol === 'file';
+    let path = fs 
+        ? uri.toLocalDir()
+        : null;
     
-    let i = path.lastIndexOf('/');
-    if (i < path.length - 1) {
-        path = path.substring(0, i + 1);
+    if (fs === false) {
+        uri = new class_Uri(uri);
+        uri.file = null;
+        path = uri.toString();
     }
+    
     return path;
 }
