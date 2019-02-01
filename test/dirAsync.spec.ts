@@ -1,8 +1,6 @@
 import { File } from '../src/File'
 import { Directory } from '../src/Directory'
 
-
-
 UTest({
 	$before: function(){
 		Directory.remove('test/bin/');
@@ -18,10 +16,9 @@ UTest({
 		Directory
 			.readFilesAsync('test/', '*.spec.ts')
 			.fail(assert.avoid())
-			.done(function(dir){
-				let files = dir.files;
-
-				assert(files.length > 1);
+			.done(function(files){
+                
+                assert(files.length > 1);
 				eq_(hasFile(files, 'dir.spec.ts'), true);
 				eq_(hasFile(files, 'file.spec.ts'), true);
 				eq_(hasFile(files, 'config.js'), false);
@@ -33,8 +30,7 @@ UTest({
 			Directory
 				.readFilesAsync('test/', '**.spec.ts')
 				.fail(assert.avoid())
-				.done(function(dir){
-					let all = dir.files;
+				.done(function(all){
 					assert(all.length > files.length);
 					
 					eq_(hasFile(files, 'config.js'), false);
@@ -47,10 +43,9 @@ UTest({
 			Directory
 				.readFilesAsync('test/')
 				.fail(assert.avoid())
-				.done(function(dir){
-					let all = dir.files;
-					eq_(hasFile(all, 'config.js'), true);
-					eq_(hasFile(all, 'json.spec.ts'), true);
+				.done(function(files){					
+					eq_(hasFile(files, 'config.js'), true);
+					eq_(hasFile(files, 'json.spec.ts'), true);
 					done();
 				})
 		}

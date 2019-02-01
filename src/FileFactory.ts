@@ -1,4 +1,4 @@
-import { Class } from './global'
+import { class_Dfr } from 'atma-utils'
 
 export class FileFactory {
     handlers = []
@@ -85,7 +85,7 @@ function normalizeHandler(Handler) {
     }
     function createAsyncDelegate(syncFn, key) {
         return function(...args){
-            var dfr = new Class.Deferred;
+            var dfr = new class_Dfr;
             try {
                 var r = syncFn.apply(this, args);
                 return dfr.resolve(r);
