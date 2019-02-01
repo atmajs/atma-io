@@ -31,13 +31,8 @@ export class Directory {
             if (/\.\w+$/.test(directory) === false)
                 directory = directory + '/';
         }
-
-        this.uri = new class_Uri(directory);
-
-        if (this.uri.isRelative()) {
-            this.uri = Env.currentDir.combine(<string><any>this.uri);
-        }
-
+        
+        this.uri = path_getUri(directory);        
         delete this.uri.file;
     }
     exists(): boolean {
