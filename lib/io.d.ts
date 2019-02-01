@@ -14,7 +14,7 @@ declare module 'atma-io/IIo' {
     import { Watcher } from 'atma-io/Watcher';
     import { Directory } from 'atma-io/Directory';
     import { File } from 'atma-io/File';
-    import { ExportsGlob } from 'atma-io/ExportsGlob';
+    import { Glob } from 'atma-io/ExportsGlob';
     import { setSettings } from 'atma-io/ExportsSetts';
     export interface Io {
         env: {
@@ -22,7 +22,7 @@ declare module 'atma-io/IIo' {
             settings: any;
         };
         watcher: typeof Watcher;
-        glob: typeof ExportsGlob;
+        glob: typeof Glob;
         settings: typeof setSettings;
         File: typeof File;
         Uri: typeof class_Uri;
@@ -58,8 +58,8 @@ declare module 'atma-io/Directory' {
         static readFiles(path: string, pattern?: string | RegExp | (string | RegExp)[], exclude?: string | RegExp | (string | RegExp)[]): File[];
         read(pattern?: string | RegExp | (string | RegExp)[], exclude?: string | RegExp | (string | RegExp)[]): (File | Directory)[];
         static read(path: string, pattern?: string | RegExp | (string | RegExp)[], exclude?: string | RegExp | (string | RegExp)[]): (File | Directory)[];
-        readFilesAsync(pattern?: string | RegExp | (string | RegExp)[], exclude?: string | RegExp | (string | RegExp)[]): IDeferred<this>;
-        static readFilesAsync(path: string, pattern?: string | RegExp | (string | RegExp)[], exclude?: string | RegExp | (string | RegExp)[]): IDeferred<Directory>;
+        readFilesAsync(pattern?: string | RegExp | (string | RegExp)[], exclude?: string | RegExp | (string | RegExp)[]): IDeferred<File[]>;
+        static readFilesAsync(path: string, pattern?: string | RegExp | (string | RegExp)[], exclude?: string | RegExp | (string | RegExp)[]): IDeferred<File[]>;
         readAsync(pattern?: string | RegExp | (string | RegExp)[], exclude?: string | RegExp | (string | RegExp)[]): IDeferred<(File | Directory)[]>;
         static readAsync(path: string, pattern?: string | RegExp | (string | RegExp)[], exclude?: string | RegExp | (string | RegExp)[]): IDeferred<(File | Directory)[]>;
         copyTo(target: string, options?: {
@@ -107,7 +107,7 @@ declare module 'atma-io/File' {
         static read(path: string, mix?: IOperationOptions): string | Buffer;
         readAsync(mix?: IOperationOptions): IDeferred<string | Buffer>;
         static readAsync(path: string, mix?: IOperationOptions): IDeferred<string | Buffer>;
-        write(content: string | Buffer, mix?: IOperationOptions): this;
+        write(content: string | Buffer | any, mix?: IOperationOptions): this;
         static write(path: string, content: string | Buffer, mix?: IOperationOptions): File;
         writeAsync(content: string | Buffer, mix?: IOperationOptions): IDeferred<this>;
         static writeAsync(path: string, content: string | Buffer, mix?: IOperationOptions): IDeferred<File>;
@@ -137,7 +137,7 @@ declare module 'atma-io/File' {
         static unwatch(path: string, callback?: any): void;
         stats(): Stats;
         static stats(path: string): Stats;
-        static clearCache(mix: any): void;
+        static clearCache(mix?: any): void;
         static disableCache(): void;
         static enableCache(): void;
         static registerFactory(factory: FileFactory): void;
@@ -172,7 +172,7 @@ declare module 'atma-io/ExportsGlob' {
     import { Directory } from 'atma-io/Directory';
     import { File } from 'atma-io/File';
     import { IDeferred } from 'atma-io/IDeferred';
-    export const ExportsGlob: {
+    export const Glob: {
         matchPath: typeof glob_matchPath;
         readFiles(path: string): File[];
         read(path: string): (File | Directory)[];
@@ -238,7 +238,7 @@ declare module 'atma-io/FileHooks' {
         writeAsync?(file: File, config: any, done: Function): any;
     }
     export interface IHookFunction {
-        (file: File, config: any): void | any;
+        (file: File, config?: any): void | any;
     }
     export class HookRunner {
         regexp: RegExp;
@@ -255,11 +255,11 @@ declare module 'atma-io/FileHooks' {
         register(mix: RegExp | {
             regexp: RegExp;
             method: 'read' | 'write';
-            handler: string | IFileMiddleware;
+            handler: string | IFileMiddleware | IHookFunction;
             zIndex?: number;
-        }, method: 'read' | 'write', handler: string | IFileMiddleware, zIndex?: number): this;
-        contains(method: 'read' | 'write', handler: IFileMiddleware, regexp: RegExp): boolean;
-        unregister(method: 'read' | 'write', handler: IFileMiddleware | string): void;
+        }, method: 'read' | 'write', handler: string | IFileMiddleware | IHookFunction, zIndex?: number): this;
+        contains(method: 'read' | 'write', handler: IFileMiddleware | IHookFunction, regexp: RegExp): boolean;
+        unregister(method: 'read' | 'write', handler: IFileMiddleware | string | IHookFunction): void;
         unregisterByRegexp(regexp: RegExp): void;
         trigger(method: 'read' | 'write', file: File, config?: any): void;
         triggerAsync(method: 'read' | 'write', file: File, config: any, cb: Function): void;
@@ -306,6 +306,9 @@ declare module 'atma-io/transport/custom' {
     export class CustomTransport {
         static register(protocol: string, transport: ITransport): void;
         static get(protocol: string): ITransport;
+        static all(): {
+            [protocol: string]: ITransport;
+        };
     }
 }
 
