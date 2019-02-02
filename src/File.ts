@@ -494,13 +494,11 @@ if (global.io && global.io.File && typeof global.io.File.getFactory === 'functio
 
 } else {
 
-    File.registerFactory(new FileFactory());
-    File.registerHookHandler(new FileHooks());
-    File.registerExtensions({
-        'json': [
-            [JsonMiddleware, 'read'],
-            [JsonMiddleware, 'write'],
-        ]
-    });
-    
+    const factory = new FileFactory();
+    const hooks = new FileHooks();
+    File.registerFactory(factory);
+    File.registerHookHandler(hooks);
+
+    hooks.register(/\.json$/, 'read', JsonMiddleware);
+    hooks.register(/\.json$/, 'write', JsonMiddleware);
 }
