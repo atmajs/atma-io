@@ -58,7 +58,7 @@ export function dir_renameAsync(oldPath: string, newPath: string, cb) {
 
 //> private
 
-function getDirectoryTransportForPath (path: string) {
+function getDirectoryTransportForPath (path: string): IDirectoryTransport {
     let protocol = path_getProtocol(path);
     if (protocol == null || protocol === 'file') {
         return FsTransport.Directory;

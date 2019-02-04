@@ -1,4 +1,4 @@
-import { CustomTransport } from './custom';
+import { CustomTransport, IFileTransport } from './custom';
 import { FsTransport } from './filesystem/transport';
 import { path_getProtocol } from '../util/path';
 
@@ -74,7 +74,7 @@ export function file_renameAsync(path, filename, cb) {
     transport.renameAsync(path, filename, cb);
 };
 
-function getFileTransportForPath (path: string) {
+function getFileTransportForPath (path: string): IFileTransport {
     let protocol = path_getProtocol(path);
     if (protocol == null || protocol === 'file') {
         return FsTransport.File;

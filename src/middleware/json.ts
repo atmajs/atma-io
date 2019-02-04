@@ -7,7 +7,7 @@ export const JsonMiddleware = {
 
 		if (typeof file.content !== 'string') {
 			return;
-		}
+        }        
 
 		try {
 			file.content = JSON.parse(file.content);

@@ -10,22 +10,24 @@ export function path_getProtocol (path: string) {
 }
 
 export function path_getUri(path: string | class_Uri, base?: string){
-	if (typeof path !== 'string')
-		path = path.toString();
+	if (typeof path !== 'string') {
+        path = path.toString();
+    }
+    path = path_normalize(path);
+	if (path[0] === '/') {
+        path = path.substring(1);
+    }
 
-	if (path[0] === '/') 
-		path = path.substring(1);
-	
-	var uri = new class_Uri(path);
-	if (uri.isRelative() === false)
-		return uri;
-	
-	if (base)
-		return new class_Uri(base).combine(uri as any);
-
-	if (io.env) 
-		return io.env.currentDir.combine(uri as any);
-	
+	let uri = new class_Uri(path);
+	if (uri.isRelative() === false) {
+        return uri;
+    }
+	if (base) {
+        return new class_Uri(base).combine(uri as any);
+    }
+	if (io.env) {
+        return io.env.currentDir.combine(uri as any);
+    }
 	return new class_Uri('file://' + process.cwd() + '/')
 		.combine(uri as any);
 }
@@ -106,4 +108,32 @@ export function path_ensureTrailingSlash(path) {
 		return path;
 	
 	return path + '/';
+};
+
+function path_normalize(str: string): string {
+    str = str
+        .replace(/\\/g,'/')
+        .replace(/^\.\//,'')
+        ;
+    let double = /\/{2,}/g;
+    let protocolMatched = false;
+    do {
+        let match = double.exec(str);
+        if (match == null) {
+            break;
+        }
+        if (match.index === 0) {
+            continue;
+        }
+        if (str[match.index - 1] === ':') {
+            if (protocolMatched === false) {
+                protocolMatched = true;
+                continue;                
+            }
+            // otherwise remove extra slashes e.g. file://c://foo/bar.jpg
+        }
+        str = str.substring(0, match.index) + '/' + str.substring(match.index + match[0].length);
+    } while (true);
+
+    return str;
 }
