@@ -49,4 +49,9 @@ export class CustomTransport {
     static all () {
         return Repository;
     }
+    static set (repository) {
+        for (let key in repository) {
+            Repository[key] = repository[key];
+        }
+    }
 }

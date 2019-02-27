@@ -116,7 +116,7 @@ export class File {
 		});
 	}
 	static readAsync(path: string, mix?: IOperationOptions) {
-		return new File(path).readAsync(mix);
+		return new File(path, <any> mix).readAsync(mix);
 	}
 	write(content: string | Buffer | any, mix?: IOperationOptions): this {
 		if (content != null)
@@ -135,7 +135,7 @@ export class File {
 		return this;
 	}
 	static write(path: string, content: string | Buffer, mix?: IOperationOptions) {
-		return new File(path).write(content, mix);
+		return new File(path, <any> mix).write(content, mix);
 	}
 	writeAsync(content: string | Buffer, mix?: IOperationOptions): IDeferred<this> {
 
@@ -358,6 +358,12 @@ export class File {
     static registerTransport(protocol: string, transport: ITransport) {
         CustomTransport.register(protocol, transport);
     }
+    static getTransports () {
+        return CustomTransport.all();
+    }
+    static setTransports (repository) {
+        CustomTransport.set(repository);
+    }
 
 	static get Factory() {
 		return _factory
@@ -491,6 +497,10 @@ if (global.io && global.io.File && typeof global.io.File.getFactory === 'functio
     File.registerFactory(globalFile.getFactory());
     File.registerHookHandler(globalFile.getHookHandler());
     File.middleware = globalFile.middleware;
+
+    if (globalFile.getTransports) {
+        File.setTransports(globalFile.getTransports());
+    }
 
 } else {
 

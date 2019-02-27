@@ -4,7 +4,7 @@ import { Glob } from '../src/ExportsGlob'
 
 UTest({
     
-    '!readFiles - directory' () {
+    'readFiles - directory' () {
         var dir = new Directory('test/'),
             files = dir.readFiles('*.spec.ts')
             ;

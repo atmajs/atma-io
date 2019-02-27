@@ -145,6 +145,10 @@ declare module 'atma-io/File' {
         static registerHookHandler(hook: FileHooks): void;
         static getHookHandler(): FileHooks;
         static registerTransport(protocol: string, transport: ITransport): void;
+        static getTransports(): {
+            [protocol: string]: ITransport;
+        };
+        static setTransports(repository: any): void;
         static readonly Factory: FileFactory;
         static readonly Middleware: FileHooks;
         static processHooks(method: any, file: any, config: any, onComplete: any): void;
@@ -309,6 +313,7 @@ declare module 'atma-io/transport/custom' {
         static all(): {
             [protocol: string]: ITransport;
         };
+        static set(repository: any): void;
     }
 }
 
