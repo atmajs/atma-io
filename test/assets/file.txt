@@ -1,4 +1,0 @@
-// Lorem
-function test () {
-    
-}
