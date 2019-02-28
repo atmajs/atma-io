@@ -121,13 +121,17 @@ export class Directory {
             excludes = glob_parsePatterns(exclude);
 
         return dfr_factory(this, function (dfr, dir, path) {
-            dir_filesAsync(path, patterns, exclude, function (error, files) {
+            dir_filesAsync(path, patterns, exclude, function (error, files: string[]) {
                 if (error) {
                     dfr.reject(error);
                     return;
                 }
-                dir.files = files.map((x) => {
-                    return new File(dir.uri.combine(x));
+                dir.files = files.map(x => {
+                    let uri = new class_Uri(x);
+                    if (uri.isRelative()) {
+                        uri = dir.uri.combine(x);
+                    }
+                    return new File(uri);
                 });
                 dfr.resolve(dir.files);
             });
