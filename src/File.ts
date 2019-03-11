@@ -60,10 +60,10 @@ export class File {
             : (_cache[path] = this)
             ;
 	}
-	read(mix?: IOperationOptions): string | Buffer {
+	read <T = string | Buffer>(mix?: IOperationOptions): T {
 
 		if (this.content != null)
-			return this.content;
+			return <T> <any> this.content;
 
 		var setts = getSetts(mix),
 			path = uri_toPath(this.uri)
@@ -72,12 +72,12 @@ export class File {
 		this.content = file_read(path, setts.encoding);
 		processHooks('read', this, setts, mix);
 
-		return this.content;
+		return <T> <any> this.content;
 	}
-	static read(path: string, mix?: IOperationOptions): string | Buffer {
-		return new File(path).read(mix);
+	static read <T = string | Buffer> (path: string, mix?: IOperationOptions): T {
+		return new File(path).read<T>(mix);
 	}
-	readAsync(mix?: IOperationOptions): IDeferred<string | Buffer> {
+	readAsync<T = string | Buffer>(mix?: IOperationOptions): IDeferred<T> {
 		return dfr_factory(this, function (dfr: Class.Deferred, file: File, path: string) {
 			if (file.content != null) {
 				dfr.resolve(file.content, file);
@@ -115,12 +115,12 @@ export class File {
 			}
 		});
 	}
-	static readAsync(path: string, mix?: IOperationOptions) {
-		return new File(path, <any> mix).readAsync(mix);
+	static readAsync<T = string | Buffer>(path: string, mix?: IOperationOptions) {
+		return new File(path, <any> mix).readAsync<T>(mix);
 	}
-	write(content: string | Buffer | any, mix?: IOperationOptions): this {
+	write<T = string | Buffer | any>(content: T, mix?: IOperationOptions): this {
 		if (content != null)
-			this.content = content;
+			this.content = <any> content;
 
 		if (this.content == null) {
 			logger.error('io.file.write: Content is empty');
@@ -134,13 +134,13 @@ export class File {
 		file_save(path, this.content, setts);
 		return this;
 	}
-	static write(path: string, content: string | Buffer, mix?: IOperationOptions) {
-		return new File(path, <any> mix).write(content, mix);
+	static write<T = string | Buffer | any>(path: string, content: T, mix?: IOperationOptions) {
+		return new File(path, <any> mix).write<T>(content, mix);
 	}
-	writeAsync(content: string | Buffer, mix?: IOperationOptions): IDeferred<this> {
+	writeAsync<T = string | Buffer | any>(content: T, mix?: IOperationOptions): IDeferred<this> {
 
 		return dfr_factory(this, function (dfr, file, path) {
-			file.content = content = (content || file.content);
+			file.content = content = <any> (content || file.content);
 			if (content == null) {
 				dfr.reject(Error('Content is undefined'));
 				return;
@@ -163,8 +163,8 @@ export class File {
 			}
 		});
 	}
-	static writeAsync(path: string, content: string | Buffer, mix?: IOperationOptions) {
-		return new File(path).writeAsync(content, mix);
+	static writeAsync<T = string | Buffer | any>(path: string, content: T, mix?: IOperationOptions) {
+		return new File(path).writeAsync<T>(content, mix);
 	}
 	copyTo(target: string): this {
 
