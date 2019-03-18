@@ -119,19 +119,23 @@ export class File {
 		return new File(path, <any> mix).readAsync<T>(mix);
 	}
 	write<T = string | Buffer | any>(content: T, mix?: IOperationOptions): this {
-		if (content != null)
-			this.content = <any> content;
-
+		if (content != null) {
+            this.content = <any> content;
+        }
 		if (this.content == null) {
 			logger.error('io.file.write: Content is empty');
 			return this;
 		}
 
-		var path = uri_toPath(this.uri),
+		let path = uri_toPath(this.uri),
 			setts = getSetts(mix);
 
 		processHooks('write', this, setts, mix);
-		file_save(path, this.content, setts);
+        file_save(path, this.content, setts);
+        
+        // Clear Content sothat next `read` call reads content and processes the middlewares, as processHooks may serialize content
+        // Consider not to clear content, but to flag the file as serialized, so that next `read` call runs middlewares once again
+        this.content = null;
 		return this;
 	}
 	static write<T = string | Buffer | any>(path: string, content: T, mix?: IOperationOptions) {
@@ -155,9 +159,11 @@ export class File {
 				, onHookComplete);
 
 			function onHookComplete() {
+                let content = file.content;
+                file.content = null;
 				file_saveAsync(
 					path
-					, file.content
+					, content
 					, setts
 					, dfr_pipeDelegate(dfr));
 			}

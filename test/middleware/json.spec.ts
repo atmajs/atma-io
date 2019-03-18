@@ -12,7 +12,6 @@ UTest({
         
         file.write({ foo: time } as any)
         
-        delete file.content        
         const json = file.read() as any;
 
         eq_(json.foo, time);
