@@ -12,7 +12,7 @@ export const JsonMiddleware = {
 		try {
 			file.content = JSON.parse(file.content);
 		} catch (error) {
-			logger.error('<json:parser>', error);
+			logger.error(`<json:parser> ${file.uri.toString()} ${error}`);
 		}
 	},
 
