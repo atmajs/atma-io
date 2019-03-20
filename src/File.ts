@@ -433,14 +433,8 @@ function getSetts(mix, defaults?) {
 		case 'string':
 			setts.encoding = mix;
 			break;
-		case 'object':
-			if (mix.hasOwnProperty('encoding'))
-				setts.encoding = mix.encoding;
-
-			if (mix.hasOwnProperty('skipHooks'))
-				setts.skipHooks = mix.skipHooks;
-			if (mix.hasOwnProperty('hooks'))
-				setts.hooks = mix.hooks;
+        case 'object':
+            Object.assign(setts, mix);			
 			break;
 	}
 

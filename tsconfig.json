@@ -6,7 +6,7 @@
         "baseUrl": "./",
         "outDir": "ts-temp",
         "declaration": true,
-        "target": "es5",
+        "target": "es6",
         "module": "commonjs",
         "sourceMap": false,
         "experimentalDecorators": true,
