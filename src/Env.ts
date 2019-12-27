@@ -1,5 +1,6 @@
 import { class_Uri } from 'atma-utils'
 import { logger } from './global'
+import * as os from 'os';
 
 const mainFile = new class_Uri(normalizePath(process.mainModule.filename));
 const platform = process.platform;
@@ -11,13 +12,14 @@ export const Env = {
     cwd: cwd,
     applicationDir: new class_Uri((mainFile as any).toDir()),
     currentDir: new class_Uri(cwd),
+    tmpDir: new class_Uri(`file:///${os.tmpdir}/`),
+    newLine: os.EOL,
 
-    get newLine() {
-
-        Object.defineProperty(this, 'newLine', {
-            value: require('os').EOL
-        });
-        return this.newLine;
+    getTmpPath (filename: string): string {
+        return Env
+            .tmpDir
+            .combine(`${Date.now()}-${(Math.random() * 10000) | 0}-${filename}`)
+            .toString();
     },
 
     get appdataDir() {

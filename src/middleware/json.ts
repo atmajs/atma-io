@@ -25,7 +25,7 @@ export const JsonMiddleware = {
 		try {
 			var indent = config && config.minify
 				? null
-				: 4
+				: 2
 				;
 
 			file.content = JSON
@@ -34,7 +34,7 @@ export const JsonMiddleware = {
 				;
 
 		} catch (error) {
-			logger.error('<json:stringify> ', error);
+			logger.error(`<json:stringify> ${file.uri.toString()} ${error}`);
 		}
 
 	}

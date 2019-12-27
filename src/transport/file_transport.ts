@@ -81,7 +81,7 @@ function getFileTransportForPath (path: string): IFileTransport {
     }    
     let transport = CustomTransport.get(protocol);
     if (transport == null) {
-        throw new Error(`Transport '${protocol}' is not supported or not installed`);
+        throw new Error(`Transport '${protocol}' is not supported or not installed for path '${path}'`);
     }
     return transport.File;
 }
