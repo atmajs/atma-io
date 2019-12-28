@@ -20,7 +20,7 @@
         "atma-utils": "^0.1.24"
     },
     "devDependencies": {
-        "@types/node": "^8.5.10",
+        "@types/node": "^13.1.1",
         "app-bundler": "0.0.63",
         "atma": "^0.11.10",
         "atma-io-middleware-importer": "^1.1.32",
