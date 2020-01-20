@@ -1,6 +1,6 @@
 {
     "name": "atma-io",
-    "main": "./lib/io.d.ts",
+    "main": "./types/index.d.ts",
     "global": true,
     "globalDependencies": {
         "assertion": "github:atmajs/assertion",

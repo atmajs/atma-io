@@ -11,4 +11,6 @@ UTest({
 
         eq_(content, fromFile);
     }
-})
+});
+
+export {}

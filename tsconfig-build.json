@@ -1,4 +1,7 @@
 {
+    "files": [
+        "src/export.ts"
+    ],
     "compilerOptions": {
         "baseUrl": "./",
         "outDir": "ts-temp",

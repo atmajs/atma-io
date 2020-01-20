@@ -71,61 +71,69 @@ file
 ```
 
 ##### exists
-```javascript
-file.exists() //> Boolean;
+```ts
+file.exists(): boolean
 ```
+
 ##### copyTo
-```javascript
-file.copyTo(<String> path) //> Boolean;
+```ts
+interface IFileCopyOpts {
+    silent?: boolean
+    baseSource?: string 
+}
+/**
+ * @param path: Target file path or directory, when ends with slash
+ */
+file.copyTo(path: string, opts?: IFileCopyOpts): boolean
 ```
 ##### copyToAsync
-```javascript
-file.copyToAsync(<String> path) //> Deferred;
+```ts
+file.copyToAsync(path: string, opts?: IFileCopyOpts): Promise<boolean>
 ```
 
 ##### rename
-```javascript
-file.rename(<String> filename)
+```ts
+file.rename(filename: string)
 ```
 ##### renameAsync
-```javascript
-file.renameAsync(<String> filename) //> Deferred
+```ts
+file.renameAsync(filename: string): Promise<void>
+```
 
 ##### replace
 Reads the content as string, replaces the matches and writes the result.
+Expected arguments are the same as for JavaScripts String `replace`.
+Returns new content.
 
-`@arguments`: same as for JavaScripts String `replace`.
-
-`@return`: new content
-```javascript
-var str = file.replace('foo', 'bar');
+```ts
+.replace(string | RegExp, string | Function): string
 ```
+
 ##### replaceAsync
-```javascript
-file
-	.replaceAsync('foo', 'bar')
-	.done(function(newContent) {})
-	.fail(function(error) {});
+```ts
+.replaceAsync(string | RegExp, string | Function): Promise<string>
 ```
 
-```
 ##### remove
-```javascript
+```ts
 file.remove()
 ```
+
 ##### removeAsync
-```javascript
-file.removeAsync() //> Deferred
+```ts
+file.removeAsync(): Promise<void>
 ```
+
 ##### watch
 ```javascript
-file.watch(callback)
+file.watch(cb: (path) => void)
 ```
+
 Watch file for changes
 
 ##### unwatch
-```javascript
-file.unwatch(callback) //> Boolean;
+```ts
+file.unwatch(cb?: (path) => void): boolean
 ```
 
 #### Cache
@@ -133,22 +141,22 @@ Each `read` will be cached. To control cache behaviour use next methods:
 
 ##### clearCache
 ```javascript
-io.File.clearCache(<?String> path);
+File.clearCache(<?String> path);
 ```
 When `path` is `null`, then all cache is dropped.
 ##### disableCache
 ```javascript
-io.File.disableCache();
+File.disableCache();
 ```
 ##### enableCache
 ```javascript
-io.File.disableCache();
+File.disableCache();
 ```
 
 #### short forms
 There are some static methods, so that there is no need to initialize the File instance.
 ```javascript
-io.File[method] //> Function(filepath, [..args])
+File[method] //> Function(filepath, [..args])
 // methods:
         'exists'
 		'existsAsync'
@@ -207,7 +215,7 @@ io.File.middleware['coffee'] = {
 ```
 
 #### Advanced middleware
-```javascript
+```ts
 io
     .File
     .getHookHandler()
@@ -218,6 +226,7 @@ io
         zIndex: <?Number> // default: 0
     });
 ```
+
 Path is matched by the regexp. The greater `zIndex` ist the later it is called in a pipeline, otherwise the handlers are called in the order they were registerd.
 
 #### Embedded middlewares
@@ -329,12 +338,12 @@ dir
 
 ##### copyTo
 Copy `files` to destination directory. Before copying `dir.readFiles` can be called to copy only specific files.
-```javascript
-dir.copyTo(<String> destination)
+```ts
+dir.copyTo(destination: string)
 ```
 ##### copyToAsync
 ```javascript
-dir.copyToAsync(<String> destination) //> Deferred
+dir.copyToAsync(destination: string) //> Deferred
 ```
 
 ##### rename

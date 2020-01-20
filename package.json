@@ -5,7 +5,7 @@
         "name": "Alex Kit",
         "email": "alex.kit@atmajs.com"
     },
-    "version": "1.2.27",
+    "version": "1.2.28",
     "main": "./lib/io.js",
     "types": "./lib/io.d.ts",
     "repository": {
@@ -22,9 +22,9 @@
     "devDependencies": {
         "@types/node": "^13.1.1",
         "app-bundler": "0.0.63",
-        "atma": "^0.11.10",
+        "atma": "^0.12.15",
         "atma-io-middleware-importer": "^1.1.32",
-        "atma-loader-ts": "^1.0.0",
+        "atma-loader-ts": "^1.1.12",
         "dts-bundle": "^0.7.3"
     },
     "scripts": {
@@ -33,8 +33,8 @@
         "watch": "app-bundler --watch",
         "build-io": "app-bundler --app io",
         "server": "atma server",
-        "release": "atma bump && npm run build && git add -A && git commit -am \"bump\" && npm publish && git push",
-        "build-dts": "tsc -p . && atma run tools/build-dts"
+        "release": "echo \"Run atma pub -m \"message\"\"",
+        "build-dts": "tsc -p tsconfig-build.json && atma run tools/build-dts"
     },
     "app-bundler": {
         "apps": {

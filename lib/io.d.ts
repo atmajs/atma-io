@@ -116,10 +116,10 @@ declare module 'atma-io/File' {
         static write<T = string | Buffer | any>(path: string, content: T, mix?: IOperationOptions): File;
         writeAsync<T = string | Buffer | any>(content: T, mix?: IOperationOptions): IDeferred<this>;
         static writeAsync<T = string | Buffer | any>(path: string, content: T, mix?: IOperationOptions): IDeferred<File>;
-        copyTo(target: string): this;
-        static copyTo(path: string, target: string): File;
-        copyToAsync(target: string): IDeferred<this>;
-        static copyToAsync(path: string, target: string): IDeferred<File>;
+        copyTo(target: string, opts?: IFileCopyOpts): this;
+        static copyTo(path: string, target: string, opts?: IFileCopyOpts): File;
+        copyToAsync(target: string, opts?: IFileCopyOpts): IDeferred<this>;
+        static copyToAsync(path: string, target: string, opts?: IFileCopyOpts): IDeferred<File>;
         exists(): boolean;
         static exists(path: string): boolean;
         existsAsync(): IDeferred<boolean>;
@@ -154,8 +154,8 @@ declare module 'atma-io/File' {
             [protocol: string]: ITransport;
         };
         static setTransports(repository: any): void;
-        static readonly Factory: FileFactory;
-        static readonly Middleware: FileHooks;
+        static get Factory(): FileFactory;
+        static get Middleware(): FileHooks;
         static processHooks(method: any, file: any, config: any, onComplete: any): void;
         static middleware: {
             [name: string]: IFileMiddleware;
@@ -166,6 +166,10 @@ declare module 'atma-io/File' {
     export interface IFileSettings {
         cached?: boolean;
         factory?: FileFactory;
+    }
+    export interface IFileCopyOpts {
+        silent?: boolean;
+        baseSource?: string;
     }
     export interface IOperationOptions {
         skipHooks?: boolean;
