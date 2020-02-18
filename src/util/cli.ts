@@ -1,4 +1,4 @@
-import { Class } from '../global'
+import { class_Dfr } from 'atma-utils';
 
 export function cli_prompt(str, callback) {
 	Factory.create(new PromptAction(str, callback));
@@ -23,7 +23,12 @@ function initialize() {
 
 class Factory {
 	collection = []
-	busy = false
+    busy = false
+    
+    constructor () {
+        this.process = this.process.bind(this);
+        this.next = this.next.bind(this);
+    }
 
 	static create(prompt) {
 		if (rl == null) {
@@ -35,7 +40,6 @@ class Factory {
 		factory_.process();
 	}
 
-	@Class.deco.self
 	private process() {
 		if (this.busy)
 			return;
@@ -51,14 +55,13 @@ class Factory {
 			.always(this.next);
 	}
 
-	@Class.deco.self
 	private next() {
 		this.busy = false;
 		this.process();
 	}
 }
 
-class PromptAction extends Class.Deferred {
+class PromptAction extends class_Dfr {
 
 	constructor(protected text: string = '>', protected callback: Function) {
 		super();

@@ -1,5 +1,5 @@
-import { logger, Class } from './global'
-import { class_Uri } from 'atma-utils';
+import { logger  } from './global'
+import { class_Uri, class_Dfr } from 'atma-utils';
 import { dir_exists, dir_existsAsync, dir_ensure, dir_ensureAsync, dir_files, dir_filesAsync, dir_remove, dir_removeAsync, dir_symlink, dir_rename, dir_renameAsync } from './transport/dir_transport';
 import { glob_parsePatterns } from './util/glob';
 import { File } from './File';
@@ -10,6 +10,7 @@ import { Watcher } from './Watcher';
 import { IDeferred } from './IDeferred';
 import { stack_formatCaller } from './util/stack';
 import { Env } from './Env'
+import { AwaitCallbacks } from './util/Await';
 
 export class Directory {
     uri: class_Uri
@@ -178,7 +179,7 @@ export class Directory {
      * options {Object} { verbose: Boolean} Confirm target file rewrite
      */
     copyTo(target: string, options: {verbose?: boolean} = { verbose: false }): IDeferred<void> {
-        var dfr = new Class.Deferred;
+        var dfr = new class_Dfr;
         if (Array.isArray(this.files) === false) {
             this.readFiles();
         }
@@ -229,7 +230,7 @@ export class Directory {
      * 	} Confirm target file rewrite
      */
     copyToAsync(target: string, options: {verbose?: boolean} = { verbose: false}): IDeferred<void> {
-        var dfr = new Class.Deferred;
+        var dfr = new class_Dfr;
         if (Array.isArray(this.files) === false) {
 
             var dir = this;
@@ -253,12 +254,13 @@ export class Directory {
             imax = files.length,
             i = -1
             ;
-        let awaiter = new Class.Await;
+        let awaiter = new AwaitCallbacks;
         while (++i < imax) {
-            copy(i, awaiter.delegate(null));
+            copy(i, awaiter.delegate());
         }
 
         awaiter
+            .promise
             .done(dfr.resolveDelegate())
             .fail(dfr.rejectDelegate())
             ;
@@ -365,8 +367,8 @@ export class Directory {
     static symlink = dir_symlink
 };
 
-function dfr_factory<T>(dir: Directory, fn:  (dfr: Class.Deferred, dir: Directory, path: string) => any | void) {
-    let dfr = new Class.Deferred;
+function dfr_factory<T>(dir: Directory, fn:  (dfr: class_Dfr, dir: Directory, path: string) => any | void) {
+    let dfr = new class_Dfr;
     fn(dfr, dir, uri_toDirectory(dir.uri));
     return dfr as IDeferred<T>;
 }

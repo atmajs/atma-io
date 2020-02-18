@@ -1,5 +1,5 @@
-import { class_Uri } from 'atma-utils'
-import { path_getUri, path_resolveAppUri, path_resolveUri } from './util/path';
+import { class_Uri, class_Dfr } from 'atma-utils'
+import { path_getUri } from './util/path';
 import {
     file_read,
     file_readAsync,
@@ -15,7 +15,7 @@ import {
     file_removeAsync
 } from './transport/file_transport';
 
-import { Class, logger } from './global'
+import { logger } from './global'
 import { log_info } from './util/logger'
 import { fs_getStat } from './util/filesystem-util'
 import { Env } from './Env'
@@ -79,7 +79,7 @@ export class File {
         return new File(path).read<T>(mix);
     }
     readAsync<T = string | Buffer>(mix?: IOperationOptions): IDeferred<T> {
-        return dfr_factory(this, function (dfr: Class.Deferred, file: File, path: string) {
+        return dfr_factory(this, function (dfr: class_Dfr, file: File, path: string) {
             if (file.content != null) {
                 dfr.resolve(file.content, file);
                 return;
@@ -403,8 +403,8 @@ export class File {
     }
 };
 
-function dfr_factory<T>(file: File, fn: (dfr: Class.Deferred, file: File, path: string) => any | void, onError?: Function) {
-    var dfr = new Class.Deferred;
+function dfr_factory<T>(file: File, fn: (dfr: class_Dfr, file: File, path: string) => any | void, onError?: Function) {
+    var dfr = new class_Dfr;
     var path = uri_toPath(file.uri);
     if (onError != null) {
         dfr.fail(function () {
