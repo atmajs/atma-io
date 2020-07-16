@@ -340,6 +340,9 @@ export class File {
 
         var path;
         if (typeof mix === 'string') {
+            if (mix.startsWith(rootFolder)) {
+                mix = 'file://' + mix;
+            }
             path = uri_toPath(path_getUri(mix));
             if (_cache.hasOwnProperty(path) === false && mix.charCodeAt(0) === 47) {
                 path = class_Uri.combine(Env.cwd, mix);
