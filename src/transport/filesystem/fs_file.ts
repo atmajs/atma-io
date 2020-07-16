@@ -90,7 +90,7 @@ export const FileFsTransport: IFileTransport = {
                 cb(null, false);
                 return;
             }
-            let exists = stat && stat.isFile();
+            let exists = stat?.isFile() ?? false;
             cb(error, exists);
         });
     },
@@ -108,8 +108,9 @@ export const FileFsTransport: IFileTransport = {
     },
 
     remove(path) {
-        if (FileFsTransport.exists(path) === false) return true;
-
+        if (FileFsTransport.exists(path) === false) {
+            return true;
+        }
         try {
             __fs.unlinkSync(path);
         } catch (error) {
@@ -173,16 +174,17 @@ function copySync(from, to) {
     __fs.closeSync(fdr);
     return __fs.closeSync(fdw);
 }
-namespace Errno {
+export namespace Errno {
     export function isNotFound(error) {
-        if (
-            error != null &&
-            (error.errno === 34 ||
-                error.errno === -4058 ||
-                error.code === 'ENOENT')
-        ) {
-            return true;
+        if (error == null) {
+            return false;
         }
-        return false;
+        return error.errno === 34 || error.errno === -4058 || error.code === 'ENOENT';
+    }
+    export function isExists (error) {
+        if (error == null) {
+            return false;
+        }
+        return error.errno === -4075 || error.code === 'EEXIST';
     }
 }

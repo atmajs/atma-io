@@ -31,10 +31,11 @@ import { global } from './global'
 import { uri_getFile } from './util/uri';
 
 
-let _cache = {},
-    _cacheEnabled = true,
-    _hooks: FileHooks,
-    _factory: FileFactory;
+let _cache = {};
+let _cacheEnabled = true;
+let _hooks: FileHooks;
+let _factory: FileFactory;
+const rootFolder = process.cwd();
 
 export class File {
     uri: class_Uri
@@ -42,6 +43,10 @@ export class File {
     sourceMap?: string
 
     constructor(path: string | class_Uri, opts?: IFileSettings) {
+        if (typeof path === 'string' && path[0] === '/' && path.startsWith(rootFolder)) {
+            path = 'file://' + path;
+        }
+
         this.uri = path_getUri(path);
 
         path = uri_toPath(this.uri);
@@ -50,8 +55,8 @@ export class File {
             return _cache[path];
         }
         if ((this as any).__proto__ === File.prototype) {
-            var factory = opts && opts.factory || _factory;
-            var Handler = factory && factory.resolveHandler(this.uri);
+            var factory = opts?.factory ?? _factory;
+            var Handler = factory?.resolveHandler(this.uri);
             if (Handler != null)
                 return new Handler(this.uri, opts);
         }
@@ -181,7 +186,7 @@ export class File {
             ? uri_toPath(targetUri)
             : uri_toPath(targetUri.combine(uri_getFile(this.uri, opts?.baseSource)))
             ;
-        
+
         if (opts?.silent !== true) {
             let _from = (from
                 .substr(-25)
@@ -208,7 +213,7 @@ export class File {
                 ? uri_toPath(targetUri)
                 : uri_toPath(targetUri.combine(uri_getFile(this.uri, opts?.baseSource)))
                 ;
-            
+
             file_copyAsync(
                 path,
                 targetPath,
@@ -493,7 +498,7 @@ export interface IFileSettings {
 }
 export interface IFileCopyOpts {
     silent?: boolean
-    baseSource?: string 
+    baseSource?: string
 }
 
 export interface IOperationOptions {

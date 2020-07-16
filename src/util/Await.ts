@@ -13,6 +13,7 @@ export class AwaitCallbacks {
     }
 
     delegate () {
+        this.completed = true;
         this.promise.defer();
         this.wait++;
         return (error) => {

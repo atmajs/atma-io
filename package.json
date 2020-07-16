@@ -5,7 +5,7 @@
         "name": "Alex Kit",
         "email": "alex.kit@atmajs.com"
     },
-    "version": "1.2.29",
+    "version": "1.2.30",
     "main": "./lib/io.js",
     "types": "./lib/io.d.ts",
     "repository": {
@@ -24,7 +24,8 @@
         "atma-io-middleware-importer": "^1.1.32",
         "atma-io-middleware-uglify": "^1.1.24",
         "atma-loader-ts": "^1.1.12",
-        "dts-bundle": "^0.7.3"
+        "dts-bundle": "^0.7.3",
+        "shellbee": "^0.5.4"
     },
     "scripts": {
         "test": "atma test",
