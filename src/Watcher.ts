@@ -8,7 +8,7 @@ const WATCHERS: { [key: string]: FileWatcher } = {};
 
 export const Watcher = {
 
-    watch: function (path: string, callback: (path?: string) => void | any) {
+    watch (path: string, callback: (path?: string) => void | any) {
 
         if (WATCHERS[path]) {
             WATCHERS[path].on(event_CHANGE, callback);
@@ -23,7 +23,7 @@ export const Watcher = {
         WATCHERS[path] = new FileWatcher(path);
         WATCHERS[path].on(event_CHANGE, callback);
     },
-    unwatch: function (path: string, callback?: Function) {
+    unwatch (path: string, callback?: Function) {
         var watcher = WATCHERS[path];
         if (watcher == null) {
             logger.warn('<watcher> No exists', path);
@@ -44,8 +44,11 @@ export const Watcher = {
 
 class FileWatcher extends class_EventEmitter {
     path: string
-    fswatcher: __fs.FSWatcher
-    timeout: NodeJS.Timer
+    private fswatcher: __fs.FSWatcher
+    private timeout: NodeJS.Timer
+    private lastEventType: string
+    private lastFilename: string
+
     constructor(path: string) {
         super();
         this.changed = this.changed.bind(this);
@@ -54,19 +57,35 @@ class FileWatcher extends class_EventEmitter {
         this.fswatcher = __fs.watch(path, this.changed);
     }
 
-    changed() {
+    changed(eventType, filename) {
         if (this.timeout) {
             clearTimeout(this.timeout);
         }
+        this.lastEventType = eventType;
+        this.lastFilename = filename;
         this.timeout = setTimeout(this.reportChange, 100);
-    }
-
-    reportChange() {
-        this.trigger(event_CHANGE, this.path);
     }
 
     close() {
         this.fswatcher.close();
         this.off(event_CHANGE);
     }
+
+    private reportChange() {
+        this.trigger(event_CHANGE, this.path);
+        if (this.lastEventType === 'rename') {
+            if (this.lastFilename && this.path.endsWith(this.lastFilename)) {
+                this.reattach();
+                return;
+            }
+            if (__fs.existsSync(this.path)) {
+                this.reattach();
+            }
+        }
+    }
+    private reattach () {
+        this.fswatcher.close();
+        this.fswatcher = __fs.watch(this.path, this.changed);
+    }
+
 };

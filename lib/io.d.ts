@@ -37,8 +37,8 @@ declare module 'atma-io/IIo' {
 
 declare module 'atma-io/Watcher' {
     export const Watcher: {
-        watch: (path: string, callback: (path?: string) => any) => void;
-        unwatch: (path: string, callback?: Function) => void;
+        watch(path: string, callback: (path?: string) => any): void;
+        unwatch(path: string, callback?: Function): void;
     };
 }
 
