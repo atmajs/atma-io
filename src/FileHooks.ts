@@ -83,10 +83,10 @@ export class FileHooks {
         mix: RegExp | { regexp: RegExp, method: 'read' | 'write', handler: string | IFileMiddleware | IHookFunction, zIndex?: number },
         method: 'read' | 'write',
         handler: string | IFileMiddleware | IHookFunction,
-        zIndex?: number) {
+        zIndex?: number
+    ) {
 
         let regexp: RegExp;
-
         if (mix instanceof RegExp) {
             regexp = mix;
         } else {
@@ -109,19 +109,23 @@ export class FileHooks {
         }
         return this;
     }
-    contains(method: 'read' | 'write', handler: IFileMiddleware | IHookFunction, regexp: RegExp) {
-        var str = regexp && regexp.toString() || null;
-        var imax = this.hooks.length;
-        var i = -1;
+    private contains(method: 'read' | 'write', handler: IFileMiddleware | IHookFunction, regexp: RegExp) {
+        let str = regexp?.toString();
+        let imax = this.hooks.length;
+        let i = -1;
         while (++i < imax) {
-            var hook = this.hooks[i];
+            let hook = this.hooks[i];
             if (hook.method !== method) {
                 continue;
             }
-            if (hook.handler !== handler) {
+            if (str != null && str !== hook.regexp?.toString()) {
                 continue;
             }
-            if (str != null && str !== hook.regexp.toString()) {
+            if (hook.handler.name && hook.handler.name === handler.name) {
+                hook.handler = handler;
+                return true;
+            }
+            if (hook.handler !== handler) {
                 continue;
             }
             return true;
@@ -137,11 +141,11 @@ export class FileHooks {
         });
     }
     unregisterByRegexp(regexp: RegExp) {
-        var str = regexp.toString();
-        var imax = this.hooks.length;
-        var i = -1;
+        let str = regexp.toString();
+        let imax = this.hooks.length;
+        let i = -1;
         while (++i < imax) {
-            var hook = this.hooks[i];
+            let hook = this.hooks[i];
             if (hook.regexp.toString() === str) {
                 this.hooks.splice(i, 1);
                 i--;
@@ -170,7 +174,7 @@ export class FileHooks {
             .hooks
             .filter(x => x.canHandle(path, method))
             .sort((a, b) => {
-                var az = a.zIndex,
+                let az = a.zIndex,
                     bz = b.zIndex;
                 if (az === bz)
                     return 0;

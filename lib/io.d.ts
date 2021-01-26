@@ -271,7 +271,6 @@ declare module 'atma-io/FileHooks' {
             handler: string | IFileMiddleware | IHookFunction;
             zIndex?: number;
         }, method: 'read' | 'write', handler: string | IFileMiddleware | IHookFunction, zIndex?: number): this;
-        contains(method: 'read' | 'write', handler: IFileMiddleware | IHookFunction, regexp: RegExp): boolean;
         unregister(method: 'read' | 'write', handler: IFileMiddleware | string | IHookFunction): void;
         unregisterByRegexp(regexp: RegExp): void;
         trigger(method: 'read' | 'write', file: File, config?: any): void;
