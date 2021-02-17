@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import * as os from 'os';
 import { Errno } from './transport/filesystem/fs_file';
 
+/** Safe cross process file writes and reads using *.bak files as the safe-fallback */
 export class FileSafe {
     public errored: Error = null;
 
@@ -17,7 +18,7 @@ export class FileSafe {
 
     public file = new File(this.path);
     public lockInProc = new class_Dfr;
-    public lockOutProc = this.opts?.threadSafe 
+    public lockOutProc = this.opts?.threadSafe
         ? new LockFile(this.file.uri.toLocalFile())
         : null;
 
@@ -42,7 +43,7 @@ export class FileSafe {
             this.pending = data;
             return dfr;
         }
-        
+
         this.busy = true;
         this.lockInProc.defer();
         this.writeInner(data);
@@ -63,7 +64,7 @@ export class FileSafe {
         }
     }
 
-    
+
     private async readInner (): Promise<string> {
         let existsBak = await File.existsAsync (this.pathBak);
         if (existsBak) {
@@ -126,16 +127,16 @@ export class FileSafe {
     }
 }
 
-class LockFile {
+export class LockFile {
 
-    private queue: Promise<any>[] = []; 
+    private queue: Promise<any>[] = [];
     private current: class_Dfr;
 
     private pathLock = this.path + '.lock';
     private lastMod: number;
     private lastCheck: number;
     private acquiredAt: number;
-    
+
     private fd: number;
     private pollTimeout;
     private upgradeLockTimeout;
@@ -145,7 +146,7 @@ class LockFile {
     private pollStartedAt: number;
 
     constructor (public path: string) {
-        
+
     }
 
     acquire (): Promise<any> {
@@ -156,9 +157,8 @@ class LockFile {
         }
         this.next();
         return p;
-    } 
+    }
     release (): Promise<void> {
-        console.log('release')
         return this.onRelease();
     }
 
@@ -194,7 +194,7 @@ class LockFile {
     }
     private async onRelease () {
         this.releasingDfr = new class_Dfr();
-        
+
         await this.upgradingDfr;
         await this.releaseLock();
         this.releasingDfr.resolve();
@@ -347,10 +347,10 @@ class LockFile {
 }
 
 namespace Stats {
-    const key = os.platform() === 'win32' 
+    const key = os.platform() === 'win32'
         ? 'mtime'
         : 'ctime';
-    
+
     export function createdAt (stats: fs.Stats) {
         return stats[key].getTime();
     }

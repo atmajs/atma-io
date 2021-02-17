@@ -16,6 +16,7 @@ declare module 'atma-io/IIo' {
     import { File } from 'atma-io/File';
     import { Glob } from 'atma-io/ExportsGlob';
     import { setSettings } from 'atma-io/ExportsSetts';
+    import { FileSafe, LockFile } from 'atma-io/FileSafe';
     export interface Io {
         env: {
             currentDir: class_Uri;
@@ -30,6 +31,8 @@ declare module 'atma-io/IIo' {
         glob: typeof Glob;
         settings: typeof setSettings;
         File: typeof File;
+        LockFile: typeof LockFile;
+        FileSafe: typeof FileSafe;
         Uri: typeof class_Uri;
         Directory: typeof Directory;
     }
@@ -197,6 +200,34 @@ declare module 'atma-io/ExportsSetts' {
     export function setSettings(settings: {
         extensions?: any;
     }): void;
+}
+
+declare module 'atma-io/FileSafe' {
+    import { class_Dfr } from 'atma-utils';
+    import { File, IFileSettings } from 'atma-io/File';
+    /** Safe cross process file writes and reads using *.bak files as the safe-fallback */
+    export class FileSafe {
+        path: string;
+        opts?: IFileSettings & {
+            threadSafe: boolean;
+        };
+        errored: Error;
+        file: File;
+        lockInProc: class_Dfr;
+        lockOutProc: LockFile;
+        constructor(path: string, opts?: IFileSettings & {
+            threadSafe: boolean;
+        });
+        write(...args: any[]): void;
+        writeAsync(data: string): class_Dfr;
+        readAsync(): Promise<string>;
+    }
+    export class LockFile {
+        path: string;
+        constructor(path: string);
+        acquire(): Promise<any>;
+        release(): Promise<void>;
+    }
 }
 
 declare module 'atma-io/transport/dir_transport' {

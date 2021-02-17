@@ -4,6 +4,7 @@ import { Directory } from './Directory';
 import { File } from './File';
 import { Glob } from './ExportsGlob';
 import { setSettings } from './ExportsSetts';
+import { FileSafe, LockFile } from './FileSafe';
 
 export interface Io {
     env: {
@@ -19,6 +20,8 @@ export interface Io {
     glob: typeof Glob
     settings: typeof setSettings
     File: typeof File
+    LockFile: typeof LockFile
+    FileSafe: typeof FileSafe
     Uri: typeof class_Uri
     Directory: typeof Directory
 }

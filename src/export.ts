@@ -8,11 +8,14 @@ import { setSettings } from './ExportsSetts'
 
 import { Io } from './IIo';
 import { class_Uri } from 'atma-utils';
+import { FileSafe, LockFile } from './FileSafe'
 
 io.env = Env;
 io.watcher = Watcher;
 io.glob = Glob;
 io.File = File;
+io.FileSafe = FileSafe;
+io.LockFile = LockFile;
 io.Uri = class_Uri;
 io.Directory = Directory;
 io.settings = setSettings;
