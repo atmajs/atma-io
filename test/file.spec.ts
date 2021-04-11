@@ -29,7 +29,12 @@ UTest({
         check('/' + path_File);
     },
 
-    '!copy'() {
+    'readRange'() {
+        let content = File.readRange('/test/assets/file.txt', 3, 5);
+        eq_(content, 'Lorem');
+    },
+
+    'copy'() {
         '> simple copy'
         File.copyTo(path_File, path_Copy);
 

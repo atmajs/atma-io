@@ -107,6 +107,44 @@ export const FileFsTransport: IFileTransport = {
         __fs.readFile(path, { encoding: encoding }, cb);
     },
 
+    readRange(path, offset, length, encoding?): string | Buffer {
+        try {
+            const fd = __fs.openSync(path, 'r');
+            const buffer = Buffer.alloc(length);
+            __fs.readSync(fd, buffer, 0, length, offset);
+            if (encoding !== 'buffer') {
+                return buffer.toString(encoding ?? 'utf8');
+            }
+            return buffer;
+
+        } catch (error) {
+            log_error('file_readRange', error.toString());
+        }
+        return '';
+    },
+
+    readRangeAsync(path, offset, length, encoding, cb: (err: Error, x: string | Buffer) => void) {
+        __fs.open(path, 'r', 0o666, (error, fd) => {
+            if (error) {
+                cb(error, null);
+                return;
+            }
+            const buffer = Buffer.alloc(length);
+            __fs.read(fd, buffer, 0, length, offset, (err, count) => {
+                if (error) {
+                    cb(error, null);
+                    return;
+                }
+                if (encoding !== 'buffer') {
+                    cb(null, buffer.toString(encoding ?? 'utf8'));
+                    return;
+                }
+                cb(null, buffer);
+            });
+        })
+    },
+
+
     remove(path) {
         if (FileFsTransport.exists(path) === false) {
             return true;

@@ -12,7 +12,9 @@ import {
     file_renameAsync,
     file_rename,
     file_remove,
-    file_removeAsync
+    file_removeAsync,
+    file_readRange,
+    file_readRangeAsync
 } from './transport/file_transport';
 
 import { logger } from './global'
@@ -55,8 +57,8 @@ export class File {
             return _cache[path];
         }
         if ((this as any).__proto__ === File.prototype) {
-            var factory = opts?.factory ?? _factory;
-            var Handler = factory?.resolveHandler(this.uri);
+            let factory = opts?.factory ?? _factory;
+            let Handler = factory?.resolveHandler(this.uri);
             if (Handler != null)
                 return new Handler(this.uri, opts);
         }
@@ -71,9 +73,8 @@ export class File {
         if (this.content != null)
             return <T><any>this.content;
 
-        var setts = getSetts(mix),
-            path = uri_toPath(this.uri)
-            ;
+        let setts = getSetts(mix);
+        let path = uri_toPath(this.uri);
 
         this.content = file_read(path, setts.encoding);
         processHooks('read', this, setts, mix);
@@ -90,7 +91,7 @@ export class File {
                 return;
             }
 
-            var setts = getSetts(mix);
+            let setts = getSetts(mix);
             file_readAsync(
                 path
                 , setts.encoding
@@ -124,6 +125,39 @@ export class File {
     static readAsync<T = string | Buffer>(path: string, mix?: IOperationOptions) {
         return new File(path, <any>mix).readAsync<T>(mix);
     }
+    readRange<T = string>(position: number, length: number, mix?: IOperationOptions): T {
+        let path = uri_toPath(this.uri);
+        let setts = getSetts(mix);
+        return <T> <any> file_readRange(path, position, length, setts.encoding);
+    }
+    static readRange<T = string>(path: string, position: number, length: number, mix?: IOperationOptions): T {
+        return new File(path).readRange<T>(position, length, mix);
+    }
+
+    readRangeAsync<T = string>(position: number, length: number, mix?: IOperationOptions): IDeferred<T> {
+        return dfr_factory(this, function (dfr: class_Dfr, file: File, path: string) {
+
+            let setts = getSetts(mix);
+            file_readRangeAsync(
+                path
+                , position
+                , length
+                , setts.encoding
+                , onReadComplete
+            );
+
+            function onReadComplete(error, content) {
+                if (error)
+                    return dfr.reject(error);
+
+                dfr.resolve(content, file);
+            }
+        });
+    }
+    static readRangeAsync<T = string>(path: string, position: number, length: number, mix?: IOperationOptions) {
+        return new File(path, <any>mix).readRangeAsync<T>(position, length, mix);
+    }
+
     write<T = string | Buffer | any>(content: T, mix?: IOperationOptions): this {
         if (content != null) {
             this.content = <any>content;
@@ -156,7 +190,7 @@ export class File {
                 return;
             }
 
-            var setts = getSetts(mix);
+            let setts = getSetts(mix);
             processHooks(
                 'write'
                 , file
@@ -338,7 +372,7 @@ export class File {
         if (mix == null)
             return;
 
-        var path;
+        let path;
         if (typeof mix === 'string') {
             if (mix.startsWith(rootFolder)) {
                 mix = 'file://' + mix;
@@ -412,8 +446,8 @@ export class File {
 };
 
 function dfr_factory<T>(file: File, fn: (dfr: class_Dfr, file: File, path: string) => any | void, onError?: Function) {
-    var dfr = new class_Dfr;
-    var path = uri_toPath(file.uri);
+    let dfr = new class_Dfr;
+    let path = uri_toPath(file.uri);
     if (onError != null) {
         dfr.fail(function () {
             onError(file, path);
@@ -438,7 +472,7 @@ function uri_toPath(uri: class_Uri) {
     return uri.toString();
 }
 function getSetts(mix, defaults?) {
-    var setts = defaults || {
+    let setts = defaults ?? {
         encoding: 'utf8',
         skipHooks: false,
         hooks: null,
@@ -462,7 +496,7 @@ function getSetts(mix, defaults?) {
     return setts;
 }
 function processHooks(method: 'read' | 'write', file: File, setts: IOperationOptions, config: any, cb?: Function) {
-    var hooks = _hooks;
+    let hooks = _hooks;
     if (setts != null) {
         hooks = setts.hooks || hooks;
         if (hooks == null || setts.skipHooks === true) {
@@ -509,6 +543,11 @@ export interface IOperationOptions {
     /** Default: utf8 */
     encoding?: 'buffer' | 'utf8' | string
     hooks?: FileHooks
+
+    position?: number
+    length?: number
+
+
     [other: string]: any
 }
 

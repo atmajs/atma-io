@@ -8,6 +8,9 @@ export interface IFileTransport {
     existsAsync(path, cb: (err: Error, x: boolean) => void)
     read(path, encoding?): string | Buffer
     readAsync(path, encoding, cb: (err: Error, x: string | Buffer) => void)
+    readRange(path, offset, limit, encoding?): string | Buffer
+    readRangeAsync(path, offset, limit, encoding, cb: (err: Error, x: string | Buffer) => void)
+
     remove(path): boolean
     removeAsync(path, cb: (err: Error) => void)
     rename(path, filename)
@@ -28,7 +31,7 @@ export interface IDirectoryTransport {
 
     rename(oldPath, newPath)
     renameAsync(oldPath, newPath, cb: (err: Error) => void)
-    
+
 }
 export interface ITransport {
     File: IFileTransport
@@ -43,7 +46,7 @@ export class CustomTransport {
     static register (protocol: string, transport: ITransport) {
         Repository[protocol] = transport;
     }
-    static get (protocol: string) {        
+    static get (protocol: string) {
         return Repository[protocol];
     }
     static all () {

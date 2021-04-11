@@ -115,6 +115,10 @@ declare module 'atma-io/File' {
         static read<T = string | Buffer>(path: string, mix?: IOperationOptions): T;
         readAsync<T = string | Buffer>(mix?: IOperationOptions): IDeferred<T>;
         static readAsync<T = string | Buffer>(path: string, mix?: IOperationOptions): IDeferred<T>;
+        readRange<T = string>(position: number, length: number, mix?: IOperationOptions): T;
+        static readRange<T = string>(path: string, position: number, length: number, mix?: IOperationOptions): T;
+        readRangeAsync<T = string>(position: number, length: number, mix?: IOperationOptions): IDeferred<T>;
+        static readRangeAsync<T = string>(path: string, position: number, length: number, mix?: IOperationOptions): IDeferred<T>;
         write<T = string | Buffer | any>(content: T, mix?: IOperationOptions): this;
         static write<T = string | Buffer | any>(path: string, content: T, mix?: IOperationOptions): File;
         writeAsync<T = string | Buffer | any>(content: T, mix?: IOperationOptions): IDeferred<this>;
@@ -179,6 +183,8 @@ declare module 'atma-io/File' {
         /** Default: utf8 */
         encoding?: 'buffer' | 'utf8' | string;
         hooks?: FileHooks;
+        position?: number;
+        length?: number;
         [other: string]: any;
     }
 }
@@ -321,6 +327,8 @@ declare module 'atma-io/transport/custom' {
         existsAsync(path: any, cb: (err: Error, x: boolean) => void): any;
         read(path: any, encoding?: any): string | Buffer;
         readAsync(path: any, encoding: any, cb: (err: Error, x: string | Buffer) => void): any;
+        readRange(path: any, offset: any, limit: any, encoding?: any): string | Buffer;
+        readRangeAsync(path: any, offset: any, limit: any, encoding: any, cb: (err: Error, x: string | Buffer) => void): any;
         remove(path: any): boolean;
         removeAsync(path: any, cb: (err: Error) => void): any;
         rename(path: any, filename: any): any;

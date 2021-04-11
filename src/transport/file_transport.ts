@@ -5,7 +5,7 @@ import { path_getProtocol } from '../util/path';
 export function file_save(path: string, content: any, options) {
     let transport = getFileTransportForPath(path);
     transport.save(path, content, options);
-	
+
 };
 export function file_saveAsync(path, content, options, cb) {
     let transport = getFileTransportForPath(path);
@@ -48,12 +48,21 @@ export function file_existsAsync(path, cb) {
 };
 
 export function file_read(path, encoding) {
-    let transport = getFileTransportForPath(path);    
+    let transport = getFileTransportForPath(path);
     return transport.read(path, encoding);
 };
 export function file_readAsync(path, encoding, cb) {
     let transport = getFileTransportForPath(path);
     transport.readAsync(path, encoding, cb)
+};
+
+export function file_readRange(path: string, offset: number, limit: number, encoding: string) {
+    let transport = getFileTransportForPath(path);
+    return transport.readRange(path, offset, limit, encoding);
+};
+export function file_readRangeAsync(path, offset, limit, encoding, cb) {
+    let transport = getFileTransportForPath(path);
+    transport.readRangeAsync(path, offset, limit, encoding, cb)
 };
 
 export function file_remove(path) {
@@ -78,7 +87,7 @@ function getFileTransportForPath (path: string): IFileTransport {
     let protocol = path_getProtocol(path);
     if (protocol == null || protocol === 'file') {
         return FsTransport.File;
-    }    
+    }
     let transport = CustomTransport.get(protocol);
     if (transport == null) {
         throw new Error(`Transport '${protocol}' is not supported or not installed for path '${path}'`);
