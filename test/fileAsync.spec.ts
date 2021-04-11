@@ -7,17 +7,17 @@ var path_File = 'test/assets/file.txt',
 
 UTest({
 
-    '$before': function() {
+    '$before' () {
         if (File.exists(path_Copy))
             File.remove(path_Copy);
 
         if (File.exists(path_Write))
             File.remove(path_Write);
     },
-    '$teardown': function(){
+    '$teardown' (){
         File.clearCache();
     },
-    'exists - source': function(done) {
+    'exists - source' (done) {
         this.exists = function(path, expect, done){
             File
                 .existsAsync(path)
@@ -30,17 +30,17 @@ UTest({
         };
         this.exists(path_File, true, done);
     },
-    'exists - target': function(done){
+    'exists - target' (done){
         this.exists(path_Copy, false, done);
     },
-    'exists - not': function(done){
+    'exists - not' (done){
         this.exists('/path/not/exists', false, done);
     },
-    'exists - not - directory': function(done){
+    'exists - not - directory' (done){
         this.exists('test', false, done);
     },
 
-    'read': function(done){
+    'read' (done){
         this.checkRead = function(path, contains, done) {
             File
                 .readAsync(path)
@@ -58,10 +58,10 @@ UTest({
         let content = await File.readRangeAsync('/test/assets/file.txt', 3, 5);
         eq_(content, 'Lorem');
     },
-    'read - 2': function(done){
+    'read - 2' (done){
         this.checkRead('/' + path_File, "Lorem", done);
     },
-    'write': function(done){
+    'write' (done){
         this.checkWrite = function(path, content, done){
             File
                 .writeAsync(path, content)
@@ -73,10 +73,10 @@ UTest({
         };
         this.checkWrite(path_Write, 'foo-bar', done);
     },
-    'write - 2': function(done){
+    'write - 2' (done){
         this.checkWrite(path_Write, 'baz-qux', done);
     },
-    'rename': function(done){
+    'rename' (done){
         var name = 'write-renamed.txt';
         File
             .renameAsync(path_Write, name)
@@ -89,7 +89,7 @@ UTest({
                 done();
             }.bind(this));
     },
-    'copy': function(done){
+    'copy' (done){
         File
             .copyToAsync(path_File, path_Copy)
             .fail(assert.avoid())
@@ -100,7 +100,7 @@ UTest({
             });
     },
 
-    'remove': function(done){
+    'remove' (done){
         File
             .removeAsync(path_Copy)
             .fail(assert.avoid())
@@ -110,7 +110,7 @@ UTest({
             })
     },
 
-    'hook': function(done){
+    'hook' (done){
 
         function hook(file){
             file.content = 'foo';

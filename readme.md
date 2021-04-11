@@ -28,8 +28,8 @@ Features:
 #### File methods
 
 ##### File constructor
-```javascript
-var file = new io.File('test.txt');
+```ts
+let file = new io.File('test.txt');
 ```
 Path is always relative to the cwd (_except windows os, when drive letter is used_). To specify system absolute path, use `file://` protocol.
 
@@ -37,37 +37,50 @@ Path is always relative to the cwd (_except windows os, when drive letter is use
 Read file's content. If `encoding` is set to null raw `Buffer` is returned.
 For each `read` middleware pipeline is used, to skip it, set `skipHooks` to true.
 
-```javascript
-var content = file.read( <?Object> {
+```ts
+let content = file.read( <?Object> {
     encoding: String | null, //> 'utf8'
     skipHooks: Boolean //> false
 });
 ```
 
 ##### readAsync
-```javascript
+```ts
 file
-	.readAsync( <?Object> {
-		encoding: String | null, //> 'utf8'
-		skipHooks: Boolean //> false
-	})
-	.done(function(content, file))
-	.fail(function(error))
+    .readAsync( <?Object> {
+        encoding: String | null, //> 'utf8'
+        skipHooks: Boolean //> false
+    })
+    .done(function(content, file))
+    .fail(function(error))
 ```
+
+##### readRange
+Get byte or string range from a file
+
+```ts
+let content = file.readRange(position, length);
+```
+
+##### readRangeAsync
+```ts
+let content = await file.readRangeAsync(position, length)
+```
+
 ##### write
-```javascript
+```ts
 file.write(String | Buffer, <?Object>{
     skipHooks: Boolean
 })
 ```
 ##### writeAsync
-```javascript
+```ts
 file
-	.writeAsync(String | Buffer, <?Object>{
-		skipHooks: Boolean
-	})
-	.done(function())
-	.fail(function(error))
+    .writeAsync(String | Buffer, <?Object>{
+        skipHooks: Boolean
+    })
+    .done(function())
+    .fail(function(error))
 ```
 
 ##### exists
@@ -79,7 +92,7 @@ file.exists(): boolean
 ```ts
 interface IFileCopyOpts {
     silent?: boolean
-    baseSource?: string 
+    baseSource?: string
 }
 /**
  * @param path: Target file path or directory, when ends with slash
@@ -125,7 +138,7 @@ file.removeAsync(): Promise<void>
 ```
 
 ##### watch
-```javascript
+```ts
 file.watch(cb: (path) => void)
 ```
 
@@ -137,53 +150,54 @@ file.unwatch(cb?: (path) => void): boolean
 ```
 
 #### Cache
-Each `read` will be cached. To control cache behaviour use next methods:
+Each `read` will be cached. To control cache behavior use next methods:
 
 ##### clearCache
-```javascript
+```ts
 File.clearCache(<?String> path);
 ```
 When `path` is `null`, then all cache is dropped.
 ##### disableCache
-```javascript
+```ts
 File.disableCache();
 ```
 ##### enableCache
-```javascript
+```ts
 File.disableCache();
 ```
 
 #### short forms
 There are some static methods, so that there is no need to initialize the File instance.
-```javascript
+```ts
 File[method] //> Function(filepath, [..args])
 // methods:
         'exists'
-		'existsAsync'
+        'existsAsync'
         'read'
-		'readAsync'
+        'readAsync'
+        'readRange'
+        'readRangeAsync'
         'write'
-		'writeAsync'
+        'writeAsync'
         'remove'
-		'removeAsync',
-		'replace',
-		'replaceAsync',
-		'rename'
-		'renameAsync'
+        'removeAsync'
+        'replace'
+        'replaceAsync'
+        'rename'
+        'renameAsync'
         'copyTo'
-		'copyToAsync'
+        'copyToAsync'
 
 // sample
-io
-	.File
-	.readAsync('/baz.txt')
-	.done(function(content){
-		console.log(content);
-	})
-	.fail(function(error){
-		console.error(error);
-	})
-	;
+File
+    .readAsync('/baz.txt')
+    .done(function(content){
+        console.log(content);
+    })
+    .fail(function(error){
+        console.error(error);
+    })
+    ;
 ```
 
 ### File Middleware
@@ -192,8 +206,9 @@ Middleware pattern is used for all reads and writes. It can be used, for example
 #### Extensions
 
 To get the idea, look at the hook definition sample:
-```javascript
-io.File.registerExtensions({
+```ts
+import { File } from 'atma-io'
+File.registerExtensions({
     'coffee':[
         'conditions:read',
         'coffee-compiler:read',
@@ -202,10 +217,11 @@ io.File.registerExtensions({
 });
 ```
 Each middleware has unique name and is registerd in this way:
-```javascript
-io.File.middleware['coffee'] = {
+```ts
+import { File } from 'atma-io'
+File.middleware['coffee'] = {
     read: function(<io.File> file, <Object> config){
-        var coffee = require('coffee-script');
+        let coffee = require('coffee-script');
         file.content = coffee.compile(file.content);
     },
     write: function(<io.File> file, <Object> config){
@@ -216,8 +232,8 @@ io.File.middleware['coffee'] = {
 
 #### Advanced middleware
 ```ts
-io
-    .File
+import { File } from 'atma-io'
+File
     .getHookHandler()
     .register({
         regexp: <RegExp>,
@@ -237,10 +253,10 @@ _Lately will be converted into plugins, @see [Plugins](#middleware-plugins)_
     - jshint ( -> run jshint )
     - json ( -> JSON.parse is used )
     - yml ( -> YAML parser is used )
-    
+
 - write
     - uglify ( -> Minify source before write)
-	- cssmin ( -> Minify source before write)
+    - cssmin ( -> Minify source before write)
     - yml ( -> Stringify object to yml string )
     - json ( -> Stringify object to json )
 
@@ -256,22 +272,22 @@ There additional `read`/`write` middlewares as atma plugins:
 ###### Combined middlewares
 For example, you want to use Traceur middelware and jshint for reading `js` files:
 _via javascript_
-```javascript
-io.File.registerExtensions({
-	js: ['hint:read', 'atma-loader-traceur:read' /* ... */],
+```ts
+File.registerExtensions({
+    js: ['hint:read', 'atma-loader-traceur:read' /* ... */],
 })
 ```
 _via `package.json`_
 ```json
 ...
 "atma": {
-	"settings" : {
-		"io": {
-			"extensions": {
-				"js": [ "hint:read", "atma-loader-traceur:read" ]
-			}
-		}
-	}
+    "settings" : {
+        "io": {
+            "extensions": {
+                "js": [ "hint:read", "atma-loader-traceur:read" ]
+            }
+        }
+    }
 }
 ```
 
@@ -279,18 +295,18 @@ _via `package.json`_
 
 Define with RegExp a File Handler to completely override  the read/write/exists/remove behaviour.
 
-```javascript
-io
-    .File
+```ts
+import { File } from 'atma-io'
+File
     .getFactory()
-    .registerHandler(/defaults\.json$/i, Class({
-        exists: function(){
+    .registerHandler(/defaults\.json$/i, class {
+        exists (){
             return true;
         },
-        read: function(){
+        read (){
             return { foo: 'bar' };
         }
-    }));
+    });
 
 ```
 
@@ -300,25 +316,26 @@ io
 #### Directory methods
 
 ##### Constructor
-```javascript
-var dir = new io.Directory('src/');
+```ts
+import { Directory } from 'atma-io'
+let dir = new Directory('src/');
 ```
 Path is always relative to the cwd (_except windows os, when drive letter is used_). To specify system absolute path, use `file://` protocol.
 
 ##### exists
-```javascript
+```ts
 dir.exists()//> Boolean
 ```
 ##### existsAsync
-```javascript
+```ts
 dir.existsAsync()//> Deferred
 ```
 ##### readFiles
-```javascript
+```ts
 dir.readFiles(<?String> pattern).files // Array<io.Files>
 ```
 Get list of all files in the directory. `pattern` is a glob pattern.
-```javascript
+```ts
 // all javascript files, also from sub-directories
 pattern = '*.js';
 // only from base directory
@@ -329,11 +346,11 @@ pattern = '**/*.js'
 dir.readFiles(pattern).files
 ```
 ##### readFilesAsync
-```javascript
+```ts
 dir
-	.readFilesAsync(<?String> pattern)
-	.done(function(files))
-	.fail(function(error))
+    .readFilesAsync(<?String> pattern)
+    .done(function(files))
+    .fail(function(error))
 ```
 
 ##### copyTo
@@ -342,71 +359,71 @@ Copy `files` to destination directory. Before copying `dir.readFiles` can be cal
 dir.copyTo(destination: string)
 ```
 ##### copyToAsync
-```javascript
+```ts
 dir.copyToAsync(destination: string) //> Deferred
 ```
 
 ##### rename
-```javascript
+```ts
 dir.rename(<String> folderName);
 ```
 ##### renameAsync
-```javascript
+```ts
 dir.renameAsync(<String> folderName) //> Deferred
 ```
 ##### remove
 Removes all content recursively and the folder itself
-```javascript
+```ts
 dir.remove() //> Boolean
 ```
 
 ##### removeAsync
-```javascript
+```ts
 dir.removeAsync()
 ```
 
 ##### ensure
-```javascript
+```ts
 dir.ensure()
 ```
 Creates directory structure, if not already exists.
 ##### ensureAsync
-```javascript
+```ts
 dir.ensureAsync()
 ```
 
 ##### watch
-```javascript
+```ts
 dir.watch(callback)
 ```
 Watch directory for changes
 ##### unwatch
-```javascript
+```ts
 dir.unwatch(callback)
 ```
 
 ##### short forms
 There are some static methods, so that there is no need to initialize the Directory instance.
-```javascript
-io.Directory[method] //> Function(dirpath, [..args])
+```ts
+Directory[method] //> Function(dirpath, [..args])
 // methods:
     'exists'
-	'existsAsync'
+    'existsAsync'
     'readFiles'
-	'readFilesAsync'
+    'readFilesAsync'
     'ensure'
-	'ensureAsync'
+    'ensureAsync'
     'remove'
-	'removeAsync'
+    'removeAsync'
     'copyTo'
-	'copyToAsync'
-	
+    'copyToAsync'
+
 // sample
 io
-	.Directory
-	.readFilesAsync('sub/', '**.js')
-	.done(function(files))
-	.fail(function(error))
+    .Directory
+    .readFilesAsync('sub/', '**.js')
+    .done(function(files))
+    .fail(function(error))
 ```
 
 
