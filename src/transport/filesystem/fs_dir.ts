@@ -39,7 +39,7 @@ export const DirectoryFsTransport: IDirectoryTransport = {
     renameAsync(oldPath, newPath, cb: (err: Error) => void) {
         __fs.rename(oldPath, newPath, cb);
     }
-    
+
 }
 
 function dir_ensure(path) {
@@ -80,7 +80,7 @@ function dir_ensureAsync(path, cb) {
             if (error) {
                 if (error.code === 'EEXIST') error = null;
                 else if (error.errno === 47 || error.errno === -4707) error = null;
-            }            
+            }
             cb(error);
         });
     }
@@ -91,6 +91,10 @@ function dir_exists(path) {
 }
 function dir_existsAsync(path, cb) {
     __fs.stat(path, function(error, stat) {
+        if (error?.code === 'ENOENT') {
+            cb(null, false);
+            return;
+        }
         cb(error, stat && stat.isDirectory());
     });
 }
