@@ -288,7 +288,7 @@ export class LockFile {
     }
     private pollAcquire () {
         this.pollTimeout = setTimeout(() => {
-            this.tryAcquire((err, cb) => {
+            this.tryAcquire((err, status) => {
                 if (err) {
                     this.onError(err);
                     return;
