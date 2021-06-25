@@ -14,7 +14,9 @@ import {
     file_remove,
     file_removeAsync,
     file_readRange,
-    file_readRangeAsync
+    file_readRangeAsync,
+    file_append,
+    file_appendAsync
 } from './transport/file_transport';
 
 import { logger } from './global'
@@ -293,6 +295,26 @@ export class File {
     static renameAsync(path: string, fileName: string): IDeferred<boolean> {
         return new File(path).renameAsync(fileName);
     }
+
+    append(str: string): boolean {
+        return file_append(uri_toPath(this.uri), str);
+    }
+    static append(path: string, str: string): boolean {
+        return new File(path).append(str);
+    }
+    appendAsync(str: string): IDeferred<boolean> {
+        return dfr_factory(this, function (dfr, file, path) {
+            file_appendAsync(
+                path,
+                str,
+                dfr_pipeDelegate(dfr)
+            );
+        });
+    }
+    static appendAsync(path: string, str: string): IDeferred<boolean> {
+        return new File(path).appendAsync(str);
+    }
+
     remove(): boolean {
         return file_remove(uri_toPath(this.uri));
     }

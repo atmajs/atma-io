@@ -33,62 +33,69 @@ let file = new io.File('test.txt');
 ```
 Path is always relative to the cwd (_except windows os, when drive letter is used_). To specify system absolute path, use `file://` protocol.
 
-##### read
+##### `read` `readAsync`
 Read file's content. If `encoding` is set to null raw `Buffer` is returned.
 For each `read` middleware pipeline is used, to skip it, set `skipHooks` to true.
 
+> Hooks will be per default executed. For example, when reading from `*.json` file the string will be deserialized to json object
+
 ```ts
-let content = file.read( <?Object> {
-    encoding: String | null, //> 'utf8'
-    skipHooks: Boolean //> false
+let content = file.read<TOut = string>( options?: {
+    encoding?: string | null, //> 'utf8'
+    skipHooks?: boolean //> false
 });
-```
 
-##### readAsync
-```ts
 file
-    .readAsync( <?Object> {
-        encoding: String | null, //> 'utf8'
-        skipHooks: Boolean //> false
+    .readAsync <TOut = string> (options?: {
+        encoding?: string | null, //> 'utf8'
+        skipHooks?: boolean //> false
     })
-    .done(function(content, file))
-    .fail(function(error))
+    .then((content) => {}, (error) => {})
 ```
 
-##### readRange
+##### `readRange` `readRangeAsync`
 Get byte or string range from a file
 
 ```ts
 let content = file.readRange(position, length);
-```
 
-##### readRangeAsync
-```ts
 let content = await file.readRangeAsync(position, length)
 ```
 
-##### write
+##### `write` `writeAsync`
+
+> Hooks will be per default executed. For example, when writing to `*.json` file and providing an object, this object will be serialized to json string
+
 ```ts
-file.write(String | Buffer, <?Object>{
-    skipHooks: Boolean
+file.write(string | Buffer | any, options?: {
+    skipHooks?: boolean
 })
-```
-##### writeAsync
-```ts
+
 file
-    .writeAsync(String | Buffer, <?Object>{
-        skipHooks: Boolean
+    .writeAsync(content: string | Buffer | any, options?: {
+        skipHooks?: boolean
     })
-    .done(function())
-    .fail(function(error))
+    .then(() => {}, (err) => {})
 ```
 
-##### exists
+
+##### `append` `appendAsync`
 ```ts
-file.exists(): boolean
+file.append(content: string)
+
+file
+    .appendAsync(string)
+    .then(() => {}, (err) => {})
 ```
 
-##### copyTo
+##### `exists` `existsAsync`
+```ts
+let b: boolean = file.exists()
+
+let b: boolean = await file.existsAsync();
+```
+
+##### `copyTo` `copyToAsync`
 ```ts
 interface IFileCopyOpts {
     silent?: boolean
@@ -98,51 +105,42 @@ interface IFileCopyOpts {
  * @param path: Target file path or directory, when ends with slash
  */
 file.copyTo(path: string, opts?: IFileCopyOpts): boolean
-```
-##### copyToAsync
-```ts
+
 file.copyToAsync(path: string, opts?: IFileCopyOpts): Promise<boolean>
 ```
 
-##### rename
+##### `rename` `renameAsync`
 ```ts
 file.rename(filename: string)
-```
-##### renameAsync
-```ts
+
 file.renameAsync(filename: string): Promise<void>
 ```
 
-##### replace
+##### `replace` `replaceAsync`
 Reads the content as string, replaces the matches and writes the result.
-Expected arguments are the same as for JavaScripts String `replace`.
+Expected arguments are the same as for JavaScripts string `replace`.
 Returns new content.
 
 ```ts
-.replace(string | RegExp, string | Function): string
+file.replace(search: string | RegExp, replacer: string | Function): string
+
+file.replaceAsync(search: string | RegExp, replacer: string | Function): Promise<string>
 ```
 
-##### replaceAsync
+##### `remove` `removeAsync`
 ```ts
-.replaceAsync(string | RegExp, string | Function): Promise<string>
+file.remove(): boolean
+
+file.removeAsync(): Promise<boolean>
 ```
 
-##### remove
-```ts
-file.remove()
-```
+##### `watch`
 
-##### removeAsync
-```ts
-file.removeAsync(): Promise<void>
-```
+Watch file for changes
 
-##### watch
 ```ts
 file.watch(cb: (path) => void)
 ```
-
-Watch file for changes
 
 ##### unwatch
 ```ts
@@ -154,7 +152,7 @@ Each `read` will be cached. To control cache behavior use next methods:
 
 ##### clearCache
 ```ts
-File.clearCache(<?String> path);
+File.clearCache(<?string> path);
 ```
 When `path` is `null`, then all cache is dropped.
 ##### disableCache
@@ -179,6 +177,8 @@ File[method] //> Function(filepath, [..args])
         'readRangeAsync'
         'write'
         'writeAsync'
+        'append'
+        'appendAsync'
         'remove'
         'removeAsync'
         'replace'
@@ -257,8 +257,8 @@ _Lately will be converted into plugins, @see [Plugins](#middleware-plugins)_
 - write
     - uglify ( -> Minify source before write)
     - cssmin ( -> Minify source before write)
-    - yml ( -> Stringify object to yml string )
-    - json ( -> Stringify object to json )
+    - yml ( -> stringify object to yml string )
+    - json ( -> stringify object to json )
 
 #### Middleware Plugins
 There additional `read`/`write` middlewares as atma plugins:
@@ -324,7 +324,7 @@ Path is always relative to the cwd (_except windows os, when drive letter is use
 
 ##### exists
 ```ts
-dir.exists()//> Boolean
+dir.exists()//> boolean
 ```
 ##### existsAsync
 ```ts
@@ -332,7 +332,7 @@ dir.existsAsync()//> Deferred
 ```
 ##### readFiles
 ```ts
-dir.readFiles(<?String> pattern).files // Array<io.Files>
+dir.readFiles(<?string> pattern).files // Array<io.Files>
 ```
 Get list of all files in the directory. `pattern` is a glob pattern.
 ```ts
@@ -348,7 +348,7 @@ dir.readFiles(pattern).files
 ##### readFilesAsync
 ```ts
 dir
-    .readFilesAsync(<?String> pattern)
+    .readFilesAsync(<?string> pattern)
     .done(function(files))
     .fail(function(error))
 ```
@@ -365,16 +365,16 @@ dir.copyToAsync(destination: string) //> Deferred
 
 ##### rename
 ```ts
-dir.rename(<String> folderName);
+dir.rename(<string> folderName);
 ```
 ##### renameAsync
 ```ts
-dir.renameAsync(<String> folderName) //> Deferred
+dir.renameAsync(<string> folderName) //> Deferred
 ```
 ##### remove
 Removes all content recursively and the folder itself
 ```ts
-dir.remove() //> Boolean
+dir.remove() //> boolean
 ```
 
 ##### removeAsync

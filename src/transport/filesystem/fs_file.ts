@@ -184,6 +184,40 @@ export const FileFsTransport: IFileTransport = {
         __fs.rename(path, getDir(path) + filename, function(error) {
             cb(error, error == null);
         });
+    },
+
+    appendAsync(path: string, str, cb) {
+        if (!str) {
+            cb?.();
+            return;
+        }
+        __fs.open(path, 'a', function (error, fd) {
+            if (error) {
+                cb(error);
+                return;
+            }
+            __fs.write(fd, str, (error) => {
+                if (error) {
+                    cb(error);
+                    return;
+                }
+                __fs.close(fd, () => cb());
+            })
+        });
+    },
+
+    append(path: string, str: string): boolean {
+        if (!str) {
+            return;
+        }
+        try {
+            const fd = __fs.openSync(path, 'a');
+            __fs.writeSync(fd, str);
+            __fs.closeSync(fd);
+            return true;
+        } catch (error) {
+            return false;
+        }
     }
 };
 

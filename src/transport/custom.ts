@@ -15,6 +15,9 @@ export interface IFileTransport {
     removeAsync(path, cb: (err: Error) => void)
     rename(path, filename)
     renameAsync(path, filename, cb)
+
+    appendAsync?(path: string, str: string, cb)
+    append?(path: string, str: string)
 }
 export interface IDirectoryTransport {
     ensure(path): string

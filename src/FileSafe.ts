@@ -244,6 +244,15 @@ export class LockFile {
                 cb(null, true)
                 return;
             }
+            if (Errno.isNotFound(err)) {
+                // directory not found
+                let dir = this.pathLock.replace(/[\\/][^\\/]+$/, '');
+                if (fs.existsSync(dir) === false){
+                    fs.mkdirSync(dir, { recursive: true });
+                    this.tryAcquire(cb);
+                }
+                return;
+            }
             if (Errno.isExists(err) === false) {
                 cb(err);
                 return;

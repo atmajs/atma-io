@@ -74,14 +74,26 @@ export function file_removeAsync(path, cb) {
     transport.removeAsync(path, cb);
 };
 
-export function file_rename(path, filename) {
+export function file_rename(path: string, filename: string) {
     let transport = getFileTransportForPath(path);
     return transport.rename(path, filename);
 };
-export function file_renameAsync(path, filename, cb) {
+export function file_renameAsync(path: string, filename: any, cb: (err?) => void) {
     let transport = getFileTransportForPath(path);
     transport.renameAsync(path, filename, cb);
 };
+
+
+export function file_append(path: string, str: string) {
+    let transport = getFileTransportForPath(path);
+    return transport.append(path, str);
+};
+export function file_appendAsync(path: string, str: string, cb: (err?) => void) {
+    let transport = getFileTransportForPath(path);
+    transport.appendAsync(path, str, cb);
+};
+
+
 
 function getFileTransportForPath (path: string): IFileTransport {
     let protocol = path_getProtocol(path);
