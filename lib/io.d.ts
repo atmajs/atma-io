@@ -135,6 +135,10 @@ declare module 'atma-io/File' {
         static rename(path: string, fileName: string): boolean;
         renameAsync(filename: any): IDeferred<boolean>;
         static renameAsync(path: string, fileName: string): IDeferred<boolean>;
+        append(str: string): boolean;
+        static append(path: string, str: string): boolean;
+        appendAsync(str: string): IDeferred<boolean>;
+        static appendAsync(path: string, str: string): IDeferred<boolean>;
         remove(): boolean;
         static remove(path: string): boolean;
         removeAsync(): IDeferred<boolean>;
@@ -333,6 +337,8 @@ declare module 'atma-io/transport/custom' {
         removeAsync(path: any, cb: (err: Error) => void): any;
         rename(path: any, filename: any): any;
         renameAsync(path: any, filename: any, cb: any): any;
+        appendAsync?(path: string, str: string, cb: any): any;
+        append?(path: string, str: string): any;
     }
     export interface IDirectoryTransport {
         ensure(path: any): string;
