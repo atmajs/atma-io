@@ -114,7 +114,7 @@
         "tasks": {
             "copy": {
                 "files": {
-                    "./assets/background.png": "./docs/assets/background.png"
+                    "./assets/background.png": "./docs/assets/background.jpg"
                 }
             }
         }
