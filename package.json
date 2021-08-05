@@ -5,7 +5,7 @@
         "name": "Alex Kit",
         "email": "alex.kit@atmajs.com"
     },
-    "version": "1.2.39",
+    "version": "1.2.40",
     "main": "./lib/io.js",
     "types": "./lib/io.d.ts",
     "repository": {
@@ -19,22 +19,24 @@
     },
     "devDependencies": {
         "@types/node": "^13.1.1",
-        "app-bundler": "0.0.63",
-        "atma": "^0.12.15",
+        "app-bundler": "^0.0.97",
+        "atma": "^0.12.33",
         "atma-io-middleware-importer": "^1.1.32",
         "atma-io-middleware-uglify": "^1.1.24",
         "atma-loader-ts": "^1.1.12",
         "dts-bundle": "^0.7.3",
-        "shellbee": "^0.5.4"
+        "shellbee": "^0.5.4",
+        "typedoc": "^0.21.5"
     },
     "scripts": {
         "test": "atma test",
-        "build": "app-bundler && npm run build-dts",
+        "build": "app-bundler && npm run build-dts && npm run typedoc",
         "watch": "app-bundler --watch",
         "build-io": "app-bundler --app io",
         "server": "atma server",
         "release": "echo \"atma pub -m \"message\"\"",
-        "build-dts": "tsc -p tsconfig-build.json && atma run tools/build-dts"
+        "build-dts": "tsc -p tsconfig-build.json && atma run tools/build-dts",
+        "typedoc": "typedoc --tsconfig ./tsconfig-typedoc.json && atma task copy"
     },
     "app-bundler": {
         "apps": {
@@ -106,6 +108,13 @@
                             "module": "CommonJS"
                         }
                     }
+                }
+            }
+        },
+        "tasks": {
+            "copy": {
+                "files": {
+                    "./assets/background.png": "./docs/assets/background.png"
                 }
             }
         }

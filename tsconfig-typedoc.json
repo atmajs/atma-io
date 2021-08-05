@@ -1,0 +1,32 @@
+{
+    "exclude": ["node_modules", "types", "ts-temp", "lib", "test"],
+    "compilerOptions": {
+        "outDir": "ts-temp",
+        "lib": ["es2015", "es2015.promise", "es2016"],
+        "typeRoots": [
+            "node_modules/@types",
+            "typings",
+            "typings/globals",
+            "typings-other"
+        ],
+        "types": ["node", "assertion", "atma-utest"],
+        "declaration": true,
+        "target": "es2020",
+        "module": "commonjs",
+        "sourceMap": false,
+        "experimentalDecorators": true
+    },
+    "typedocOptions": {
+        "name": "",
+        "entryPoints": [
+            "src/File.ts",
+            "src/Directory.ts",
+            "src/FileSafe.ts",
+            "src/Env.ts",
+            "src/Watcher.ts",
+            "src/FileFactory.ts",
+            "src/FileHookRegistration.ts"
+        ],
+        "out": "docs"
+    }
+}

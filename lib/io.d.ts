@@ -40,7 +40,7 @@ declare module 'atma-io/IIo' {
 
 declare module 'atma-io/Watcher' {
     export const Watcher: {
-        watch(path: string, callback: (path?: string) => any): void;
+        watch(path: string, callback: (path?: string) => void | any): void;
         unwatch(path: string, callback?: Function): void;
     };
 }
@@ -202,7 +202,7 @@ declare module 'atma-io/ExportsGlob' {
         matchPath: typeof glob_matchPath;
         readFiles(path: string): File[];
         read(path: string): (File | Directory)[];
-        readAsync: (path: string, cb?: (error: any, arr?: (File | Directory)[], dir?: Directory) => any) => IDeferred<(File | Directory)[]>;
+        readAsync: (path: string, cb?: (error: any, arr?: (File | Directory)[], dir?: Directory) => void | any) => IDeferred<(File | Directory)[]>;
     };
 }
 

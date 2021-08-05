@@ -1,6 +1,14 @@
-Atma Node.js FileSystem Module
+<p align='center'>
+    <img src='assets/background.png'/>
+</p>
+
 ----
-[![Build Status](https://travis-ci.org/atmajs/atma-io.svg?branch=master)](https://travis-ci.org/atmajs/atma-io)
+
+Atma NodeJS FileSystem Module
+
+----
+
+[![Build Status](https://travis-ci.com/atmajs/atma-io.svg?branch=master)](https://travis-ci.com/atmajs/atma-io)
 [![NPM version](https://badge.fury.io/js/atma-io.svg)](http://badge.fury.io/js/atma-io)
 
 Features:
@@ -10,6 +18,10 @@ Features:
 - File `read/write` Middleware
 - Sync + Async
 
+
+----
+[📚 API Documentation](https://docs.atma.dev/atma-io)
+----
 
 > In comparison to NodeJS sync-async contract: all functions with generic name are synchronous, and the `**Async` are asynchronous with the same interface and return deferred object. Sync versions never throw exceptions and are designed to be used in not performance critical applications, like bash scripts, etc.
 
