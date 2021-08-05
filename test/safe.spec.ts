@@ -52,14 +52,10 @@ UTest({
         let filename = env.currentDir.combine(path).toLocalFile();
 
         function append (data) {
-            //return new Promise((resolve, reject) => {
-                
             return Shell.run({
-                    command: `test/append ${data}`,
-                    fork: true
-                });
-                
-            //});
+                command: `node_modules/atma/atma run ./test/append.ts ${data}`,
+                fork: true
+            });
         };
         if (await File.existsAsync(path)) {
             await File.removeAsync(path);
@@ -68,10 +64,10 @@ UTest({
         await Directory.ensureAsync(filename.substring(0, filename.lastIndexOf('/') + 1));
 
         let data = [];
-        for (let i = 0; i < 100; i++) {
+        for (let i = 0; i < 10; i++) {
             let key = `${i}-${Math.round(Math.random() * (10 ** 10))}`;
             let str = key;
-            while (str.length < 2000) {
+            while (str.length < 100) {
                 str += key;
             }
             data.push(`_${str}_`);

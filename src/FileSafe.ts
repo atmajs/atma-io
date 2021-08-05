@@ -80,8 +80,12 @@ export class FileSafe {
         if (exists === false) {
             return null;
         }
-        let content = await File.readAsync <string> (this.path, { skipHooks: true, encoding: 'utf8' });
-        return content;
+        try {
+            let content = await File.readAsync <string> (this.path, { skipHooks: true, encoding: 'utf8' });
+            return content;
+        } catch (error) {
+            return null;
+        }
     }
 
     private async writeInner (data: string) {

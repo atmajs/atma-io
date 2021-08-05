@@ -23,7 +23,8 @@
         "atma": "^0.12.33",
         "atma-io-middleware-importer": "^1.1.32",
         "atma-io-middleware-uglify": "^1.1.24",
-        "atma-loader-ts": "^1.1.12",
+        "atma-io-middleware-yml": "^1.1.25",
+        "atma-loader-ts": "^1.1.15",
         "dts-bundle": "^0.7.3",
         "shellbee": "^0.5.4",
         "typedoc": "^0.21.5"

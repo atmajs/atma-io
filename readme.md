@@ -1,10 +1,10 @@
-<p align='center'>
-    <img src='assets/background.jpg'/>
-</p>
+## NodeJS FileSystem Module
 
 ----
 
-Atma NodeJS FileSystem Module
+<p align='center'>
+    <img src='assets/background.jpg'/>
+</p>
 
 ----
 
@@ -13,19 +13,21 @@ Atma NodeJS FileSystem Module
 
 Features:
 
-- File Class
-- Directory Class
-- File `read/write` Middleware
-- Sync + Async
+- File Class.
+- Directory Class.
+- File IO Middlewares to preprocess reads and writes actions.
+- File Transport middleware for custom file protocols, e.g. `s3://uploads/avatar.png`
+- Sync and Async
+- Safe Files to ensure thread-safe and process-safe file writes.
+- File-locks to make custom process-safe actions easy to implement.
+- File watcher: cross-platform file watchers.
 
 
 ----
 [📚 API Documentation](https://docs.atma.dev/atma-io)
 ----
 
-> In comparison to NodeJS sync-async contract: all functions with generic name are synchronous, and the `**Async` are asynchronous with the same interface and return deferred object. Sync versions never throw exceptions and are designed to be used in not performance critical applications, like bash scripts, etc.
-
-> This library is included into Atma.Toolkit, so creating custom scripts, you can use this API.
+> In comparison to NodeJS sync-async contract: all functions with generic name are synchronous, and the `**Async` are asynchronous with the same interface. Sync versions never throw exceptions and are designed to be used in not performance critical applications, like bash scripts, etc. _Go `Async`._
 
 - [File](#file)
     - [API](#file-methods)
@@ -41,9 +43,12 @@ Features:
 
 ##### File constructor
 ```ts
-let file = new io.File('test.txt');
+import { File } from 'atma-io'
+
+const file = new File('./test.txt');
 ```
-Path is always relative to the cwd (_except windows os, when drive letter is used_). To specify system absolute path, use `file://` protocol.
+
+Path is relative to the `cwd` (_except windows os, when drive letter is used_). To specify system absolute path, use `file://` protocol.
 
 ##### `read` `readAsync`
 Read file's content. If `encoding` is set to null raw `Buffer` is returned.
@@ -53,20 +58,18 @@ For each `read` middleware pipeline is used, to skip it, set `skipHooks` to true
 
 ```ts
 let content = file.read<TOut = string>( options?: {
-    encoding?: string | null, //> 'utf8'
+    encoding?: 'buffer' | 'utf8' //> default 'utf8'
     skipHooks?: boolean //> false
 });
 
-file
-    .readAsync <TOut = string> (options?: {
-        encoding?: string | null, //> 'utf8'
-        skipHooks?: boolean //> false
-    })
-    .then((content) => {}, (error) => {})
+let content = await file.readAsync <TOut = string> (options?: {
+    encoding?: 'buffer' | 'utf8', //> 'utf8'
+    skipHooks?: boolean //> false
+});
 ```
 
 ##### `readRange` `readRangeAsync`
-Get byte or string range from a file
+Get bytes or string for a range from the file
 
 ```ts
 let content = file.readRange(position, length);
@@ -95,9 +98,7 @@ file
 ```ts
 file.append(content: string)
 
-file
-    .appendAsync(string)
-    .then(() => {}, (err) => {})
+await file.appendAsync(string);
 ```
 
 ##### `exists` `existsAsync`
@@ -228,7 +229,7 @@ File.registerExtensions({
     ]
 });
 ```
-Each middleware has unique name and is registerd in this way:
+Each middleware has unique name and is registered in this way:
 ```ts
 import { File } from 'atma-io'
 File.middleware['coffee'] = {
@@ -255,7 +256,7 @@ File
     });
 ```
 
-Path is matched by the regexp. The greater `zIndex` ist the later it is called in a pipeline, otherwise the handlers are called in the order they were registerd.
+Path is matched by the regexp. The greater `zIndex` is, the later it is called in the pipeline, otherwise the handlers are called in the order they were registered.
 
 #### Embedded middlewares
 _Lately will be converted into plugins, @see [Plugins](#middleware-plugins)_
@@ -277,8 +278,11 @@ There additional `read`/`write` middlewares as atma plugins:
 
 ###### `atma plugin install NAME`
 
-- `atma-loader-traceur` - [Traceur](https://github.com/atmajs/atma-loader-traceur)
-- `atma-loader-less` - [Less](https://github.com/atmajs/atma-loader-less)
+- [`atma-loader-ts`](https://github.com/tenbits/atma-loader-ts) - Compiles [Typescript]
+- [`atma-loader-less`](https://github.com/atmajs/atma-loader-less) - Compiles Less
+- [`atma-loader-sass`](https://github.com/atmajs/atma-loader-sass) - Compiles SASS
+- [`atma-io-middleware-yml`](https://github.com/tenbits/atma-io-middleware-yml) - Parse YML and returns the Object
+- [`atma-io-transport-s3`](https://github.com/atmajs/atma-io-transport-s3) - Read/Save `s3://` files paths from/to S3 storage
 
 
 ###### Combined middlewares
@@ -286,7 +290,7 @@ For example, you want to use Traceur middelware and jshint for reading `js` file
 _via javascript_
 ```ts
 File.registerExtensions({
-    js: ['hint:read', 'atma-loader-traceur:read' /* ... */],
+    js: ['hint:read', 'atma-loader-ts:read' /* ... */],
 })
 ```
 _via `package.json`_
@@ -296,7 +300,7 @@ _via `package.json`_
     "settings" : {
         "io": {
             "extensions": {
-                "js": [ "hint:read", "atma-loader-traceur:read" ]
+                "js": [ "hint:read", "atma-loader-ts:read" ]
             }
         }
     }
@@ -305,7 +309,7 @@ _via `package.json`_
 
 ### **Virtual** Files
 
-Define with RegExp a File Handler to completely override  the read/write/exists/remove behaviour.
+Define with RegExp a File Handler to completely override  the read/write/exists/remove behavior.
 
 ```ts
 import { File } from 'atma-io'
@@ -332,7 +336,7 @@ File
 import { Directory } from 'atma-io'
 let dir = new Directory('src/');
 ```
-Path is always relative to the cwd (_except windows os, when drive letter is used_). To specify system absolute path, use `file://` protocol.
+Path is always relative to the `cwd` (_except windows os, when drive letter is used_). To specify system absolute path, use `file://` protocol.
 
 ##### exists
 ```ts
