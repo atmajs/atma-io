@@ -16,7 +16,9 @@ import {
     file_readRange,
     file_readRangeAsync,
     file_append,
-    file_appendAsync
+    file_appendAsync,
+    TPreprocessBuffer,
+    TPreprocessBufferAsync
 } from './transport/file_transport';
 
 import { logger } from './global'
@@ -33,6 +35,7 @@ import { ITransport, CustomTransport } from './transport/custom';
 import { JsonMiddleware } from './middleware/json';
 import { global } from './global'
 import { uri_getFile } from './util/uri';
+import { Encrypt } from './util/encrypt';
 
 
 let _cache = {};
@@ -77,8 +80,11 @@ export class File {
 
         let setts = getSetts(mix);
         let path = uri_toPath(this.uri);
+        let preprocess: TPreprocessBuffer = setts.aes256 == null
+            ? null
+            : Encrypt.delegateEncrypt(setts.aes256);
 
-        this.content = file_read(path, setts.encoding);
+        this.content = file_read(path, setts.encoding, preprocess);
         processHooks('read', this, setts, mix);
 
         return <T><any>this.content;
@@ -94,10 +100,15 @@ export class File {
             }
 
             let setts = getSetts(mix);
+            let preprocess: TPreprocessBufferAsync = setts.aes256 == null
+                    ? null
+                    : Encrypt.delegateDecrypt(setts.aes256);
+
             file_readAsync(
                 path
                 , setts.encoding
                 , onReadComplete
+                , preprocess
             );
 
             function onReadComplete(error, content) {
@@ -140,6 +151,7 @@ export class File {
         return dfr_factory(this, function (dfr: class_Dfr, file: File, path: string) {
 
             let setts = getSetts(mix);
+
             file_readRangeAsync(
                 path
                 , position
@@ -169,11 +181,14 @@ export class File {
             return this;
         }
 
-        let path = uri_toPath(this.uri),
-            setts = getSetts(mix);
+        let path = uri_toPath(this.uri);
+        let setts = getSetts(mix);
+        let preprocess: TPreprocessBuffer = setts.aes256
+            ? Encrypt.delegateEncrypt(setts.aes256)
+            : null;
 
         processHooks('write', this, setts, mix);
-        file_save(path, this.content, setts);
+        file_save(path, this.content, setts, preprocess);
 
         // Clear Content sothat next `read` call reads content and processes the middlewares, as processHooks may serialize content
         // Consider not to clear content, but to flag the file as serialized, so that next `read` call runs middlewares once again
@@ -202,12 +217,18 @@ export class File {
 
             function onHookComplete() {
                 let content = file.content;
+                let preprocess: TPreprocessBufferAsync = setts.aes256 == null
+                    ? null
+                    : Encrypt.delegateEncrypt(setts.aes256);
+
                 file.content = null;
                 file_saveAsync(
                     path
                     , content
                     , setts
-                    , dfr_pipeDelegate(dfr));
+                    , dfr_pipeDelegate(dfr)
+                    , preprocess
+                );
             }
         });
     }
@@ -493,16 +514,17 @@ function uri_toPath(uri: class_Uri) {
     }
     return uri.toString();
 }
-function getSetts(mix, defaults?) {
-    let setts = defaults ?? {
+function getSetts(mix: IOperationOptions, defaults?) {
+    let setts: IOperationOptions = defaults ?? {
         encoding: 'utf8',
         skipHooks: false,
         hooks: null,
+        aes256: null
     };
 
-    if (mix == null)
+    if (mix == null) {
         return setts;
-
+    }
     switch (typeof mix) {
         case 'string':
             setts.encoding = mix;
@@ -511,10 +533,9 @@ function getSetts(mix, defaults?) {
             Object.assign(setts, mix);
             break;
     }
-
-    if (setts.encoding === 'buffer')
+    if (setts.encoding === 'buffer') {
         setts.encoding = null;
-
+    }
     return setts;
 }
 function processHooks(method: 'read' | 'write', file: File, setts: IOperationOptions, config: any, cb?: Function) {
@@ -522,7 +543,7 @@ function processHooks(method: 'read' | 'write', file: File, setts: IOperationOpt
     if (setts != null) {
         hooks = setts.hooks || hooks;
         if (hooks == null || setts.skipHooks === true) {
-            cb && cb();
+            cb?.();
             return;
         }
     }
@@ -565,6 +586,9 @@ export interface IOperationOptions {
     /** Default: utf8 */
     encoding?: 'buffer' | 'utf8' | string
     hooks?: FileHooks
+    aes256?: {
+        secret: string
+    }
 
     position?: number
     length?: number

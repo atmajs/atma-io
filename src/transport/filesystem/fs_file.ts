@@ -8,8 +8,8 @@ import { IFileTransport } from '../custom';
 
 
 export const FileFsTransport: IFileTransport = {
-    save(path, content, options) {
-        var error = DirectoryFsTransport.ensure(path_getDir(path));
+    save(path: string, content: string | Buffer, options: __fs.WriteFileOptions) {
+        let error = DirectoryFsTransport.ensure(path_getDir(path));
         if (error) {
             log_error('file_save', path);
             return;
@@ -21,10 +21,11 @@ export const FileFsTransport: IFileTransport = {
             log_error('file_save', error.toString());
         }
     },
-    saveAsync(path, content, options, cb) {
+    saveAsync(path: string, content: string | Buffer, options: __fs.WriteFileOptions, cb) {
         DirectoryFsTransport.ensureAsync(path_getDir(path), function(error) {
-            if (error) return cb(error);
-
+            if (error) {
+                return cb(error);
+            }
             __fs.writeFile(path, content, options || writeOpts, cb);
         });
     },

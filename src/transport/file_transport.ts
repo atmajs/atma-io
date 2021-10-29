@@ -1,16 +1,37 @@
 import { CustomTransport, IFileTransport } from './custom';
 import { FsTransport } from './filesystem/transport';
 import { path_getProtocol } from '../util/path';
+import { is_Promise } from '../util/is';
 
-export function file_save(path: string, content: any, options) {
+export type TPreprocessBuffer = (content: string | Buffer) => string | Buffer
+export type TPreprocessBufferAsync = (content: string | Buffer) => string | Buffer | Promise<string | Buffer>
+
+export function file_save(path: string, content: string | Buffer, options, preprocess?: TPreprocessBuffer ) {
     let transport = getFileTransportForPath(path);
+    if (preprocess != null) {
+        content = preprocess(content);
+    }
     transport.save(path, content, options);
-
 };
-export function file_saveAsync(path, content, options, cb) {
+export function file_saveAsync(path, content: string | Buffer, options, cb, preprocessAsync?: TPreprocessBufferAsync) {
+    if (preprocessAsync == null) {
+        _saveAsync(path, content, options, cb);
+        return;
+    }
+    let result = preprocessAsync(content);
+    if (is_Promise(result)) {
+        result.then(
+            buffer => _saveAsync(path, buffer, options, cb),
+            err => cb(err)
+        );
+        return;
+    }
+    _saveAsync(path, result, options, cb);
+};
+function _saveAsync(path, content: string | Buffer, options, cb) {
     let transport = getFileTransportForPath(path);
     transport.saveAsync(path, content, options, cb);
-};
+}
 
 export function file_copy(from, to) {
     let fromTransport = getFileTransportForPath(from);
@@ -35,7 +56,7 @@ export function file_copyAsync(from, to, cb) {
             return;
         }
         toTransport.saveAsync(to, data, null, cb);
-    })
+    });
 };
 
 export function file_exists(path) {
@@ -46,16 +67,23 @@ export function file_existsAsync(path, cb) {
     let transport = getFileTransportForPath(path);
     return transport.existsAsync(path, cb);
 };
-
-export function file_read(path, encoding) {
+export function file_read(path, encoding, preprocess?: TPreprocessBuffer) {
     let transport = getFileTransportForPath(path);
-    return transport.read(path, encoding);
+    let content = transport.read(path, preprocess == null ? encoding : null);
+    if (preprocess != null) {
+        let buffer = preprocess(content as Buffer);
+        return encoding == null ? buffer : buffer.toString(encoding);
+    }
+    return content;
 };
-export function file_readAsync(path, encoding, cb) {
+export function file_readAsync(path, encoding, onComplete, preprocessAsync?: TPreprocessBufferAsync) {
     let transport = getFileTransportForPath(path);
-    transport.readAsync(path, encoding, cb)
+    transport.readAsync(
+        path
+        , preprocessAsync == null ? encoding : null
+        , preprocessAsync == null ? onComplete : delegateReadOnComplete(preprocessAsync, encoding, onComplete)
+    );
 };
-
 export function file_readRange(path: string, offset: number, limit: number, encoding: string) {
     let transport = getFileTransportForPath(path);
     return transport.readRange(path, offset, limit, encoding);
@@ -105,4 +133,44 @@ function getFileTransportForPath (path: string): IFileTransport {
         throw new Error(`Transport '${protocol}' is not supported or not installed for path '${path}'`);
     }
     return transport.File;
+}
+
+
+function delegateReadOnComplete (
+    preprocess: TPreprocessBufferAsync
+    , encoding: string
+    , cb: (err: Error, content?: string | Buffer) => void
+) {
+    return function (err, content) {
+        if (err != null) {
+            cb(err);
+            return;
+        }
+        let onComplete = encoding == null
+            ? cb
+            : delegateReadDecode(encoding, cb);
+
+        let result = preprocess(content);
+        if (is_Promise(result)) {
+            result.then(buffer => onComplete(null, buffer), onComplete);
+            return;
+        }
+        onComplete(null, result);
+    }
+}
+function delegateReadDecode (encoding, cb) {
+    return function (err, buffer: Buffer) {
+        if (err != null) {
+            cb(err);
+            return;
+        }
+        let content = buffer.toString(encoding);
+        cb(null, content);
+    }
+}
+function delegateSave (path: string, options, cb) {
+    return function(err, content) {
+        let transport = getFileTransportForPath(path);
+        transport.saveAsync(path, content, options, cb);
+    }
 }

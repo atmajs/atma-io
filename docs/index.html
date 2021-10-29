@@ -58,30 +58,34 @@
 	<div class="row">
 		<div class="col-8 col-content">
 			<div class="tsd-panel tsd-typography">
-				<p align='center'>
-					<img src='assets/background.png'/>
-				</p>
+				<a href="#nodejs-filesystem-module" id="nodejs-filesystem-module" style="color: inherit; text-decoration: none;">
+					<h2>NodeJS FileSystem Module</h2>
+				</a>
 				<hr>
-				<p>Atma NodeJS FileSystem Module</p>
+				<p align='center'>
+					<img src='assets/background.jpg'/>
+				</p>
 				<hr>
 				<p><a href="https://travis-ci.com/atmajs/atma-io"><img src="https://travis-ci.com/atmajs/atma-io.svg?branch=master" alt="Build Status"></a>
 				<a href="http://badge.fury.io/js/atma-io"><img src="https://badge.fury.io/js/atma-io.svg" alt="NPM version"></a></p>
 				<p>Features:</p>
 				<ul>
-					<li>File Class</li>
-					<li>Directory Class</li>
-					<li>File <code>read/write</code> Middleware</li>
-					<li>Sync + Async</li>
+					<li>File Class.</li>
+					<li>Directory Class.</li>
+					<li>File IO Middlewares to preprocess reads and writes actions.</li>
+					<li>File Transport middleware for custom file protocols, e.g. <code>s3://uploads/avatar.png</code></li>
+					<li>Sync and Async</li>
+					<li>Safe Files to ensure thread-safe and process-safe file writes.</li>
+					<li>File-locks to make custom process-safe actions easy to implement.</li>
+					<li>File watcher: cross-platform file watchers.</li>
+					<li>AES-256 Encryption</li>
 				</ul>
 				<hr>
 				<a href="#📚-api-documentation" id="📚-api-documentation" style="color: inherit; text-decoration: none;">
 					<h2><a href="https://docs.atma.dev/atma-io">📚 API Documentation</a></h2>
 				</a>
 				<blockquote>
-					<p>In comparison to NodeJS sync-async contract: all functions with generic name are synchronous, and the <code>**Async</code> are asynchronous with the same interface and return deferred object. Sync versions never throw exceptions and are designed to be used in not performance critical applications, like bash scripts, etc.</p>
-				</blockquote>
-				<blockquote>
-					<p>This library is included into Atma.Toolkit, so creating custom scripts, you can use this API.</p>
+					<p>In comparison to NodeJS sync-async contract: all functions with generic name are synchronous, and the <code>**Async</code> are asynchronous with the same interface. Sync versions never throw exceptions and are designed to be used in not performance critical applications, like bash scripts, etc. <em>Go <code>Async</code>.</em></p>
 				</blockquote>
 				<ul>
 					<li><a href="#file">File</a><ul>
@@ -105,9 +109,11 @@
 				<a href="#file-constructor" id="file-constructor" style="color: inherit; text-decoration: none;">
 					<h5>File constructor</h5>
 				</a>
-				<pre><code class="language-ts"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">file</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #001080">io</span><span style="color: #000000">.</span><span style="color: #795E26">File</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;test.txt&#039;</span><span style="color: #000000">);</span>
+				<pre><code class="language-ts"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">File</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;atma-io&#039;</span>
+
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">file</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">File</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;./test.txt&#039;</span><span style="color: #000000">);</span>
 </code></pre>
-				<p>Path is always relative to the cwd (<em>except windows os, when drive letter is used</em>). To specify system absolute path, use <code>file://</code> protocol.</p>
+				<p>Path is relative to the <code>cwd</code> (<em>except windows os, when drive letter is used</em>). To specify system absolute path, use <code>file://</code> protocol.</p>
 				<a href="#read-readasync" id="read-readasync" style="color: inherit; text-decoration: none;">
 					<h5><code>read</code> <code>readAsync</code></h5>
 				</a>
@@ -117,21 +123,21 @@
 					<p>Hooks will be per default executed. For example, when reading from <code>*.json</code> file the string will be deserialized to json object</p>
 				</blockquote>
 				<pre><code class="language-ts"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">content</span><span style="color: #000000"> = </span><span style="color: #001080">file</span><span style="color: #000000">.</span><span style="color: #001080">read</span><span style="color: #000000">&lt;</span><span style="color: #001080">TOut</span><span style="color: #000000"> = </span><span style="color: #001080">string</span><span style="color: #000000">&gt;( </span><span style="color: #001080">options</span><span style="color: #000000">?: {</span>
-<span style="color: #000000">    encoding?</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #001080">string</span><span style="color: #000000"> | </span><span style="color: #0000FF">null</span><span style="color: #000000">, </span><span style="color: #008000">//&gt; &#039;utf8&#039;</span>
-<span style="color: #000000">    skipHooks?</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #001080">boolean</span><span style="color: #000000"> </span><span style="color: #008000">//&gt; false</span>
+<span style="color: #000000">    encoding?</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;buffer&#039;</span><span style="color: #000000"> | </span><span style="color: #A31515">&#039;utf8&#039;</span><span style="color: #000000"> </span><span style="color: #008000">//&gt; default &#039;utf8&#039;</span>
+<span style="color: #000000">    </span><span style="color: #001080">skipHooks</span><span style="color: #000000">?: </span><span style="color: #001080">boolean</span><span style="color: #000000"> </span><span style="color: #008000">//&gt; false</span>
+<span style="color: #000000">    </span><span style="color: #001080">aes256</span><span style="color: #000000">?: { </span><span style="color: #001080">secret:</span><span style="color: #000000"> </span><span style="color: #001080">string</span><span style="color: #000000"> }</span>
 <span style="color: #000000">});</span>
 
-<span style="color: #001080">file</span>
-<span style="color: #000000">    .</span><span style="color: #001080">readAsync</span><span style="color: #000000"> &lt;</span><span style="color: #001080">TOut</span><span style="color: #000000"> = </span><span style="color: #001080">string</span><span style="color: #000000">&gt; (</span><span style="color: #001080">options</span><span style="color: #000000">?: {</span>
-<span style="color: #000000">        encoding?</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #001080">string</span><span style="color: #000000"> | </span><span style="color: #0000FF">null</span><span style="color: #000000">, </span><span style="color: #008000">//&gt; &#039;utf8&#039;</span>
-<span style="color: #000000">        skipHooks?</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #001080">boolean</span><span style="color: #000000"> </span><span style="color: #008000">//&gt; false</span>
-<span style="color: #000000">    })</span>
-<span style="color: #000000">    .</span><span style="color: #795E26">then</span><span style="color: #000000">((</span><span style="color: #001080">content</span><span style="color: #000000">) </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {}, (</span><span style="color: #001080">error</span><span style="color: #000000">) </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {})</span>
+<span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">content</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">file</span><span style="color: #000000">.</span><span style="color: #001080">readAsync</span><span style="color: #000000"> &lt;</span><span style="color: #001080">TOut</span><span style="color: #000000"> = </span><span style="color: #001080">string</span><span style="color: #000000">&gt; (</span><span style="color: #001080">options</span><span style="color: #000000">?: {</span>
+<span style="color: #000000">    encoding?</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;buffer&#039;</span><span style="color: #000000"> | </span><span style="color: #A31515">&#039;utf8&#039;</span><span style="color: #000000">, </span><span style="color: #008000">//&gt; &#039;utf8&#039;</span>
+<span style="color: #000000">    skipHooks?</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #001080">boolean</span><span style="color: #000000"> </span><span style="color: #008000">//&gt; false</span>
+<span style="color: #000000">    </span><span style="color: #001080">aes256</span><span style="color: #000000">?: { </span><span style="color: #001080">secret:</span><span style="color: #000000"> </span><span style="color: #001080">string</span><span style="color: #000000"> }</span>
+<span style="color: #000000">});</span>
 </code></pre>
 				<a href="#readrange-readrangeasync" id="readrange-readrangeasync" style="color: inherit; text-decoration: none;">
 					<h5><code>readRange</code> <code>readRangeAsync</code></h5>
 				</a>
-				<p>Get byte or string range from a file</p>
+				<p>Get bytes or string for a range from the file</p>
 				<pre><code class="language-ts"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">content</span><span style="color: #000000"> = </span><span style="color: #001080">file</span><span style="color: #000000">.</span><span style="color: #795E26">readRange</span><span style="color: #000000">(</span><span style="color: #001080">position</span><span style="color: #000000">, </span><span style="color: #001080">length</span><span style="color: #000000">);</span>
 
 <span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">content</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">file</span><span style="color: #000000">.</span><span style="color: #795E26">readRangeAsync</span><span style="color: #000000">(</span><span style="color: #001080">position</span><span style="color: #000000">, </span><span style="color: #001080">length</span><span style="color: #000000">)</span>
@@ -144,11 +150,13 @@
 				</blockquote>
 				<pre><code class="language-ts"><span style="color: #001080">file</span><span style="color: #000000">.</span><span style="color: #795E26">write</span><span style="color: #000000">(</span><span style="color: #001080">string</span><span style="color: #000000"> | </span><span style="color: #001080">Buffer</span><span style="color: #000000"> | </span><span style="color: #001080">any</span><span style="color: #000000">, </span><span style="color: #001080">options</span><span style="color: #000000">?: {</span>
 <span style="color: #000000">    skipHooks?</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #001080">boolean</span>
+<span style="color: #000000">    </span><span style="color: #001080">aes256</span><span style="color: #000000">?: { </span><span style="color: #001080">secret:</span><span style="color: #000000"> </span><span style="color: #001080">string</span><span style="color: #000000"> }</span>
 <span style="color: #000000">})</span>
 
 <span style="color: #001080">file</span>
 <span style="color: #000000">    .</span><span style="color: #795E26">writeAsync</span><span style="color: #000000">(</span><span style="color: #001080">content</span><span style="color: #000000">: </span><span style="color: #001080">string</span><span style="color: #000000"> | </span><span style="color: #001080">Buffer</span><span style="color: #000000"> | </span><span style="color: #001080">any</span><span style="color: #000000">, </span><span style="color: #001080">options</span><span style="color: #000000">?: {</span>
 <span style="color: #000000">        skipHooks?</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #001080">boolean</span>
+<span style="color: #000000">        </span><span style="color: #001080">aes256</span><span style="color: #000000">?: { </span><span style="color: #001080">secret:</span><span style="color: #000000"> </span><span style="color: #001080">string</span><span style="color: #000000"> }</span>
 <span style="color: #000000">    })</span>
 <span style="color: #000000">    .</span><span style="color: #795E26">then</span><span style="color: #000000">(() </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {}, (</span><span style="color: #001080">err</span><span style="color: #000000">) </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {})</span>
 </code></pre>
@@ -157,9 +165,7 @@
 				</a>
 				<pre><code class="language-ts"><span style="color: #001080">file</span><span style="color: #000000">.</span><span style="color: #795E26">append</span><span style="color: #000000">(</span><span style="color: #001080">content</span><span style="color: #000000">: </span><span style="color: #001080">string</span><span style="color: #000000">)</span>
 
-<span style="color: #001080">file</span>
-<span style="color: #000000">    .</span><span style="color: #795E26">appendAsync</span><span style="color: #000000">(</span><span style="color: #001080">string</span><span style="color: #000000">)</span>
-<span style="color: #000000">    .</span><span style="color: #795E26">then</span><span style="color: #000000">(() </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {}, (</span><span style="color: #001080">err</span><span style="color: #000000">) </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {})</span>
+<span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">file</span><span style="color: #000000">.</span><span style="color: #795E26">appendAsync</span><span style="color: #000000">(</span><span style="color: #001080">string</span><span style="color: #000000">);</span>
 </code></pre>
 				<a href="#exists-existsasync" id="exists-existsasync" style="color: inherit; text-decoration: none;">
 					<h5><code>exists</code> <code>existsAsync</code></h5>
@@ -290,7 +296,7 @@
 <span style="color: #000000">    ]</span>
 <span style="color: #000000">});</span>
 </code></pre>
-				<p>Each middleware has unique name and is registerd in this way:</p>
+				<p>Each middleware has unique name and is registered in this way:</p>
 				<pre><code class="language-ts"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">File</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;atma-io&#039;</span>
 <span style="color: #001080">File</span><span style="color: #000000">.</span><span style="color: #001080">middleware</span><span style="color: #000000">[</span><span style="color: #A31515">&#039;coffee&#039;</span><span style="color: #000000">] = {</span>
 <span style="color: #000000">    </span><span style="color: #795E26">read</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #0000FF">function</span><span style="color: #000000">(&lt;io.File&gt; </span><span style="color: #001080">file</span><span style="color: #000000">, &lt;</span><span style="color: #001080">Object</span><span style="color: #000000">&gt; </span><span style="color: #001080">config</span><span style="color: #000000">){</span>
@@ -315,7 +321,7 @@
 <span style="color: #000000">        </span><span style="color: #001080">zIndex:</span><span style="color: #000000"> &lt;?</span><span style="color: #267F99">Number</span><span style="color: #000000">&gt; </span><span style="color: #008000">// default: 0</span>
 <span style="color: #000000">    });</span>
 </code></pre>
-				<p>Path is matched by the regexp. The greater <code>zIndex</code> ist the later it is called in a pipeline, otherwise the handlers are called in the order they were registerd.</p>
+				<p>Path is matched by the regexp. The greater <code>zIndex</code> is, the later it is called in the pipeline, otherwise the handlers are called in the order they were registered.</p>
 				<a href="#embedded-middlewares" id="embedded-middlewares" style="color: inherit; text-decoration: none;">
 					<h4>Embedded middlewares</h4>
 				</a>
@@ -347,8 +353,11 @@
 					<h6><code>atma plugin install NAME</code></h6>
 				</a>
 				<ul>
-					<li><code>atma-loader-traceur</code> - <a href="https://github.com/atmajs/atma-loader-traceur">Traceur</a></li>
-					<li><code>atma-loader-less</code> - <a href="https://github.com/atmajs/atma-loader-less">Less</a></li>
+					<li><a href="https://github.com/tenbits/atma-loader-ts"><code>atma-loader-ts</code></a> - Compiles [Typescript]</li>
+					<li><a href="https://github.com/atmajs/atma-loader-less"><code>atma-loader-less</code></a> - Compiles Less</li>
+					<li><a href="https://github.com/atmajs/atma-loader-sass"><code>atma-loader-sass</code></a> - Compiles SASS</li>
+					<li><a href="https://github.com/tenbits/atma-io-middleware-yml"><code>atma-io-middleware-yml</code></a> - Parse YML and returns the Object</li>
+					<li><a href="https://github.com/atmajs/atma-io-transport-s3"><code>atma-io-transport-s3</code></a> - Read/Save <code>s3://</code> files paths from/to S3 storage</li>
 				</ul>
 				<a href="#combined-middlewares" id="combined-middlewares" style="color: inherit; text-decoration: none;">
 					<h6>Combined middlewares</h6>
@@ -356,7 +365,7 @@
 				<p>For example, you want to use Traceur middelware and jshint for reading <code>js</code> files:
 				<em>via javascript</em></p>
 				<pre><code class="language-ts"><span style="color: #001080">File</span><span style="color: #000000">.</span><span style="color: #795E26">registerExtensions</span><span style="color: #000000">({</span>
-<span style="color: #000000">    </span><span style="color: #001080">js:</span><span style="color: #000000"> [</span><span style="color: #A31515">&#039;hint:read&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;atma-loader-traceur:read&#039;</span><span style="color: #000000"> </span><span style="color: #008000">/* ... */</span><span style="color: #000000">],</span>
+<span style="color: #000000">    </span><span style="color: #001080">js:</span><span style="color: #000000"> [</span><span style="color: #A31515">&#039;hint:read&#039;</span><span style="color: #000000">, </span><span style="color: #A31515">&#039;atma-loader-ts:read&#039;</span><span style="color: #000000"> </span><span style="color: #008000">/* ... */</span><span style="color: #000000">],</span>
 <span style="color: #000000">})</span>
 </code></pre>
 				<p><em>via <code>package.json</code></em></p>
@@ -365,7 +374,7 @@
 <span style="color: #000000">    </span><span style="color: #0451A5">&quot;settings&quot;</span><span style="color: #000000"> : {</span>
 <span style="color: #000000">        </span><span style="color: #0451A5">&quot;io&quot;</span><span style="color: #000000">: {</span>
 <span style="color: #000000">            </span><span style="color: #0451A5">&quot;extensions&quot;</span><span style="color: #000000">: {</span>
-<span style="color: #000000">                </span><span style="color: #0451A5">&quot;js&quot;</span><span style="color: #000000">: [ </span><span style="color: #A31515">&quot;hint:read&quot;</span><span style="color: #000000">, </span><span style="color: #A31515">&quot;atma-loader-traceur:read&quot;</span><span style="color: #000000"> ]</span>
+<span style="color: #000000">                </span><span style="color: #0451A5">&quot;js&quot;</span><span style="color: #000000">: [ </span><span style="color: #A31515">&quot;hint:read&quot;</span><span style="color: #000000">, </span><span style="color: #A31515">&quot;atma-loader-ts:read&quot;</span><span style="color: #000000"> ]</span>
 <span style="color: #000000">            }</span>
 <span style="color: #000000">        }</span>
 <span style="color: #000000">    }</span>
@@ -374,7 +383,7 @@
 				<a href="#virtual-files" id="virtual-files" style="color: inherit; text-decoration: none;">
 					<h3><strong>Virtual</strong> Files</h3>
 				</a>
-				<p>Define with RegExp a File Handler to completely override  the read/write/exists/remove behaviour.</p>
+				<p>Define with RegExp a File Handler to completely override  the read/write/exists/remove behavior.</p>
 				<pre><code class="language-ts"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">File</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;atma-io&#039;</span>
 <span style="color: #001080">File</span>
 <span style="color: #000000">    .</span><span style="color: #795E26">getFactory</span><span style="color: #000000">()</span>
@@ -400,7 +409,7 @@
 				<pre><code class="language-ts"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">Directory</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;atma-io&#039;</span>
 <span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">dir</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #795E26">Directory</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;src/&#039;</span><span style="color: #000000">);</span>
 </code></pre>
-				<p>Path is always relative to the cwd (<em>except windows os, when drive letter is used</em>). To specify system absolute path, use <code>file://</code> protocol.</p>
+				<p>Path is always relative to the <code>cwd</code> (<em>except windows os, when drive letter is used</em>). To specify system absolute path, use <code>file://</code> protocol.</p>
 				<a href="#exists" id="exists" style="color: inherit; text-decoration: none;">
 					<h5>exists</h5>
 				</a>
@@ -429,10 +438,7 @@
 				<a href="#readfilesasync" id="readfilesasync" style="color: inherit; text-decoration: none;">
 					<h5>readFilesAsync</h5>
 				</a>
-				<pre><code class="language-ts"><span style="color: #001080">dir</span>
-<span style="color: #000000">    .</span><span style="color: #795E26">readFilesAsync</span><span style="color: #000000">(&lt;?</span><span style="color: #267F99">string</span><span style="color: #000000">&gt; </span><span style="color: #001080">pattern</span><span style="color: #000000">)</span>
-<span style="color: #000000">    .</span><span style="color: #795E26">done</span><span style="color: #000000">(</span><span style="color: #0000FF">function</span><span style="color: #000000">(</span><span style="color: #001080">files</span><span style="color: #000000">))</span>
-<span style="color: #000000">    .</span><span style="color: #795E26">fail</span><span style="color: #000000">(</span><span style="color: #001080">function</span><span style="color: #000000">(</span><span style="color: #001080">error</span><span style="color: #000000">))</span>
+				<pre><code class="language-ts"><span style="color: #0000FF">let</span><span style="color: #000000"> </span><span style="color: #001080">files</span><span style="color: #000000">: </span><span style="color: #267F99">File</span><span style="color: #000000">[] = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">dir</span><span style="color: #000000">.</span><span style="color: #795E26">readFilesAsync</span><span style="color: #000000">(</span><span style="color: #001080">globPattern</span><span style="color: #000000">?);</span>
 </code></pre>
 				<a href="#copyto" id="copyto" style="color: inherit; text-decoration: none;">
 					<h5>copyTo</h5>

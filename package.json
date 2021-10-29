@@ -5,7 +5,7 @@
         "name": "Alex Kit",
         "email": "alex.kit@atmajs.com"
     },
-    "version": "1.2.40",
+    "version": "1.2.41",
     "main": "./lib/io.js",
     "types": "./lib/io.d.ts",
     "repository": {
@@ -79,7 +79,8 @@
                 "atma-utils",
                 "^fs$",
                 "^os$",
-                "readline"
+                "readline",
+                "crypto"
             ]
         }
     },

@@ -187,6 +187,9 @@ declare module 'atma-io/File' {
         /** Default: utf8 */
         encoding?: 'buffer' | 'utf8' | string;
         hooks?: FileHooks;
+        aes256?: {
+            secret: string;
+        };
         position?: number;
         length?: number;
         [other: string]: any;

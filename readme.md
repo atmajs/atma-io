@@ -21,6 +21,7 @@ Features:
 - Safe Files to ensure thread-safe and process-safe file writes.
 - File-locks to make custom process-safe actions easy to implement.
 - File watcher: cross-platform file watchers.
+- AES-256 Encryption
 
 
 ----
@@ -60,11 +61,13 @@ For each `read` middleware pipeline is used, to skip it, set `skipHooks` to true
 let content = file.read<TOut = string>( options?: {
     encoding?: 'buffer' | 'utf8' //> default 'utf8'
     skipHooks?: boolean //> false
+    aes256?: { secret: string }
 });
 
 let content = await file.readAsync <TOut = string> (options?: {
     encoding?: 'buffer' | 'utf8', //> 'utf8'
     skipHooks?: boolean //> false
+    aes256?: { secret: string }
 });
 ```
 
@@ -84,11 +87,13 @@ let content = await file.readRangeAsync(position, length)
 ```ts
 file.write(string | Buffer | any, options?: {
     skipHooks?: boolean
+    aes256?: { secret: string }
 })
 
 file
     .writeAsync(content: string | Buffer | any, options?: {
         skipHooks?: boolean
+        aes256?: { secret: string }
     })
     .then(() => {}, (err) => {})
 ```
@@ -363,10 +368,7 @@ dir.readFiles(pattern).files
 ```
 ##### readFilesAsync
 ```ts
-dir
-    .readFilesAsync(<?string> pattern)
-    .done(function(files))
-    .fail(function(error))
+let files: File[] = await dir.readFilesAsync(globPattern?);
 ```
 
 ##### copyTo
