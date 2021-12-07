@@ -2,10 +2,10 @@ import { class_Dfr } from 'atma-utils';
 
 export class AwaitCallbacks {
     promise = new class_Dfr
-    
+
     error = null;
     completed = false;
-    
+
     wait = 0;
 
     constructor () {
@@ -13,7 +13,7 @@ export class AwaitCallbacks {
     }
 
     delegate () {
-        this.completed = true;
+        this.completed = false;
         this.promise.defer();
         this.wait++;
         return (error) => {

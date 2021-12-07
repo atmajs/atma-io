@@ -81,7 +81,6 @@ export const FileFsTransport: IFileTransport = {
             readstream.pipe(writestream);
         }
     },
-
     exists(path) {
         return __fs.existsSync(path) && __fs.statSync(path).isFile();
     },
@@ -144,8 +143,6 @@ export const FileFsTransport: IFileTransport = {
             });
         })
     },
-
-
     remove(path) {
         if (FileFsTransport.exists(path) === false) {
             return true;
@@ -166,7 +163,6 @@ export const FileFsTransport: IFileTransport = {
             cb(error);
         });
     },
-
     rename(path, filename) {
         if (FileFsTransport.exists(path) === false) {
             log_error('file_rename 404', path);
@@ -186,7 +182,6 @@ export const FileFsTransport: IFileTransport = {
             cb(error, error == null);
         });
     },
-
     appendAsync(path: string, str, cb) {
         if (!str) {
             cb?.();
@@ -206,7 +201,6 @@ export const FileFsTransport: IFileTransport = {
             })
         });
     },
-
     append(path: string, str: string): boolean {
         if (!str) {
             return;

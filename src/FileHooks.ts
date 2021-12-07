@@ -163,6 +163,7 @@ export class FileHooks {
     triggerAsync(method: 'read' | 'write', file: File, config, cb: Function) {
         let path = file.uri.toString();
         let hooks = this.getHooksForPath(path, method);
+        console.log('HOOKS', path, hooks.length);
         new AsyncHooks(hooks).process(method, file, config, cb);
     }
     clear() {

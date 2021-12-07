@@ -73,6 +73,11 @@
 				<ul class="tsd-hierarchy">
 					<li>
 						<span class="target">File</span>
+						<ul class="tsd-hierarchy">
+							<li>
+								<a href="FileSafe.FileSafe-1.html" class="tsd-signature-type" data-tsd-kind="Class">FileSafe</a>
+							</li>
+						</ul>
 					</li>
 				</ul>
 			</section>
@@ -89,7 +94,9 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="File.File-1.html#_ver" class="tsd-kind-icon">_ver</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="File.File-1.html#content" class="tsd-kind-icon">content</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="File.File-1.html#opts" class="tsd-kind-icon">opts</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="File.File-1.html#sourceMap" class="tsd-kind-icon">source<wbr>Map</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="File.File-1.html#uri" class="tsd-kind-icon">uri</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="File.File-1.html#middleware" class="tsd-kind-icon">middleware</a></li>
@@ -171,13 +178,13 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>File<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">class_Uri</span>, opts<span class="tsd-signature-symbol">?: </span><a href="../interfaces/File.IFileSettings.html" class="tsd-signature-type" data-tsd-kind="Interface">IFileSettings</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="File.File-1.html" class="tsd-signature-type" data-tsd-kind="Class">File</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>File<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">class_Uri</span>, opts<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">IFileSettings</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="File.File-1.html" class="tsd-signature-type" data-tsd-kind="Class">File</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L52">File.ts:52</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L56">File.ts:56</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -186,7 +193,7 @@
 									<h5>path: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">class_Uri</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> opts: <a href="../interfaces/File.IFileSettings.html" class="tsd-signature-type" data-tsd-kind="Interface">IFileSettings</a></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> opts: <span class="tsd-signature-type">IFileSettings</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="File.File-1.html" class="tsd-signature-type" data-tsd-kind="Class">File</a></h4>
@@ -196,14 +203,31 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="_ver" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _ver</h3>
+					<div class="tsd-signature tsd-kind-icon">_ver<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 0</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L50">File.ts:50</a></li>
+						</ul>
+					</aside>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="content" class="tsd-anchor"></a>
 					<h3>content</h3>
 					<div class="tsd-signature tsd-kind-icon">content<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Buffer</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L49">File.ts:49</a></li>
+							<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L53">File.ts:53</a></li>
 						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="opts" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> opts</h3>
+					<div class="tsd-signature tsd-kind-icon">opts<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">IFileSettings</span></div>
+					<aside class="tsd-sources">
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
@@ -212,7 +236,7 @@
 					<div class="tsd-signature tsd-kind-icon">source<wbr>Map<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L50">File.ts:50</a></li>
+							<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L54">File.ts:54</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -222,7 +246,7 @@
 					<div class="tsd-signature tsd-kind-icon">uri<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">class_Uri</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L48">File.ts:48</a></li>
+							<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L52">File.ts:52</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -232,7 +256,7 @@
 					<div class="tsd-signature tsd-kind-icon">middleware<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{}</span><span class="tsd-signature-symbol"> = {}</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L481">File.ts:481</a></li>
+							<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L467">File.ts:467</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -257,7 +281,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L469">File.ts:469</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L454">File.ts:454</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="FileFactory.FileFactory-1.html" class="tsd-signature-type" data-tsd-kind="Class">FileFactory</a></h4>
@@ -274,7 +298,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L473">File.ts:473</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L458">File.ts:458</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">FileHooks</span></h4>
@@ -294,7 +318,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L320">File.ts:320</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L315">File.ts:315</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -317,7 +341,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L326">File.ts:326</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L321">File.ts:321</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -334,13 +358,13 @@
 					<a name="copyTo" class="tsd-anchor"></a>
 					<h3>copy<wbr>To</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">copy<wbr>To<span class="tsd-signature-symbol">(</span>target<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, opts<span class="tsd-signature-symbol">?: </span><a href="../interfaces/File.IFileCopyOpts.html" class="tsd-signature-type" data-tsd-kind="Interface">IFileCopyOpts</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="File.File-1.html" class="tsd-signature-type" data-tsd-kind="Class">File</a></li>
+						<li class="tsd-signature tsd-kind-icon">copy<wbr>To<span class="tsd-signature-symbol">(</span>target<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, opts<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">IFileCopyOpts</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="File.File-1.html" class="tsd-signature-type" data-tsd-kind="Class">File</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L238">File.ts:238</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L236">File.ts:236</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -349,7 +373,7 @@
 									<h5>target: <span class="tsd-signature-type">string</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> opts: <a href="../interfaces/File.IFileCopyOpts.html" class="tsd-signature-type" data-tsd-kind="Interface">IFileCopyOpts</a></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> opts: <span class="tsd-signature-type">IFileCopyOpts</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="File.File-1.html" class="tsd-signature-type" data-tsd-kind="Class">File</a></h4>
@@ -360,13 +384,13 @@
 					<a name="copyToAsync" class="tsd-anchor"></a>
 					<h3>copy<wbr>ToAsync</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">copy<wbr>ToAsync<span class="tsd-signature-symbol">(</span>target<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, opts<span class="tsd-signature-symbol">?: </span><a href="../interfaces/File.IFileCopyOpts.html" class="tsd-signature-type" data-tsd-kind="Interface">IFileCopyOpts</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IDeferred</span><span class="tsd-signature-symbol">&lt;</span><a href="File.File-1.html" class="tsd-signature-type" data-tsd-kind="Class">File</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">copy<wbr>ToAsync<span class="tsd-signature-symbol">(</span>target<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, opts<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">IFileCopyOpts</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IDeferred</span><span class="tsd-signature-symbol">&lt;</span><a href="File.File-1.html" class="tsd-signature-type" data-tsd-kind="Class">File</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L266">File.ts:266</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L264">File.ts:264</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -375,7 +399,7 @@
 									<h5>target: <span class="tsd-signature-type">string</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> opts: <a href="../interfaces/File.IFileCopyOpts.html" class="tsd-signature-type" data-tsd-kind="Interface">IFileCopyOpts</a></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> opts: <span class="tsd-signature-type">IFileCopyOpts</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">IDeferred</span><span class="tsd-signature-symbol">&lt;</span><a href="File.File-1.html" class="tsd-signature-type" data-tsd-kind="Class">File</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -392,7 +416,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L284">File.ts:284</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L282">File.ts:282</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -403,16 +427,16 @@
 					<a name="existsAsync" class="tsd-anchor"></a>
 					<h3>exists<wbr>Async</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">exists<wbr>Async<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IDeferred</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">exists<wbr>Async<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PromiseLike</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L290">File.ts:290</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L289">File.ts:289</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">IDeferred</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">PromiseLike</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -420,13 +444,13 @@
 					<a name="read" class="tsd-anchor"></a>
 					<h3>read</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
-						<li class="tsd-signature tsd-kind-icon">read&lt;T&gt;<span class="tsd-signature-symbol">(</span>mix<span class="tsd-signature-symbol">?: </span><a href="../interfaces/File.IOperationOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">IOperationOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span></li>
+						<li class="tsd-signature tsd-kind-icon">read&lt;T&gt;<span class="tsd-signature-symbol">(</span>mix<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">IOperationOptions</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L76">File.ts:76</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L81">File.ts:81</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -438,7 +462,7 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> mix: <a href="../interfaces/File.IOperationOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">IOperationOptions</a></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> mix: <span class="tsd-signature-type">IOperationOptions</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">T</span></h4>
@@ -449,13 +473,13 @@
 					<a name="readAsync" class="tsd-anchor"></a>
 					<h3>read<wbr>Async</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
-						<li class="tsd-signature tsd-kind-icon">read<wbr>Async&lt;T&gt;<span class="tsd-signature-symbol">(</span>mix<span class="tsd-signature-symbol">?: </span><a href="../interfaces/File.IOperationOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">IOperationOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IDeferred</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">read<wbr>Async&lt;T&gt;<span class="tsd-signature-symbol">(</span>mix<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">IOperationOptions</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L95">File.ts:95</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L98">File.ts:98</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -467,10 +491,10 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> mix: <a href="../interfaces/File.IOperationOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">IOperationOptions</a></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> mix: <span class="tsd-signature-type">IOperationOptions</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">IDeferred</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -478,13 +502,13 @@
 					<a name="readRange" class="tsd-anchor"></a>
 					<h3>read<wbr>Range</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
-						<li class="tsd-signature tsd-kind-icon">read<wbr>Range&lt;T&gt;<span class="tsd-signature-symbol">(</span>position<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, mix<span class="tsd-signature-symbol">?: </span><a href="../interfaces/File.IOperationOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">IOperationOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span></li>
+						<li class="tsd-signature tsd-kind-icon">read<wbr>Range&lt;T&gt;<span class="tsd-signature-symbol">(</span>position<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, mix<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">IOperationOptions</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L141">File.ts:141</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L130">File.ts:130</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -502,7 +526,7 @@
 									<h5>length: <span class="tsd-signature-type">number</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> mix: <a href="../interfaces/File.IOperationOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">IOperationOptions</a></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> mix: <span class="tsd-signature-type">IOperationOptions</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">T</span></h4>
@@ -513,13 +537,13 @@
 					<a name="readRangeAsync" class="tsd-anchor"></a>
 					<h3>read<wbr>Range<wbr>Async</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
-						<li class="tsd-signature tsd-kind-icon">read<wbr>Range<wbr>Async&lt;T&gt;<span class="tsd-signature-symbol">(</span>position<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, mix<span class="tsd-signature-symbol">?: </span><a href="../interfaces/File.IOperationOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">IOperationOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IDeferred</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">read<wbr>Range<wbr>Async&lt;T&gt;<span class="tsd-signature-symbol">(</span>position<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, mix<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">IOperationOptions</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IDeferred</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L150">File.ts:150</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L139">File.ts:139</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -537,7 +561,7 @@
 									<h5>length: <span class="tsd-signature-type">number</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> mix: <a href="../interfaces/File.IOperationOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">IOperationOptions</a></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> mix: <span class="tsd-signature-type">IOperationOptions</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">IDeferred</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -554,7 +578,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L339">File.ts:339</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L334">File.ts:334</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -571,7 +595,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L345">File.ts:345</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L340">File.ts:340</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">IDeferred</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -588,7 +612,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L301">File.ts:301</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L296">File.ts:296</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -611,7 +635,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L307">File.ts:307</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L302">File.ts:302</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -634,7 +658,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L356">File.ts:356</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L351">File.ts:351</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -657,13 +681,13 @@
 					<a name="replaceAsync" class="tsd-anchor"></a>
 					<h3>replace<wbr>Async</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">replace<wbr>Async<span class="tsd-signature-symbol">(</span>a<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">RegExp</span>, b<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span>substring<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, <span class="tsd-signature-symbol">...</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span>, setts<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IDeferred</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">replace<wbr>Async<span class="tsd-signature-symbol">(</span>a<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">RegExp</span>, b<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span>substring<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, <span class="tsd-signature-symbol">...</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span>, setts<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L368">File.ts:368</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L363">File.ts:363</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -678,7 +702,7 @@
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> setts: <span class="tsd-signature-type">any</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">IDeferred</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -692,7 +716,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L401">File.ts:401</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L386">File.ts:386</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Stats</span></h4>
@@ -709,7 +733,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L394">File.ts:394</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L379">File.ts:379</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -732,7 +756,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L388">File.ts:388</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L373">File.ts:373</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -767,13 +791,13 @@
 					<a name="write" class="tsd-anchor"></a>
 					<h3>write</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
-						<li class="tsd-signature tsd-kind-icon">write&lt;T&gt;<span class="tsd-signature-symbol">(</span>content<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span>, mix<span class="tsd-signature-symbol">?: </span><a href="../interfaces/File.IOperationOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">IOperationOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="File.File-1.html" class="tsd-signature-type" data-tsd-kind="Class">File</a></li>
+						<li class="tsd-signature tsd-kind-icon">write&lt;T&gt;<span class="tsd-signature-symbol">(</span>content<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span>, mix<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">IOperationOptions</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="File.File-1.html" class="tsd-signature-type" data-tsd-kind="Class">File</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L175">File.ts:175</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L164">File.ts:164</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -788,7 +812,7 @@
 									<h5>content: <span class="tsd-signature-type">T</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> mix: <a href="../interfaces/File.IOperationOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">IOperationOptions</a></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> mix: <span class="tsd-signature-type">IOperationOptions</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="File.File-1.html" class="tsd-signature-type" data-tsd-kind="Class">File</a></h4>
@@ -799,13 +823,13 @@
 					<a name="writeAsync" class="tsd-anchor"></a>
 					<h3>write<wbr>Async</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
-						<li class="tsd-signature tsd-kind-icon">write<wbr>Async&lt;T&gt;<span class="tsd-signature-symbol">(</span>content<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span>, mix<span class="tsd-signature-symbol">?: </span><a href="../interfaces/File.IOperationOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">IOperationOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IDeferred</span><span class="tsd-signature-symbol">&lt;</span><a href="File.File-1.html" class="tsd-signature-type" data-tsd-kind="Class">File</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">write<wbr>Async&lt;T&gt;<span class="tsd-signature-symbol">(</span>content<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span>, mix<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">IOperationOptions</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="File.File-1.html" class="tsd-signature-type" data-tsd-kind="Class">File</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L201">File.ts:201</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L193">File.ts:193</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -820,10 +844,10 @@
 									<h5>content: <span class="tsd-signature-type">T</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> mix: <a href="../interfaces/File.IOperationOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">IOperationOptions</a></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> mix: <span class="tsd-signature-type">IOperationOptions</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">IDeferred</span><span class="tsd-signature-symbol">&lt;</span><a href="File.File-1.html" class="tsd-signature-type" data-tsd-kind="Class">File</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="File.File-1.html" class="tsd-signature-type" data-tsd-kind="Class">File</a><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -837,7 +861,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L323">File.ts:323</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L318">File.ts:318</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -863,7 +887,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L335">File.ts:335</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L330">File.ts:330</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -889,7 +913,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L407">File.ts:407</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L392">File.ts:392</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -906,13 +930,13 @@
 					<a name="copyTo-1" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> copy<wbr>To</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">copy<wbr>To<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, target<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, opts<span class="tsd-signature-symbol">?: </span><a href="../interfaces/File.IFileCopyOpts.html" class="tsd-signature-type" data-tsd-kind="Interface">IFileCopyOpts</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="File.File-1.html" class="tsd-signature-type" data-tsd-kind="Class">File</a></li>
+						<li class="tsd-signature tsd-kind-icon">copy<wbr>To<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, target<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, opts<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">IFileCopyOpts</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="File.File-1.html" class="tsd-signature-type" data-tsd-kind="Class">File</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L262">File.ts:262</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L260">File.ts:260</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -924,7 +948,7 @@
 									<h5>target: <span class="tsd-signature-type">string</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> opts: <a href="../interfaces/File.IFileCopyOpts.html" class="tsd-signature-type" data-tsd-kind="Interface">IFileCopyOpts</a></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> opts: <span class="tsd-signature-type">IFileCopyOpts</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="File.File-1.html" class="tsd-signature-type" data-tsd-kind="Class">File</a></h4>
@@ -935,13 +959,13 @@
 					<a name="copyToAsync-1" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> copy<wbr>ToAsync</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">copy<wbr>ToAsync<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, target<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, opts<span class="tsd-signature-symbol">?: </span><a href="../interfaces/File.IFileCopyOpts.html" class="tsd-signature-type" data-tsd-kind="Interface">IFileCopyOpts</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IDeferred</span><span class="tsd-signature-symbol">&lt;</span><a href="File.File-1.html" class="tsd-signature-type" data-tsd-kind="Class">File</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">copy<wbr>ToAsync<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, target<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, opts<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">IFileCopyOpts</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IDeferred</span><span class="tsd-signature-symbol">&lt;</span><a href="File.File-1.html" class="tsd-signature-type" data-tsd-kind="Class">File</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L281">File.ts:281</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L279">File.ts:279</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -953,7 +977,7 @@
 									<h5>target: <span class="tsd-signature-type">string</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> opts: <a href="../interfaces/File.IFileCopyOpts.html" class="tsd-signature-type" data-tsd-kind="Interface">IFileCopyOpts</a></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> opts: <span class="tsd-signature-type">IFileCopyOpts</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">IDeferred</span><span class="tsd-signature-symbol">&lt;</span><a href="File.File-1.html" class="tsd-signature-type" data-tsd-kind="Class">File</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -970,7 +994,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L440">File.ts:440</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L425">File.ts:425</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -987,7 +1011,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L444">File.ts:444</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L429">File.ts:429</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -1004,7 +1028,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L287">File.ts:287</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L286">File.ts:286</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1021,13 +1045,13 @@
 					<a name="existsAsync-1" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> exists<wbr>Async</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">exists<wbr>Async<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IDeferred</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">exists<wbr>Async<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PromiseLike</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L298">File.ts:298</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L293">File.ts:293</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1036,7 +1060,7 @@
 									<h5>path: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">IDeferred</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">PromiseLike</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -1050,7 +1074,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L450">File.ts:450</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L435">File.ts:435</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <a href="FileFactory.FileFactory-1.html" class="tsd-signature-type" data-tsd-kind="Class">FileFactory</a></h4>
@@ -1067,7 +1091,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L456">File.ts:456</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L441">File.ts:441</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">FileHooks</span></h4>
@@ -1084,7 +1108,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L462">File.ts:462</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L447">File.ts:447</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-symbol">{}</span></h4>
@@ -1100,13 +1124,13 @@
 					<a name="processHooks" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> process<wbr>Hooks</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">process<wbr>Hooks<span class="tsd-signature-symbol">(</span>method<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, file<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, config<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, onComplete<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">process<wbr>Hooks<span class="tsd-signature-symbol">(</span>method<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, file<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, config<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, onComplete<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L477">File.ts:477</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L462">File.ts:462</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1121,10 +1145,10 @@
 									<h5>config: <span class="tsd-signature-type">any</span></h5>
 								</li>
 								<li>
-									<h5>onComplete: <span class="tsd-signature-type">any</span></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> onComplete: <span class="tsd-signature-type">any</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -1132,13 +1156,13 @@
 					<a name="read-1" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> read</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">read&lt;T&gt;<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, mix<span class="tsd-signature-symbol">?: </span><a href="../interfaces/File.IOperationOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">IOperationOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span></li>
+						<li class="tsd-signature tsd-kind-icon">read&lt;T&gt;<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, mix<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">IFileSettings</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-type">IOperationOptions</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L92">File.ts:92</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L95">File.ts:95</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -1153,7 +1177,7 @@
 									<h5>path: <span class="tsd-signature-type">string</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> mix: <a href="../interfaces/File.IOperationOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">IOperationOptions</a></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> mix: <span class="tsd-signature-type">IFileSettings</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-type">IOperationOptions</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">T</span></h4>
@@ -1164,13 +1188,13 @@
 					<a name="readAsync-1" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> read<wbr>Async</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">read<wbr>Async&lt;T&gt;<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, mix<span class="tsd-signature-symbol">?: </span><a href="../interfaces/File.IOperationOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">IOperationOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IDeferred</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">read<wbr>Async&lt;T&gt;<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, mix<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">IFileSettings</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-type">IOperationOptions</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L138">File.ts:138</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L127">File.ts:127</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -1185,10 +1209,10 @@
 									<h5>path: <span class="tsd-signature-type">string</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> mix: <a href="../interfaces/File.IOperationOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">IOperationOptions</a></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> mix: <span class="tsd-signature-type">IFileSettings</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-type">IOperationOptions</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">IDeferred</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -1196,13 +1220,13 @@
 					<a name="readRange-1" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> read<wbr>Range</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">read<wbr>Range&lt;T&gt;<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, position<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, mix<span class="tsd-signature-symbol">?: </span><a href="../interfaces/File.IOperationOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">IOperationOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span></li>
+						<li class="tsd-signature tsd-kind-icon">read<wbr>Range&lt;T&gt;<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, position<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, mix<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">IOperationOptions</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L146">File.ts:146</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L135">File.ts:135</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -1223,7 +1247,7 @@
 									<h5>length: <span class="tsd-signature-type">number</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> mix: <a href="../interfaces/File.IOperationOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">IOperationOptions</a></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> mix: <span class="tsd-signature-type">IOperationOptions</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">T</span></h4>
@@ -1234,13 +1258,13 @@
 					<a name="readRangeAsync-1" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> read<wbr>Range<wbr>Async</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">read<wbr>Range<wbr>Async&lt;T&gt;<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, position<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, mix<span class="tsd-signature-symbol">?: </span><a href="../interfaces/File.IOperationOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">IOperationOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IDeferred</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">read<wbr>Range<wbr>Async&lt;T&gt;<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, position<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, length<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, mix<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">IOperationOptions</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IDeferred</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L171">File.ts:171</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L160">File.ts:160</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -1261,7 +1285,7 @@
 									<h5>length: <span class="tsd-signature-type">number</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> mix: <a href="../interfaces/File.IOperationOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">IOperationOptions</a></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> mix: <span class="tsd-signature-type">IOperationOptions</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">IDeferred</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -1278,7 +1302,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L483">File.ts:483</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L469">File.ts:469</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1307,7 +1331,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L447">File.ts:447</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L432">File.ts:432</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1330,7 +1354,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L453">File.ts:453</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L438">File.ts:438</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1353,7 +1377,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L459">File.ts:459</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L444">File.ts:444</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1379,7 +1403,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L342">File.ts:342</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L337">File.ts:337</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1402,7 +1426,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L353">File.ts:353</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L348">File.ts:348</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1425,7 +1449,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L304">File.ts:304</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L299">File.ts:299</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1451,7 +1475,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L316">File.ts:316</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L311">File.ts:311</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1477,7 +1501,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L365">File.ts:365</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L360">File.ts:360</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1503,13 +1527,13 @@
 					<a name="replaceAsync-1" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> replace<wbr>Async</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">replace<wbr>Async<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, a<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">RegExp</span>, b<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span>substring<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, <span class="tsd-signature-symbol">...</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span>, setts<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IDeferred</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">replace<wbr>Async<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, a<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">RegExp</span>, b<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span>substring<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, <span class="tsd-signature-symbol">...</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span>, setts<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L384">File.ts:384</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L369">File.ts:369</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1527,7 +1551,7 @@
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> setts: <span class="tsd-signature-type">any</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">IDeferred</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -1541,7 +1565,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L486">File.ts:486</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L472">File.ts:472</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1567,7 +1591,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L465">File.ts:465</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L450">File.ts:450</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1590,7 +1614,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L404">File.ts:404</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L389">File.ts:389</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1613,7 +1637,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L398">File.ts:398</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L383">File.ts:383</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1639,7 +1663,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L391">File.ts:391</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L376">File.ts:376</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1677,13 +1701,13 @@
 					<a name="write-1" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> write</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">write&lt;T&gt;<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, content<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span>, mix<span class="tsd-signature-symbol">?: </span><a href="../interfaces/File.IOperationOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">IOperationOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="File.File-1.html" class="tsd-signature-type" data-tsd-kind="Class">File</a></li>
+						<li class="tsd-signature tsd-kind-icon">write&lt;T&gt;<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, content<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span>, mix<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">IFileSettings</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-type">IOperationOptions</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="File.File-1.html" class="tsd-signature-type" data-tsd-kind="Class">File</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L198">File.ts:198</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L190">File.ts:190</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -1701,7 +1725,7 @@
 									<h5>content: <span class="tsd-signature-type">T</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> mix: <a href="../interfaces/File.IOperationOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">IOperationOptions</a></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> mix: <span class="tsd-signature-type">IFileSettings</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-type">IOperationOptions</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="File.File-1.html" class="tsd-signature-type" data-tsd-kind="Class">File</a></h4>
@@ -1712,13 +1736,13 @@
 					<a name="writeAsync-1" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> write<wbr>Async</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">write<wbr>Async&lt;T&gt;<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, content<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span>, mix<span class="tsd-signature-symbol">?: </span><a href="../interfaces/File.IOperationOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">IOperationOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IDeferred</span><span class="tsd-signature-symbol">&lt;</span><a href="File.File-1.html" class="tsd-signature-type" data-tsd-kind="Class">File</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">write<wbr>Async&lt;T&gt;<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, content<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span>, mix<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">IFileSettings</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-type">IOperationOptions</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="File.File-1.html" class="tsd-signature-type" data-tsd-kind="Class">File</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/afa6368/src/File.ts#L235">File.ts:235</a></li>
+									<li>Defined in <a href="https://github.com/atmajs/atma-io/blob/eda744a/src/File.ts#L232">File.ts:232</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -1736,10 +1760,10 @@
 									<h5>content: <span class="tsd-signature-type">T</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> mix: <a href="../interfaces/File.IOperationOptions.html" class="tsd-signature-type" data-tsd-kind="Interface">IOperationOptions</a></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> mix: <span class="tsd-signature-type">IFileSettings</span><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-type">IOperationOptions</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">IDeferred</span><span class="tsd-signature-symbol">&lt;</span><a href="File.File-1.html" class="tsd-signature-type" data-tsd-kind="Class">File</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="File.File-1.html" class="tsd-signature-type" data-tsd-kind="Class">File</a><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -1784,8 +1808,14 @@
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
 								<a href="File.File-1.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="File.File-1.html#_ver" class="tsd-kind-icon">_ver</a>
+							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="File.File-1.html#content" class="tsd-kind-icon">content</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="File.File-1.html#opts" class="tsd-kind-icon">opts</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="File.File-1.html#sourceMap" class="tsd-kind-icon">source<wbr>Map</a>
@@ -1971,15 +2001,6 @@
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="../interfaces/File.IFileCopyOpts.html" class="tsd-kind-icon">IFile<wbr>Copy<wbr>Opts</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="../interfaces/File.IFileSettings.html" class="tsd-kind-icon">IFile<wbr>Settings</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="../interfaces/File.IOperationOptions.html" class="tsd-kind-icon">IOperation<wbr>Options</a>
-					</li>
 				</ul>
 			</nav>
 		</div>
@@ -2003,7 +2024,7 @@
 				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
 			</ul>
 		</div>
 	</div>

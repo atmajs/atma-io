@@ -1,3 +1,4 @@
+import { class_Uri } from 'atma-utils';
 import { io, global } from './global'
 import { Env } from './Env'
 import { Watcher } from './Watcher'
@@ -7,8 +8,8 @@ import { Directory } from './Directory'
 import { setSettings } from './ExportsSetts'
 
 import { Io } from './IIo';
-import { class_Uri } from 'atma-utils';
-import { FileSafe, LockFile } from './FileSafe'
+import { FileSafe } from './FileSafe'
+import { LockFile } from './transport/filesystem/safe/LockFile'
 
 io.env = Env;
 io.watcher = Watcher;

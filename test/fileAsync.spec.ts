@@ -1,6 +1,6 @@
 import { File } from '../src/File'
 
-var path_File = 'test/assets/file.txt',
+let path_File = 'test/assets/file.txt',
     path_Copy = 'test/bin/copied.js',
     path_Write = 'test/bin/write.txt';
 
@@ -17,100 +17,63 @@ UTest({
     '$teardown' (){
         File.clearCache();
     },
-    'exists - source' (done) {
-        this.exists = function(path, expect, done){
-            File
-                .existsAsync(path)
-                .done(function(exists){
-                    eq_(exists, expect);
-                })
-                .fail(assert.avoid())
-                .always(done)
-                ;
-        };
-        this.exists(path_File, true, done);
+    async 'exists - source' () {
+        eq_(await File.existsAsync(path_File), true);
     },
-    'exists - target' (done){
-        this.exists(path_Copy, false, done);
+    async 'exists - target' () {
+        eq_(await File.existsAsync(path_Copy), false);
     },
-    'exists - not' (done){
-        this.exists('/path/not/exists', false, done);
+    async 'exists - not' (){
+        eq_(await File.existsAsync('/path/not/exists'), false);
     },
-    'exists - not - directory' (done){
-        this.exists('test', false, done);
+    async 'exists - not - directory' (){
+        eq_(await File.existsAsync('test'), false);
     },
 
-    'read' (done){
-        this.checkRead = function(path, contains, done) {
-            File
-                .readAsync(path)
-                .fail(assert.avoid())
-                .always(done)
-                .done(function(content, file){
-                    assert(file instanceof File);
-                    has_(content, contains);
-                });
-        }
-
-        this.checkRead(path_File, "Lorem", done);
+    async 'read' (){
+        let content = await File.readAsync(path_File);
+        has_(content, 'Lorem');
+    },
+    async 'read - 2' (){
+        let content = await File.readAsync('/' + path_File);
+        has_(content, 'Lorem');
     },
     async 'readRangeAsync'() {
         let content = await File.readRangeAsync('/test/assets/file.txt', 3, 5);
         eq_(content, 'Lorem');
     },
-    'read - 2' (done){
-        this.checkRead('/' + path_File, "Lorem", done);
+    async 'write' (){
+        const DATA = 'foo-bar';
+        await File.writeAsync(path_Write, DATA);
+        let content = await File.readAsync(path_Write);
+        eq_(content, DATA);
     },
-    'write' (done){
-        this.checkWrite = function(path, content, done){
-            File
-                .writeAsync(path, content)
-                .fail(assert.avoid())
-                .always(done)
-                .done(function(){
-                    eq_(File.read(path), content);
-                });
-        };
-        this.checkWrite(path_Write, 'foo-bar', done);
+    async 'write - 2' () {
+        const DATA = 'baz-qux';
+        await File.writeAsync(path_Write, DATA);
+        let content = await File.readAsync(path_Write);
+        eq_(content, DATA);
     },
-    'write - 2' (done){
-        this.checkWrite(path_Write, 'baz-qux', done);
-    },
-    'rename' (done){
-        var name = 'write-renamed.txt';
-        File
-            .renameAsync(path_Write, name)
-            .fail(assert.avoid())
-            .done(function(){
+    async 'rename' (){
+        let name = 'write-renamed.txt';
+        await File.renameAsync(path_Write, name);
 
-                var path = path_Write.replace('write.txt', name);
-                eq_(File.exists(path), true);
-                eq_(File.exists(path_Write), false);
-                done();
-            }.bind(this));
+        let path = path_Write.replace('write.txt', name);
+        eq_(File.exists(path), true);
+        eq_(File.exists(path_Write), false);
     },
-    'copy' (done){
-        File
-            .copyToAsync(path_File, path_Copy)
-            .fail(assert.avoid())
-            .always(done)
-            .done(function(){
-                eq_(File.exists(path_Copy), true);
-                eq_(File.read(path_Copy), File.read(path_File));
-            });
+    async 'copy' (){
+        await File.copyToAsync(path_File, path_Copy);
+        eq_(File.exists(path_Copy), true);
+        eq_(File.read(path_Copy), File.read(path_File));
     },
 
-    'remove' (done){
-        File
-            .removeAsync(path_Copy)
-            .fail(assert.avoid())
-            .done(function(){
-                eq_(File.exists(path_Copy), false);
-                done();
-            })
+    async 'remove' (){
+        await File.removeAsync(path_Copy);
+        eq_(File.exists(path_Copy), false);
     },
 
-    'hook' (done){
+    async 'hook' (){
 
         function hook(file){
             file.content = 'foo';
@@ -122,13 +85,15 @@ UTest({
             ;
 
 
-        this.checkRead(path_File, 'foo', function(){
-            File
-                .getHookHandler()
-                .unregister('read', hook);
+        let content = await File.readAsync(path_File);
+        eq_(content, 'foo');
 
-            this.$teardown();
-            this.read(done);
-        }.bind(this));
+        File
+            .getHookHandler()
+            .unregister('read', hook);
+
+        this.$teardown();
+        content = await File.readAsync(path_File);
+        has_(content, '// Lorem');
     }
 });

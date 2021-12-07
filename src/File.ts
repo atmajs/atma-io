@@ -36,6 +36,8 @@ import { JsonMiddleware } from './middleware/json';
 import { global } from './global'
 import { uri_getFile } from './util/uri';
 import { Encrypt } from './util/encrypt';
+import { IFileCopyOpts, IFileOptionsBase, IFileSettings, IOperationOptions } from './interfaces/IFile';
+import { cb_toPromise, cb_toPromiseCtx } from './util/cb';
 
 
 let _cache = {};
@@ -45,11 +47,13 @@ let _factory: FileFactory;
 const rootFolder = process.cwd();
 
 export class File {
+    private _ver = 0;
+
     uri: class_Uri
     content: Buffer | string
     sourceMap?: string
 
-    constructor(path: string | class_Uri, opts?: IFileSettings) {
+    constructor(path: string | class_Uri, public opts?: IFileSettings) {
         if (typeof path === 'string' && path[0] === '/' && path.startsWith(rootFolder)) {
             path = 'file://' + path;
         }
@@ -64,8 +68,9 @@ export class File {
         if ((this as any).__proto__ === File.prototype) {
             let factory = opts?.factory ?? _factory;
             let Handler = factory?.resolveHandler(this.uri);
-            if (Handler != null)
+            if (Handler != null) {
                 return new Handler(this.uri, opts);
+            }
         }
 
         return isCacheEnabled(opts) === false
@@ -80,63 +85,47 @@ export class File {
 
         let setts = getSetts(mix);
         let path = uri_toPath(this.uri);
-        let preprocess: TPreprocessBuffer = setts.aes256 == null
-            ? null
-            : Encrypt.delegateEncrypt(setts.aes256);
+        let preprocess: TPreprocessBuffer = getTransportReaderMiddleware(mix, this.opts);
 
         this.content = file_read(path, setts.encoding, preprocess);
-        processHooks('read', this, setts, mix);
+        processHooksSync('read', this, setts, this.opts);
 
         return <T><any>this.content;
     }
-    static read<T = string | Buffer>(path: string, mix?: IOperationOptions): T {
-        return new File(path).read<T>(mix);
+    static read<T = string | Buffer>(path: string, mix?: IFileSettings & IOperationOptions): T {
+        return new File(path, mix).read<T>(mix);
     }
-    readAsync<T = string | Buffer>(mix?: IOperationOptions): IDeferred<T> {
-        return dfr_factory(this, function (dfr: class_Dfr, file: File, path: string) {
-            if (file.content != null) {
-                dfr.resolve(file.content, file);
-                return;
-            }
-
-            let setts = getSetts(mix);
-            let preprocess: TPreprocessBufferAsync = setts.aes256 == null
-                    ? null
-                    : Encrypt.delegateDecrypt(setts.aes256);
-
-            file_readAsync(
+    async readAsync<T = string | Buffer>(mix?: IOperationOptions): Promise<T> {
+        if (this.content != null) {
+            return this.content as any as T;
+        }
+        let path = uri_toPath(this.uri);
+        let setts = getSetts(mix);
+        let options = getMergedOptions(mix, this.opts);
+        let preprocess: TPreprocessBuffer = getTransportReaderMiddleware(mix, this.opts);
+        try {
+            this.content = await file_readAsync(
                 path
                 , setts.encoding
-                , onReadComplete
+                , options
                 , preprocess
             );
-
-            function onReadComplete(error, content) {
-                if (error)
-                    return dfr.reject(error);
-
-                file.content = content;
-                processHooks(
-                    'read'
-                    , file
-                    , setts
-                    , mix
-                    , onHookComplete
-                );
-            }
-            function onHookComplete(error) {
-                if (error)
-                    return dfr.reject(error);
-                dfr.resolve(file.content, file);
-            }
-        }, function onError(file, path) {
+            await processHooksAsync(
+                'read'
+                , this
+                , setts
+                , this.opts
+            );
+            return this.content as any as T;
+        } catch (error) {
             if (isFromCache(path)) {
                 delete _cache[path];
             }
-        });
+            throw error;
+        }
     }
-    static readAsync<T = string | Buffer>(path: string, mix?: IOperationOptions) {
-        return new File(path, <any>mix).readAsync<T>(mix);
+    static readAsync<T = string | Buffer>(path: string, mix?: IFileSettings & IOperationOptions) {
+        return new File(path, mix).readAsync<T>(mix);
     }
     readRange<T = string>(position: number, length: number, mix?: IOperationOptions): T {
         let path = uri_toPath(this.uri);
@@ -183,58 +172,67 @@ export class File {
 
         let path = uri_toPath(this.uri);
         let setts = getSetts(mix);
-        let preprocess: TPreprocessBuffer = setts.aes256
-            ? Encrypt.delegateEncrypt(setts.aes256)
-            : null;
 
-        processHooks('write', this, setts, mix);
-        file_save(path, this.content, setts, preprocess);
+        processHooksSync('write', this, setts, mix);
 
-        // Clear Content sothat next `read` call reads content and processes the middlewares, as processHooks may serialize content
+        file_save(
+            path,
+            this.content,
+            setts,
+            getTransportWriterMiddleware(mix, this.opts),
+        );
+
+        // Clear Content so that the next `read` call reads content and processes the middlewares, as processHooks may serialize content
         // Consider not to clear content, but to flag the file as serialized, so that next `read` call runs middlewares once again
         this.content = null;
         return this;
     }
-    static write<T = string | Buffer | any>(path: string, content: T, mix?: IOperationOptions) {
-        return new File(path, <any>mix).write<T>(content, mix);
+    static write<T = string | Buffer | any>(path: string, content: T, mix?: IFileSettings & IOperationOptions) {
+        return new File(path, mix).write<T>(content, mix);
     }
-    writeAsync<T = string | Buffer | any>(content: T, mix?: IOperationOptions): IDeferred<this> {
+    async writeAsync<T = string | Buffer | any>(content: T, mix?: IOperationOptions): Promise<this> {
+        let path = uri_toPath(this.uri);
+        if (content === null) {
+            content = this.content as any as T;
+        }
+        if (content == null) {
+            throw new Error('Content is undefined')
+        }
 
-        return dfr_factory(this, function (dfr, file, path) {
-            file.content = content = <any>(content || file.content);
-            if (content == null) {
-                dfr.reject(Error('Content is undefined'));
-                return;
-            }
+        this.content = content as any;
 
-            let setts = getSetts(mix);
-            processHooks(
-                'write'
-                , file
-                , setts
-                , mix
-                , onHookComplete);
+        let opts = getMergedOptions(mix, this.opts);
+        let setts = getSetts(mix);
 
-            function onHookComplete() {
-                let content = file.content;
-                let preprocess: TPreprocessBufferAsync = setts.aes256 == null
-                    ? null
-                    : Encrypt.delegateEncrypt(setts.aes256);
+        // In case the hooks are taking some time, and we called writeAsync in-between.
+        let ver = ++this._ver;
+        await processHooksAsync(
+            'write'
+            , this
+            , setts
+            , this.opts
+        );
+        if (ver !== this._ver) {
+            // writeAsync was called in-between
+            return;
+        }
 
-                file.content = null;
-                file_saveAsync(
-                    path
-                    , content
-                    , setts
-                    , dfr_pipeDelegate(dfr)
-                    , preprocess
-                );
-            }
-        });
+        let body = this.content as any as string | Buffer;
+
+        /** clear content as for next read call to re-read from fs */
+        this.content = null;
+        await file_saveAsync(
+            path
+            , body
+            , opts
+            , getTransportWriterMiddleware(mix, opts)
+        );
+        return this;
     }
-    static writeAsync<T = string | Buffer | any>(path: string, content: T, mix?: IOperationOptions) {
-        return new File(path).writeAsync<T>(content, mix);
+    static writeAsync<T = string | Buffer | any>(path: string, content: T, mix?: IFileSettings & IOperationOptions) {
+        return new File(path, mix).writeAsync<T>(content, mix);
     }
+
     copyTo(target: string, opts?: IFileCopyOpts): this {
 
         let from = uri_toPath(this.uri);
@@ -282,18 +280,15 @@ export class File {
         return new File(path).copyToAsync(target);
     }
     exists(): boolean {
-        return file_exists(uri_toPath(this.uri));
+        let path = uri_toPath(this.uri);
+        return file_exists(path);
     }
     static exists(path: string) {
         return new File(path).exists();
     }
-    existsAsync(): IDeferred<boolean> {
-        return dfr_factory(this, function (dfr, file, path) {
-            file_existsAsync(
-                path,
-                dfr_pipeDelegate(dfr)
-            );
-        });
+    existsAsync(): PromiseLike<boolean> {
+        let path = uri_toPath(this.uri);
+        return file_existsAsync(path);
     }
     static existsAsync(path: string) {
         return new File(path).existsAsync();
@@ -365,23 +360,13 @@ export class File {
     static replace(path: string, a: string | RegExp, b: string | ((substring: string, ...args: any[]) => string), setts?): string {
         return new File(path).replace(a, b, setts);
     }
-    replaceAsync(a: string | RegExp, b: string | ((substring: string, ...args: any[]) => string), setts?): IDeferred<string> {
-        return dfr_factory(this, function (dfr, file) {
-            file
-                .readAsync(setts)
-                .fail(dfr.rejectDelegate())
-                .done(function (content) {
-                    content = content.replace(a, b);
-                    file
-                        .writeAsync(content)
-                        .fail(dfr.rejectDelegate())
-                        .done(function () {
-                            dfr.resolve(null, content);
-                        });
-                });
-        });
+    async replaceAsync(a: string | RegExp, b: string | ((substring: string, ...args: any[]) => string), setts?): Promise<string> {
+        let content = await this.readAsync<string>(setts);
+        content = content.replace(a, b as any);
+        await this.writeAsync(content);
+        return content;
     }
-    static replaceAsync(path: string, a: string | RegExp, b: string | ((substring: string, ...args: any[]) => string), setts?): IDeferred<string> {
+    static replaceAsync(path: string, a: string | RegExp, b: string | ((substring: string, ...args: any[]) => string), setts?): Promise<string> {
         return new File(path).replaceAsync(a, b, setts);
     }
 
@@ -474,8 +459,9 @@ export class File {
         return _hooks
     }
 
-    static processHooks(method, file, config, onComplete) {
-        processHooks(method, file, null, config, onComplete);
+    static async processHooks(method, file, config, onComplete?): Promise<void> {
+        await processHooksAsync(method, file, null, config);
+        onComplete?.();
     }
 
     static middleware: { [name: string]: IFileMiddleware } = {}
@@ -514,8 +500,8 @@ function uri_toPath(uri: class_Uri) {
     }
     return uri.toString();
 }
-function getSetts(mix: IOperationOptions, defaults?) {
-    let setts: IOperationOptions = defaults ?? {
+function getSetts(mix: IOperationOptions) {
+    let setts: IOperationOptions = {
         encoding: 'utf8',
         skipHooks: false,
         hooks: null,
@@ -538,20 +524,41 @@ function getSetts(mix: IOperationOptions, defaults?) {
     }
     return setts;
 }
-function processHooks(method: 'read' | 'write', file: File, setts: IOperationOptions, config: any, cb?: Function) {
+function getMergedOptions(operationOpts: IOperationOptions, fileOpts: IFileOptionsBase): IOperationOptions & IFileOptionsBase {
+    return {
+        ...(fileOpts ?? {}),
+        ...(operationOpts ?? {}),
+    };
+}
+function getTransportReaderMiddleware (opts: IOperationOptions, settings: IFileSettings) {
+    let aes256 = opts?.aes256 ?? settings?.aes256;
+    return aes256 == null ? null : Encrypt.delegateDecrypt(aes256);
+}
+function getTransportWriterMiddleware (opts: IOperationOptions, settings: IFileSettings) {
+    let aes256 = opts?.aes256 ?? settings?.aes256;
+    return aes256 == null ? null : Encrypt.delegateEncrypt(aes256);
+}
+
+function processHooksSync(method: 'read' | 'write', file: File, setts: IOperationOptions, config: IFileOptionsBase) {
     let hooks = _hooks;
     if (setts != null) {
         hooks = setts.hooks || hooks;
         if (hooks == null || setts.skipHooks === true) {
-            cb?.();
             return;
         }
     }
-    if (cb) {
-        hooks.triggerAsync(method, file, config, cb);
-        return;
-    }
     hooks.trigger(method, file, config);
+}
+
+async function processHooksAsync(method: 'read' | 'write', file: File, setts: IOperationOptions, config: IFileOptionsBase) {
+    let hooks = _hooks;
+    if (setts != null) {
+        hooks = setts.hooks || hooks;
+        if (hooks == null || setts.skipHooks === true) {
+            return;
+        }
+    }
+    return cb_toPromiseCtx(hooks, hooks.triggerAsync, method, file, config);
 }
 function isFromCache(path: string, opts?: IFileSettings) {
     if (_cacheEnabled === false) {
@@ -572,30 +579,6 @@ function isCacheEnabled(opts?: IFileSettings) {
     return true;
 }
 
-export interface IFileSettings {
-    cached?: boolean
-    factory?: FileFactory
-}
-export interface IFileCopyOpts {
-    silent?: boolean
-    baseSource?: string
-}
-
-export interface IOperationOptions {
-    skipHooks?: boolean
-    /** Default: utf8 */
-    encoding?: 'buffer' | 'utf8' | string
-    hooks?: FileHooks
-    aes256?: {
-        secret: string
-    }
-
-    position?: number
-    length?: number
-
-
-    [other: string]: any
-}
 
 /** REGISTER */
 if (global.io && global.io.File && typeof global.io.File.getFactory === 'function') {

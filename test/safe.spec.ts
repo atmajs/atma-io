@@ -25,7 +25,7 @@ UTest({
         await Directory.ensureAsync(filename.substring(0, filename.lastIndexOf('/') + 1));
 
         let data = [];
-        for (let i = 0; i < 200; i++) {
+        for (let i = 0; i < 2; i++) {
             let key = `${i}-${Math.round(Math.random() * (10 ** 10))}`;
             let str = key;
             while (str.length < 1000) {
@@ -79,5 +79,17 @@ UTest({
             let has = content.includes(str);
             eq_(has, true, `Should include ${str}`);
         })
+    },
+    async 'write with middlewares' () {
+        let path = './test/tmp/data.json';
+        let safeFile = new FileSafe(path, { threadSafe: true });
+        let json = { time: Date.now() };
+        await safeFile.writeAsync(json);
+
+        let jsonStr = await File.readAsync<string>(path, { skipHooks: true });
+        eq_(typeof jsonStr, 'string')
+        let jsonBack = JSON.parse(jsonStr);
+        eq_(json.time, jsonBack.time);
+
     }
 })

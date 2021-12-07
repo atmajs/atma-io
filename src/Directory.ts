@@ -32,8 +32,8 @@ export class Directory {
             if (/\.\w+$/.test(directory) === false)
                 directory = directory + '/';
         }
-        
-        this.uri = path_getUri(directory);        
+
+        this.uri = path_getUri(directory);
         delete this.uri.file;
     }
     exists(): boolean {
@@ -80,7 +80,7 @@ export class Directory {
                 return new File(this.uri.combine(path));
             });
 
-        
+
         /** Obsolete (Backward compatible: Directory was returned) */
         Object.defineProperty(arr, 'files', {
             get () {
@@ -232,12 +232,10 @@ export class Directory {
     copyToAsync(target: string, options: {verbose?: boolean} = { verbose: false}): IDeferred<void> {
         var dfr = new class_Dfr;
         if (Array.isArray(this.files) === false) {
-
-            var dir = this;
             this
                 .readFilesAsync()
-                .done(function () {
-                    dir
+                .done(() => {
+                    this
                         .copyToAsync(target, options)
                         .done(dfr.resolveDelegate())
                         .fail(dfr.rejectDelegate())
@@ -255,6 +253,7 @@ export class Directory {
             i = -1
             ;
         let awaiter = new AwaitCallbacks;
+
         while (++i < imax) {
             copy(i, awaiter.delegate());
         }
@@ -271,8 +270,8 @@ export class Directory {
                 to
                 ;
             to = targetUri.combine(relPath);
-         
-            
+
+
             if (options.verbose !== true && File.exists(to)) {
                 var message = `File already exists: ${relPath}. Replace? `;
 
@@ -385,15 +384,15 @@ function dfr_pipeDelegate(dfr, ...argsBefore) {
 
 function uri_toDirectory (uri: class_Uri) {
     let fs = uri.protocol == null || uri.protocol === 'file';
-    let path = fs 
+    let path = fs
         ? uri.toLocalDir()
         : null;
-    
+
     if (fs === false) {
         uri = new class_Uri(uri);
         uri.file = null;
         path = uri.toString();
     }
-    
+
     return path;
 }

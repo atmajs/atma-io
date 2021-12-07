@@ -16,7 +16,8 @@ declare module 'atma-io/IIo' {
     import { File } from 'atma-io/File';
     import { Glob } from 'atma-io/ExportsGlob';
     import { setSettings } from 'atma-io/ExportsSetts';
-    import { FileSafe, LockFile } from 'atma-io/FileSafe';
+    import { FileSafe } from 'atma-io/FileSafe';
+    import { LockFile } from 'atma-io/transport/filesystem/safe/LockFile';
     export interface Io {
         env: {
             currentDir: class_Uri;
@@ -106,31 +107,33 @@ declare module 'atma-io/File' {
     import { FileFactory } from 'atma-io/FileFactory';
     import { FileHooks, IFileMiddleware } from 'atma-io/FileHooks';
     import { ITransport } from 'atma-io/transport/custom';
+    import { IFileCopyOpts, IFileSettings, IOperationOptions } from 'atma-io/interfaces/IFile';
     export class File {
+        opts?: IFileSettings;
         uri: class_Uri;
         content: Buffer | string;
         sourceMap?: string;
         constructor(path: string | class_Uri, opts?: IFileSettings);
         read<T = string | Buffer>(mix?: IOperationOptions): T;
-        static read<T = string | Buffer>(path: string, mix?: IOperationOptions): T;
-        readAsync<T = string | Buffer>(mix?: IOperationOptions): IDeferred<T>;
-        static readAsync<T = string | Buffer>(path: string, mix?: IOperationOptions): IDeferred<T>;
+        static read<T = string | Buffer>(path: string, mix?: IFileSettings & IOperationOptions): T;
+        readAsync<T = string | Buffer>(mix?: IOperationOptions): Promise<T>;
+        static readAsync<T = string | Buffer>(path: string, mix?: IFileSettings & IOperationOptions): Promise<T>;
         readRange<T = string>(position: number, length: number, mix?: IOperationOptions): T;
         static readRange<T = string>(path: string, position: number, length: number, mix?: IOperationOptions): T;
         readRangeAsync<T = string>(position: number, length: number, mix?: IOperationOptions): IDeferred<T>;
         static readRangeAsync<T = string>(path: string, position: number, length: number, mix?: IOperationOptions): IDeferred<T>;
         write<T = string | Buffer | any>(content: T, mix?: IOperationOptions): this;
-        static write<T = string | Buffer | any>(path: string, content: T, mix?: IOperationOptions): File;
-        writeAsync<T = string | Buffer | any>(content: T, mix?: IOperationOptions): IDeferred<this>;
-        static writeAsync<T = string | Buffer | any>(path: string, content: T, mix?: IOperationOptions): IDeferred<File>;
+        static write<T = string | Buffer | any>(path: string, content: T, mix?: IFileSettings & IOperationOptions): File;
+        writeAsync<T = string | Buffer | any>(content: T, mix?: IOperationOptions): Promise<this>;
+        static writeAsync<T = string | Buffer | any>(path: string, content: T, mix?: IFileSettings & IOperationOptions): Promise<File>;
         copyTo(target: string, opts?: IFileCopyOpts): this;
         static copyTo(path: string, target: string, opts?: IFileCopyOpts): File;
         copyToAsync(target: string, opts?: IFileCopyOpts): IDeferred<this>;
         static copyToAsync(path: string, target: string, opts?: IFileCopyOpts): IDeferred<File>;
         exists(): boolean;
         static exists(path: string): boolean;
-        existsAsync(): IDeferred<boolean>;
-        static existsAsync(path: string): IDeferred<boolean>;
+        existsAsync(): PromiseLike<boolean>;
+        static existsAsync(path: string): PromiseLike<boolean>;
         rename(fileName: string): boolean;
         static rename(path: string, fileName: string): boolean;
         renameAsync(filename: any): IDeferred<boolean>;
@@ -145,8 +148,8 @@ declare module 'atma-io/File' {
         static removeAsync(path: string): IDeferred<boolean>;
         replace(a: string | RegExp, b: string | ((substring: string, ...args: any[]) => string), setts?: any): string;
         static replace(path: string, a: string | RegExp, b: string | ((substring: string, ...args: any[]) => string), setts?: any): string;
-        replaceAsync(a: string | RegExp, b: string | ((substring: string, ...args: any[]) => string), setts?: any): IDeferred<string>;
-        static replaceAsync(path: string, a: string | RegExp, b: string | ((substring: string, ...args: any[]) => string), setts?: any): IDeferred<string>;
+        replaceAsync(a: string | RegExp, b: string | ((substring: string, ...args: any[]) => string), setts?: any): Promise<string>;
+        static replaceAsync(path: string, a: string | RegExp, b: string | ((substring: string, ...args: any[]) => string), setts?: any): Promise<string>;
         watch(callback: (path?: string) => void | any): void;
         static watch(path: string, callback: (path?: string) => void | any): void;
         unwatch(callback?: any): void;
@@ -167,32 +170,12 @@ declare module 'atma-io/File' {
         static setTransports(repository: any): void;
         static get Factory(): FileFactory;
         static get Middleware(): FileHooks;
-        static processHooks(method: any, file: any, config: any, onComplete: any): void;
+        static processHooks(method: any, file: any, config: any, onComplete?: any): Promise<void>;
         static middleware: {
             [name: string]: IFileMiddleware;
         };
         static registerExtensions(extensions: any, shouldCleanPrevious?: boolean, settings?: any): void;
         static setMiddlewares(extensions: any, settings?: any): void;
-    }
-    export interface IFileSettings {
-        cached?: boolean;
-        factory?: FileFactory;
-    }
-    export interface IFileCopyOpts {
-        silent?: boolean;
-        baseSource?: string;
-    }
-    export interface IOperationOptions {
-        skipHooks?: boolean;
-        /** Default: utf8 */
-        encoding?: 'buffer' | 'utf8' | string;
-        hooks?: FileHooks;
-        aes256?: {
-            secret: string;
-        };
-        position?: number;
-        length?: number;
-        [other: string]: any;
     }
 }
 
@@ -216,25 +199,22 @@ declare module 'atma-io/ExportsSetts' {
 }
 
 declare module 'atma-io/FileSafe' {
-    import { class_Dfr } from 'atma-utils';
-    import { File, IFileSettings } from 'atma-io/File';
-    /** Safe cross process file writes and reads using *.bak files as the safe-fallback */
-    export class FileSafe {
+    import { File } from 'atma-io/File';
+    import { IFileOptionsBase } from 'atma-io/interfaces/IFile';
+    /**
+      * Safe cross process file writes and reads using *.bak files as the safe-fallback
+      * 1. parallel-writes within one process: use sequantual queue
+      * 2. process-crash when writing: use *.bak files
+      * 3. parallel-writes for multiple processes: use locks
+     */
+    export class FileSafe extends File {
         path: string;
-        opts?: IFileSettings & {
-            threadSafe: boolean;
-        };
-        errored: Error;
-        file: File;
-        lockInProc: class_Dfr;
-        lockOutProc: LockFile;
-        constructor(path: string, opts?: IFileSettings & {
-            threadSafe: boolean;
-        });
-        write(...args: any[]): void;
-        writeAsync(data: string): class_Dfr;
-        readAsync(): Promise<string>;
+        opts?: IFileOptionsBase;
+        constructor(path: string, opts?: IFileOptionsBase);
     }
+}
+
+declare module 'atma-io/transport/filesystem/safe/LockFile' {
     export class LockFile {
         path: string;
         constructor(path: string);
@@ -325,19 +305,41 @@ declare module 'atma-io/FileHooks' {
 }
 
 declare module 'atma-io/transport/custom' {
+    import { TCallback } from 'atma-io/util/types';
+    import { IFileOptionsBase, IOperationOptions } from 'atma-io/interfaces/IFile';
+    export interface IFileTransportV2 {
+        version: 2;
+        save(path: string, content: any, options?: IOperationOptions & IFileOptionsBase): void;
+        saveAsync(path: string, content: string | Buffer, options: IOperationOptions & IFileOptionsBase): Promise<void>;
+        copy(from: string, to: string): void;
+        copyAsync(from: string, to: string): Promise<void>;
+        exists(path: string): boolean;
+        existsAsync(path: any): Promise<boolean>;
+        read(path: string, encoding?: 'utf8' | string, options?: IOperationOptions & IFileOptionsBase): string | Buffer;
+        readAsync(path: string, encoding: 'utf8' | string, options?: IOperationOptions & IFileOptionsBase): Promise<string | Buffer>;
+        readRange(path: string, offset: number, limit: number, encoding?: 'utf8' | string): string | Buffer;
+        readRangeAsync(path: string, offset: number, limit: number, encoding: 'utf8' | string): Promise<string | Buffer>;
+        remove(path: string): boolean;
+        removeAsync(path: string): Promise<void>;
+        rename(path: string, filename: string): void;
+        renameAsync(path: string, filename: string): Promise<void>;
+        appendAsync?(path: string, str: string): Promise<void>;
+        append?(path: string, str: string): void;
+    }
     export interface IFileTransport {
+        version?: void;
         save(path: string, content: any, options?: any): void;
         saveAsync(path: any, content: any, options: any, cb: any): void;
         copy(from: any, to: any): any;
-        copyAsync(from: any, to: any, cb: (err: Error) => void): any;
+        copyAsync(from: any, to: any, cb: TCallback): any;
         exists(path: any): boolean;
-        existsAsync(path: any, cb: (err: Error, x: boolean) => void): any;
+        existsAsync(path: any, cb: TCallback<boolean>): any;
         read(path: any, encoding?: any): string | Buffer;
-        readAsync(path: any, encoding: any, cb: (err: Error, x: string | Buffer) => void): any;
+        readAsync(path: any, encoding: any, cb: TCallback<string | Buffer>): any;
         readRange(path: any, offset: any, limit: any, encoding?: any): string | Buffer;
-        readRangeAsync(path: any, offset: any, limit: any, encoding: any, cb: (err: Error, x: string | Buffer) => void): any;
+        readRangeAsync(path: any, offset: any, limit: any, encoding: any, cb: TCallback<string | Buffer>): any;
         remove(path: any): boolean;
-        removeAsync(path: any, cb: (err: Error) => void): any;
+        removeAsync(path: any, cb: TCallback): any;
         rename(path: any, filename: any): any;
         renameAsync(path: any, filename: any, cb: any): any;
         appendAsync?(path: string, str: string, cb: any): any;
@@ -348,13 +350,13 @@ declare module 'atma-io/transport/custom' {
         ensureAsync(path: any, cb: any): void;
         ceateSymlink(source: string, target: string): any;
         exists(path: any): boolean;
-        existsAsync(path: any, cb: (err: Error, x: boolean) => void): any;
+        existsAsync(path: any, cb: TCallback<boolean>): any;
         readFiles(path: any, patterns?: any, excludes?: any, data?: any): string[];
         readFilesAsync(path: any, patternsOrCb?: any, excludesOrCb?: any, dataOrCb?: any, Cb?: any): any;
         remove(path: any): boolean;
-        removeAsync(path: any, cb: (err: Error) => void): any;
+        removeAsync(path: any, cb: TCallback): any;
         rename(oldPath: any, newPath: any): any;
-        renameAsync(oldPath: any, newPath: any, cb: (err: Error) => void): any;
+        renameAsync(oldPath: any, newPath: any, cb: TCallback): any;
     }
     export interface ITransport {
         File: IFileTransport;
@@ -370,6 +372,36 @@ declare module 'atma-io/transport/custom' {
             [protocol: string]: ITransport;
         };
         static set(repository: any): void;
+    }
+}
+
+declare module 'atma-io/interfaces/IFile' {
+    import { FileHooks } from 'atma-io/FileHooks';
+    import { FileFactory } from 'atma-io/FileFactory';
+    export interface IFileOptionsBase {
+        /** Write files via *.bak files, to prevent data los  */
+        processSafe?: boolean;
+        threadSafe?: boolean;
+        aes256?: {
+            secret: string;
+        };
+    }
+    export interface IFileSettings extends IFileOptionsBase {
+        cached?: boolean;
+        factory?: FileFactory;
+    }
+    export interface IFileCopyOpts {
+        silent?: boolean;
+        baseSource?: string;
+    }
+    export interface IOperationOptions extends IFileOptionsBase {
+        skipHooks?: boolean;
+        /** Default: utf8 */
+        encoding?: 'buffer' | 'utf8' | string;
+        hooks?: FileHooks;
+        position?: number;
+        length?: number;
+        [other: string]: any;
     }
 }
 
@@ -392,5 +424,13 @@ declare module 'atma-io/util/glob' {
             rootCount: number;
             root: string;
     }
+}
+
+declare module 'atma-io/util/types' {
+    export type TCallback<TResult = any> = (error: Error, result?: TResult) => void;
+    export type TFnWithCallback<TArgs extends any[], TResult> = (...args: [...TArgs, TCallback<TResult>]) => void;
+    export type TFnWithCallbackArgs<T> = T extends TFnWithCallback<infer TArgs, any> ? TArgs : never;
+    export type THead<T extends any[]> = T extends [...infer Head, any] ? Head : any[];
+    export type TLast<T extends any[]> = T extends [...any[], infer Last] ? Last : never;
 }
 

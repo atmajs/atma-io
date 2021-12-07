@@ -1,39 +1,42 @@
-import { CustomTransport, IFileTransport } from './custom';
-import { FsTransport } from './filesystem/transport';
+import { CustomTransport, IFileTransport, IFileTransportV2 } from './custom';
+import { FsTransport } from './filesystem/FsTransport';
 import { path_getProtocol } from '../util/path';
 import { is_Promise } from '../util/is';
+import { IFileSettings, IOperationOptions } from '../interfaces/IFile';
+import { TCallback } from '../util/types';
+import { FsTransportSafe } from './filesystem/FsTransportSafe';
+import { cb_toPromise } from '../util/cb';
 
 export type TPreprocessBuffer = (content: string | Buffer) => string | Buffer
 export type TPreprocessBufferAsync = (content: string | Buffer) => string | Buffer | Promise<string | Buffer>
 
-export function file_save(path: string, content: string | Buffer, options, preprocess?: TPreprocessBuffer ) {
+export function file_save(path: string, content: string | Buffer, options: IOperationOptions & IFileSettings, preprocess?: TPreprocessBuffer ) {
     let transport = getFileTransportForPath(path);
     if (preprocess != null) {
         content = preprocess(content);
     }
     transport.save(path, content, options);
 };
-export function file_saveAsync(path, content: string | Buffer, options, cb, preprocessAsync?: TPreprocessBufferAsync) {
+export async function file_saveAsync(path, content: string | Buffer, options: IFileSettings, preprocessAsync: TPreprocessBufferAsync) {
     if (preprocessAsync == null) {
-        _saveAsync(path, content, options, cb);
-        return;
+        return _saveAsync(path, content, options);
     }
     let result = preprocessAsync(content);
     if (is_Promise(result)) {
-        result.then(
-            buffer => _saveAsync(path, buffer, options, cb),
-            err => cb(err)
-        );
-        return;
+        let buffer = await result;
+        return _saveAsync(path, buffer, options);
     }
-    _saveAsync(path, result, options, cb);
+    return _saveAsync(path, result, options);
 };
-function _saveAsync(path, content: string | Buffer, options, cb) {
-    let transport = getFileTransportForPath(path);
-    transport.saveAsync(path, content, options, cb);
+function _saveAsync(path, content: string | Buffer, options: IFileSettings) {
+    let transport = getFileTransportForPath(path, options);
+    if (transport.version === 2) {
+        return transport.saveAsync(path, content, options);
+    }
+    return cb_toPromise(transport.saveAsync, path, content, options);
 }
 
-export function file_copy(from, to) {
+export function file_copy(from: string, to: string) {
     let fromTransport = getFileTransportForPath(from);
     let toTransport = getFileTransportForPath(to);
     if (fromTransport === toTransport) {
@@ -43,7 +46,7 @@ export function file_copy(from, to) {
     let data = fromTransport.read(from);
     toTransport.save(to, data);
 };
-export function file_copyAsync(from, to, cb) {
+export function file_copyAsync(from: string, to: string, cb: TCallback) {
 	let fromTransport = getFileTransportForPath(from);
     let toTransport = getFileTransportForPath(to);
     if (fromTransport === toTransport) {
@@ -63,9 +66,12 @@ export function file_exists(path) {
     let transport = getFileTransportForPath(path);
 	return transport.exists(path);
 };
-export function file_existsAsync(path, cb) {
+export function file_existsAsync(path: string): Promise<boolean> {
     let transport = getFileTransportForPath(path);
-    return transport.existsAsync(path, cb);
+    if (transport.version === 2) {
+        return transport.existsAsync(path);
+    }
+    return  cb_toPromise(transport.existsAsync, path);
 };
 export function file_read(path, encoding, preprocess?: TPreprocessBuffer) {
     let transport = getFileTransportForPath(path);
@@ -76,13 +82,26 @@ export function file_read(path, encoding, preprocess?: TPreprocessBuffer) {
     }
     return content;
 };
-export function file_readAsync(path, encoding, onComplete, preprocessAsync?: TPreprocessBufferAsync) {
+export async function file_readAsync(path, encoding: 'utf8' | string, options: IOperationOptions | IFileSettings, preprocessAsync: TPreprocessBufferAsync): Promise<string | Buffer> {
     let transport = getFileTransportForPath(path);
-    transport.readAsync(
-        path
-        , preprocessAsync == null ? encoding : null
-        , preprocessAsync == null ? onComplete : delegateReadOnComplete(preprocessAsync, encoding, onComplete)
-    );
+    let content: string | Buffer;
+    if (transport.version === 2) {
+        content = await transport.readAsync(
+            path
+            , preprocessAsync == null ? encoding : null
+            , options
+        );
+    } else {
+        content = await cb_toPromise(
+            transport.readAsync
+            , path
+            , preprocessAsync == null ? encoding : null
+        );
+    }
+    if (preprocessAsync != null) {
+        content = await delegateReadOnComplete(preprocessAsync, content, encoding);
+    }
+    return content;
 };
 export function file_readRange(path: string, offset: number, limit: number, encoding: string) {
     let transport = getFileTransportForPath(path);
@@ -123,9 +142,12 @@ export function file_appendAsync(path: string, str: string, cb: (err?) => void) 
 
 
 
-function getFileTransportForPath (path: string): IFileTransport {
+function getFileTransportForPath (path: string, options?: IFileSettings): IFileTransport | IFileTransportV2 {
     let protocol = path_getProtocol(path);
     if (protocol == null || protocol === 'file') {
+        if (options?.threadSafe || options?.processSafe) {
+            return FsTransportSafe.File;
+        }
         return FsTransport.File;
     }
     let transport = CustomTransport.get(protocol);
@@ -136,38 +158,32 @@ function getFileTransportForPath (path: string): IFileTransport {
 }
 
 
-function delegateReadOnComplete (
+async function delegateReadOnComplete (
     preprocess: TPreprocessBufferAsync
+    , content: string | Buffer
     , encoding: string
-    , cb: (err: Error, content?: string | Buffer) => void
-) {
-    return function (err, content) {
-        if (err != null) {
-            cb(err);
-            return;
-        }
-        let onComplete = encoding == null
-            ? cb
-            : delegateReadDecode(encoding, cb);
+): Promise<string | Buffer> {
 
-        let result = preprocess(content);
-        if (is_Promise(result)) {
-            result.then(buffer => onComplete(null, buffer), onComplete);
-            return;
-        }
-        onComplete(null, result);
+    let result = preprocess(content);
+    if (is_Promise(result)) {
+        result = await result;
     }
-}
-function delegateReadDecode (encoding, cb) {
-    return function (err, buffer: Buffer) {
-        if (err != null) {
-            cb(err);
-            return;
-        }
-        let content = buffer.toString(encoding);
-        cb(null, content);
+    if (encoding != null) {
+        result = result.toString(encoding);
     }
+    return result;
 }
+
+// function delegateReadDecode (encoding, cb) {
+//     return function (err, buffer: Buffer) {
+//         if (err != null) {
+//             cb(err);
+//             return;
+//         }
+//         let content = buffer.toString(encoding);
+//         cb(null, content);
+//     }
+// }
 function delegateSave (path: string, options, cb) {
     return function(err, content) {
         let transport = getFileTransportForPath(path);

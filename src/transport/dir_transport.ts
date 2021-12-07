@@ -1,11 +1,11 @@
 import { path_getProtocol } from '../util/path';
 
 import { IDirectoryTransport, CustomTransport } from './custom';
-import { FsTransport } from './filesystem/transport';
+import { FsTransport } from './filesystem/FsTransport';
 
 export function dir_ensure(path) {
     let transport = getDirectoryTransportForPath(path);
-    return transport.ensure(path);    
+    return transport.ensure(path);
 }
 export function dir_ensureAsync(path, cb) {
     let transport = getDirectoryTransportForPath(path);

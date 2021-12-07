@@ -7,8 +7,9 @@ const path_Secret = 'test/bin/encrypted.json';
 
 UTest({
     '$before'() {
-        if (File.exists(path_Secret))
+        if (File.exists(path_Secret)) {
             File.remove(path_Secret);
+        }
     },
     'encrypt - decrypt content' () {
         const secret = 'hello';

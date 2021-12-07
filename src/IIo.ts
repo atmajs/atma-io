@@ -4,7 +4,8 @@ import { Directory } from './Directory';
 import { File } from './File';
 import { Glob } from './ExportsGlob';
 import { setSettings } from './ExportsSetts';
-import { FileSafe, LockFile } from './FileSafe';
+import { FileSafe } from './FileSafe';
+import { LockFile } from './transport/filesystem/safe/LockFile';
 
 export interface Io {
     env: {
