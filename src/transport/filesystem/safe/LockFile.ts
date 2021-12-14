@@ -80,7 +80,6 @@ export class LockFile {
         this.current.reject(err);
 
         if (this.fd) {
-            console.log('OnError closeSync');
             fs.closeSync(this.fd);
             fs.unlink(this.pathLock, () => {
                 this.next();
@@ -185,7 +184,6 @@ export class LockFile {
     }
     private forceAcquire () {
         if (this.fd) {
-            console.log('close sync');
             fs.closeSync(this.fd);
         }
         fs.unlink(this.pathLock, () => {
