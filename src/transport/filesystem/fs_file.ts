@@ -218,7 +218,7 @@ export const FileFsTransport: IFileTransport = {
 
 //= private
 const writeOpts = {
-    encoding: 'utf8'
+    encoding: 'utf8' as BufferEncoding
 };
 
 function getDir(path) {

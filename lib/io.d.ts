@@ -397,7 +397,7 @@ declare module 'atma-io/interfaces/IFile' {
     export interface IOperationOptions extends IFileOptionsBase {
         skipHooks?: boolean;
         /** Default: utf8 */
-        encoding?: 'buffer' | 'utf8' | string;
+        encoding?: BufferEncoding;
         hooks?: FileHooks;
         position?: number;
         length?: number;

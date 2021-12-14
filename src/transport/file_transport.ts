@@ -82,7 +82,12 @@ export function file_read(path, encoding, preprocess?: TPreprocessBuffer) {
     }
     return content;
 };
-export async function file_readAsync(path, encoding: 'utf8' | string, options: IOperationOptions | IFileSettings, preprocessAsync: TPreprocessBufferAsync): Promise<string | Buffer> {
+export async function file_readAsync(
+    path: string,
+    encoding: BufferEncoding,
+    options: IOperationOptions | IFileSettings,
+    preprocessAsync: TPreprocessBufferAsync
+): Promise<string | Buffer> {
     let transport = getFileTransportForPath(path);
     let content: string | Buffer;
     if (transport.version === 2) {
@@ -161,7 +166,7 @@ function getFileTransportForPath (path: string, options?: IFileSettings): IFileT
 async function delegateReadOnComplete (
     preprocess: TPreprocessBufferAsync
     , content: string | Buffer
-    , encoding: string
+    , encoding: BufferEncoding
 ): Promise<string | Buffer> {
 
     let result = preprocess(content);

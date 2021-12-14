@@ -60,10 +60,9 @@ export class File {
 
         this.uri = path_getUri(path);
 
-        path = uri_toPath(this.uri);
-
-        if (isFromCache(path, opts)) {
-            return _cache[path];
+        let pathStr = uri_toPath(this.uri);
+        if (isFromCache(pathStr, opts)) {
+            return _cache[pathStr];
         }
         if ((this as any).__proto__ === File.prototype) {
             let factory = opts?.factory ?? _factory;
@@ -75,7 +74,7 @@ export class File {
 
         return isCacheEnabled(opts) === false
             ? (this)
-            : (_cache[path] = this)
+            : (_cache[pathStr] = this)
             ;
     }
     read<T = string | Buffer>(mix?: IOperationOptions): T {
@@ -494,7 +493,7 @@ function dfr_pipeDelegate(dfr) {
         dfr.resolve(...args);
     }
 }
-function uri_toPath(uri: class_Uri) {
+function uri_toPath(uri: class_Uri): string {
     if (uri.protocol == null || uri.protocol === 'file') {
         return uri.toLocalFile();
     }
@@ -519,7 +518,7 @@ function getSetts(mix: IOperationOptions) {
             Object.assign(setts, mix);
             break;
     }
-    if (setts.encoding === 'buffer') {
+    if ((setts as any).encoding === 'buffer') {
         setts.encoding = null;
     }
     return setts;
