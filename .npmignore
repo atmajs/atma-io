@@ -3,7 +3,10 @@ test/
 builds/
 tools/
 ts-temp/
+assets/
+docs/
 
 .npmignore
 .travis.yml
-
+tsconfig-build.json
+tsconfig-typedoc.json

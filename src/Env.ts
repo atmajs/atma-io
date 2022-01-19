@@ -5,7 +5,7 @@ import * as os from 'os';
 const mainModule = process.mainModule ?? require.main;
 
 const mainFile = new class_Uri(normalizePath(mainModule.filename));
-const mainDir = new class_Uri(normalizePath(mainModule.path));
+const mainDir = new class_Uri(normalizePath(mainModule.path + '/'));
 
 const platform = process.platform;
 const cwd = toDir(process.cwd());
