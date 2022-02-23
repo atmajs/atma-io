@@ -4,18 +4,19 @@ import * as os from 'os';
 
 const mainModule = process.mainModule ?? require.main;
 
-const mainFile = new class_Uri(normalizePath(mainModule.filename));
-const mainDir = new class_Uri(normalizePath(mainModule.path + '/'));
+const mainFile = getSysFile(mainModule.filename);
+const mainDir  = getSysDir(mainModule.path);
 
 const platform = process.platform;
-const cwd = toDir(process.cwd());
+const cwd = getSysDir(process.cwd());
+
 
 export const Env = {
     settings: {} as any,
-    cwd: cwd,
+    cwd: cwd.toString(),
     applicationDir: mainDir,
-    currentDir: new class_Uri(cwd),
-    tmpDir: new class_Uri(`file:///${os.tmpdir}/`),
+    currentDir: cwd,
+    tmpDir: getSysDir(os.tmpdir()),
     newLine: os.EOL,
 
     getTmpPath (filename: string): string {
@@ -50,24 +51,40 @@ export const Env = {
             return this.applicationDir;
         }
 
-        path = new class_Uri(toDir(path));
+        let dir = getSysDir(path);
 
         if (platform === 'darwin') {
-            path = path.combine('Library/Application Support/');
+            dir = dir.combine('Library/Application Support/');
         }
-        path = path.combine('.' + mainFile.file + '/');
+        dir = dir.combine('.' + mainFile.file + '/');
 
         // cache value back to object
         Object.defineProperty(this, 'appdataDir', {
-            value: path
+            value: dir
         });
-        return path;
+        return dir;
     }
 };
 
-function toDir(path) {
-    return class_Uri.combine(normalizePath(path), '/');
-}
 function normalizePath(path) {
     return path.replace(/\\/g, '/');
+}
+function ensureProtocol(path: string, defaultProtocol = 'file') {
+    if (/^\w+:\/\//.test(path)) {
+        return path;
+    }
+    return `${defaultProtocol}://${path}`;
+}
+function getSysDir (path: string) {
+    path = normalizePath(path);
+    if (path.endsWith('/') === false) {
+        path += '/';
+    }
+    path = ensureProtocol(path);
+    return new class_Uri(path);
+}
+function getSysFile(path: string) {
+    path = normalizePath(path);
+    path = ensureProtocol(path);
+    return new class_Uri(path);
 }

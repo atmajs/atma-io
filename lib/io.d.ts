@@ -133,7 +133,7 @@ declare module 'atma-io/File' {
         exists(): boolean;
         static exists(path: string): boolean;
         existsAsync(): PromiseLike<boolean>;
-        static existsAsync(path: string): PromiseLike<boolean>;
+        static existsAsync(path: string | class_Uri): PromiseLike<boolean>;
         rename(fileName: string): boolean;
         static rename(path: string, fileName: string): boolean;
         renameAsync(filename: any): IDeferred<boolean>;

@@ -289,7 +289,7 @@ export class File {
         let path = uri_toPath(this.uri);
         return file_existsAsync(path);
     }
-    static existsAsync(path: string) {
+    static existsAsync(path: string | class_Uri) {
         return new File(path).existsAsync();
     }
     rename(fileName: string): boolean {
