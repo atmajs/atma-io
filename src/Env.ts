@@ -56,7 +56,6 @@ export const Env = {
         if (platform === 'darwin') {
             dir = dir.combine('Library/Application Support/');
         }
-        dir = dir.combine('/');
 
         // cache value back to object
         Object.defineProperty(this, 'appdataDir', {
