@@ -30,7 +30,6 @@ export namespace Encrypt {
         const iv = crypto.randomBytes(16);
         const cipher = crypto.createCipheriv(CIPHER_ALGO, sha256.digest(), iv);
 
-
         const ciphertext = cipher.update(buffer);
         const encrypted = Buffer.concat([iv, ciphertext, cipher.final()]);
         return encrypted;

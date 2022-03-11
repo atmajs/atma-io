@@ -20,7 +20,7 @@ export const FileHookRegistration = {
         }
     },
     ensureMiddleware (name: string, method: 'read' | 'write'): IFileMiddleware {
-        return ensureMiddleware(name, method);
+        return ensureMiddlewareLoadedAndValidated(name, method);
     }
 };
 
@@ -34,24 +34,28 @@ namespace Registration {
         };
     }
 
-    function registerHook(hook, extension, handlerDefinition: string | [string | IFileMiddleware, string], appSettings) {
+    function registerHook(hook: FileHooks, extension: string, handlerDefinition: string | [string | IFileMiddleware, string], appSettings) {
         if (typeof handlerDefinition === 'string') {
             registerHookByStr(hook, extension, handlerDefinition, appSettings);
             return;
         }
         if (Array.isArray(handlerDefinition)) {
-            let midd = handlerDefinition[0],
-                funcName = handlerDefinition[1] as ('read' | 'write');
+            let midd = handlerDefinition[0];
+            let funcName = handlerDefinition[1] as ('read' | 'write');
             setMidd(hook, midd, extension, null, funcName, appSettings);
             return;
         }
         throw Error('Invalid handler Definition in registerHook');
     };
+
+    /**
+     * @param handlerDefinition Like: 'atma-loader-ts:read'
+     */
     function registerHookByStr(hook: FileHooks, extension: string, handlerDefinition: string, appSettings) {
         let parts = /^(.+?)(:(read|write))?$/.exec(handlerDefinition),
             handlerName = parts[1],
             funcName = parts[3] as ('read' | 'write'),
-            middleware = ensureMiddleware(handlerName, funcName);
+            middleware = ensureMiddlewareLoadedAndValidated(handlerName, funcName);
 
         setMidd(hook, middleware, extension, handlerName, funcName, appSettings);
     }
@@ -68,17 +72,17 @@ namespace Registration {
         if (typeof middleware !== 'string' && middleware.setIo) {
             middleware.setIo(io);
         }
-        var rgx = getRegexp(extension);
+        var rgx = getFileHookRegexp(extension);
         hook.register(rgx, funcName, middleware);
     }
 };
 
 function unregisterHook(hook: FileHooks, extension: string) {
-    let rgx = getRegexp(extension);
+    let rgx = getFileHookRegexp(extension);
     hook.unregisterByRegexp(rgx);
 }
 
-function ensureMiddleware(name: string, funcName?: 'read' | 'write'): IFileMiddleware {
+function ensureMiddlewareLoadedAndValidated(name: string, funcName?: 'read' | 'write'): IFileMiddleware {
     let middleware = File.middleware[name];
     if (middleware == null) {
         try {
@@ -111,7 +115,8 @@ function ensureMiddleware(name: string, funcName?: 'read' | 'write'): IFileMiddl
     }
     return middleware;
 }
-function getRegexp(misc: string) {
+
+export function getFileHookRegexp(misc: string) {
     if (misc[0] === '/') {
         var str = misc.substring(1);
         var end = str.lastIndexOf('/');

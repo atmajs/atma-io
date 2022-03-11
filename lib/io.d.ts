@@ -287,14 +287,18 @@ declare module 'atma-io/FileHooks' {
         runAsync(method: any, file: any, config: any, done: any): void;
         canHandle(path: string, method: 'read' | 'write'): boolean;
     }
+    type THookDefinition = {
+        regexp: RegExp;
+        method: 'read' | 'write';
+        handler: THookHandler;
+        zIndex?: number;
+    };
+    type THookHandler = string | IFileMiddleware | IHookFunction;
     export class FileHooks {
         hooks: HookRunner[];
-        register(mix: RegExp | {
-            regexp: RegExp;
-            method: 'read' | 'write';
-            handler: string | IFileMiddleware | IHookFunction;
-            zIndex?: number;
-        }, method: 'read' | 'write', handler: string | IFileMiddleware | IHookFunction, zIndex?: number): this;
+        register(params: THookDefinition): this;
+        register(extension: string, method: 'read' | 'write', handler: THookHandler, zIndex?: number): this;
+        register(regexp: RegExp, method: 'read' | 'write', handler: THookHandler, zIndex?: number): this;
         unregister(method: 'read' | 'write', handler: IFileMiddleware | string | IHookFunction): void;
         unregisterByRegexp(regexp: RegExp): void;
         trigger(method: 'read' | 'write', file: File, config?: any): void;
@@ -302,6 +306,7 @@ declare module 'atma-io/FileHooks' {
         clear(): this;
         getHooksForPath(path: string, method: 'read' | 'write'): HookRunner[];
     }
+    export {};
 }
 
 declare module 'atma-io/transport/custom' {

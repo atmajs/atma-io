@@ -1,5 +1,6 @@
 import { File } from './File'
-import { FileHookRegistration } from './FileHookRegistration';
+import { FileHookRegistration, getFileHookRegexp } from './FileHookRegistration';
+import { is_RegExp } from './util/is';
 
 export interface IFileMiddleware {
     name?: string
@@ -76,19 +77,26 @@ export class HookRunner {
     }
 };
 
+type THookDefinition = {
+    regexp: RegExp
+    method: 'read' | 'write'
+    handler: THookHandler
+    zIndex?: number
+}
+type THookHandler = string | IFileMiddleware | IHookFunction
 export class FileHooks {
     hooks: HookRunner[] = []
 
-    register(
-        mix: RegExp | { regexp: RegExp, method: 'read' | 'write', handler: string | IFileMiddleware | IHookFunction, zIndex?: number },
-        method: 'read' | 'write',
-        handler: string | IFileMiddleware | IHookFunction,
-        zIndex?: number
-    ) {
+    register(params: THookDefinition): this
+    register(extension: string, method: 'read' | 'write', handler: THookHandler, zIndex?: number): this
+    register(regexp: RegExp, method: 'read' | 'write', handler: THookHandler, zIndex?: number): this
+    register(mix: string | RegExp | THookDefinition, method?: 'read' | 'write', handler?: THookHandler, zIndex?: number): this {
 
         let regexp: RegExp;
-        if (mix instanceof RegExp) {
+        if (is_RegExp(mix)) {
             regexp = mix;
+        } else if (typeof mix === 'string') {
+            regexp = getFileHookRegexp(mix);
         } else {
             regexp = mix.regexp;
             method = mix.method;
