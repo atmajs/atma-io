@@ -3,6 +3,6 @@ import { Env } from '../src/Env';
 UTest({
 
     'readFiles - directory' () {
-        has_(Env.applicationDir.toString(), /atma$/);
+        has_(Env.applicationDir.toString(), /atma\/$/);
     },
 });

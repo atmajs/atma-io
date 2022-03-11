@@ -53,7 +53,7 @@ UTest({
 
         function append (data) {
             return Shell.run({
-                command: `node_modules/atma/atma run ./test/append.ts ${data}`,
+                command: `./node_modules/atma/index.js run --TEST TEST ./test/append.ts ${data}`,
                 fork: true
             });
         };
