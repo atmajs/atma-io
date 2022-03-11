@@ -11,12 +11,11 @@ before_script:
   - sleep 4
   - firefox http://localhost:5777/utest/ &
   - sleep 4
- 
+
 script:
   - "npm test"
- 
+
 language: node_js
 
 node_js:
-    - "10.1.0"
-  
+    - "16.0"
