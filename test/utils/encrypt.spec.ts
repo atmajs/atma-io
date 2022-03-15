@@ -6,6 +6,9 @@ const path_Secret = 'test/bin/encrypted.json';
 
 
 UTest({
+    '$config': {
+        timeout: Infinity,
+    },
     '$before'() {
         if (File.exists(path_Secret)) {
             File.remove(path_Secret);
@@ -27,7 +30,7 @@ UTest({
         const decipherWrong = Encrypt.decrypt(cipher, { secret: 'hello1' });
         notEq_(decipherWrong.toString(), message);
     },
-    async 'encrypt - decrypt files, also when hooks is used' () {
+    async 'encrypt - decrypt files, also when hooks are used' () {
         let json  = {
             date: Date.now()
         };
@@ -38,17 +41,27 @@ UTest({
 
         File.clearCache();
 
-        let source = await File.readAsync(path_Secret, { skipHooks: true, encoding: 'utf8' });
+        let source = await File.readAsync(path_Secret, {
+            skipHooks: true,
+            encoding: 'utf8'
+        });
         hasNot_(source, 'date');
 
         File.clearCache();
-        let back = await File.readAsync(path_Secret, {  aes256: { secret } });
+
+        debugger;
+        let back = await File.readAsync(path_Secret, {
+            aes256: { secret }
+        });
         deepEq_(json, back);
 
         File.clearCache();
-        let invalidBack = await File.readAsync(path_Secret, {  aes256: { secret: 'hellob' } });
+        let invalidBack = await File.readAsync(path_Secret, {
+            aes256: {
+                secret: 'invalid_key'
+            }
+        });
         eq_(typeof invalidBack, 'string');
         hasNot_(invalidBack, 'date');
-
     }
 })

@@ -7,7 +7,7 @@ export interface IFileOptionsBase {
     processSafe?: boolean
     threadSafe?: boolean
     aes256?: {
-        secret: string
+        secret: string | Buffer
     }
 }
 

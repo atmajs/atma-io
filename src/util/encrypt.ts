@@ -1,5 +1,5 @@
 export interface IEncryptionParams {
-    secret: string
+    secret: string | Buffer
 }
 
 const CIPHER_ALGO = 'aes-256-ctr';
@@ -11,49 +11,40 @@ export namespace Encrypt {
     export function encrypt(buffer: Buffer, opts: IEncryptionParams): Buffer {
         let { secret } = opts;
 
-        crypto = crypto ?? require("crypto");
+        crypto = crypto ?? require('crypto');
 
         if (buffer.length === 0) {
             return Buffer.from([]);
         }
 
-        if (typeof secret !== 'string' || secret.length === 0) {
-            throw new TypeError('Secret must be a non-empty string');
-        }
-
-        // consider to use Rfc2898DeriveBytes
-
-        const sha256 = crypto
-            .createHash('sha256')
-            .update(secret);
-
+        // we use salt only for derived keys. When the password was provided, in case of Buffer it should be already cryptographically strong.
+        const { key, salt } = getKeyToEncrypt(secret);
         const iv = crypto.randomBytes(16);
-        const cipher = crypto.createCipheriv(CIPHER_ALGO, sha256.digest(), iv);
+        const cipher = crypto.createCipheriv(CIPHER_ALGO, key, iv);
 
         const ciphertext = cipher.update(buffer);
-        const encrypted = Buffer.concat([iv, ciphertext, cipher.final()]);
+        const encrypted = Buffer.concat([salt, iv, ciphertext, cipher.final()].filter(Boolean));
         return encrypted;
     }
 
     export function decrypt(buffer: Buffer, opts: IEncryptionParams): Buffer {
         let { secret } = opts;
 
-        crypto = crypto ?? require("crypto");
+        crypto ??= require('crypto');
 
         if (buffer.length === 0) {
             return Buffer.from([]);
         }
-
-        const sha256 = crypto
-            .createHash('sha256')
-            .update(secret);
-
         if (Buffer.byteLength(buffer) < 17) {
             throw new TypeError('Provided "encrypted" must decrypt to a non-empty string or buffer');
         }
+        const { key, salt } = getKeyToDecrypt(secret, buffer);
+        if (salt != null) {
+            buffer = buffer.slice(salt.length);
+        }
 
         const iv = buffer.slice(0, 16);
-        const decipher = crypto.createDecipheriv(CIPHER_ALGO, sha256.digest(), iv);
+        const decipher = crypto.createDecipheriv(CIPHER_ALGO, key, iv);
         const cipherbuf = buffer.slice(16);
         const output = Buffer.concat([decipher.update(cipherbuf), decipher.final()]);
         return output;
@@ -69,5 +60,34 @@ export namespace Encrypt {
         return function (content: Buffer): Buffer {
             return decrypt(content, params);
         };
+    }
+
+    function getKeyToEncrypt (secret: string | Buffer): { key: Buffer, salt?: Buffer } {
+        if (Buffer.isBuffer(secret)) {
+            return { key: secret };
+        }
+        if (/^0x[a-f\d]$/i.test(secret)) {
+            return { key: Buffer.from(secret.substring(2), 'hex') };
+        }
+        return derive(secret);
+    }
+    function getKeyToDecrypt (secret: string | Buffer, file: Buffer): { key: Buffer, salt?: Buffer } {
+        if (Buffer.isBuffer(secret)) {
+            return { key: secret };
+        }
+        if (/^0x[a-f\d]$/i.test(secret)) {
+            return { key: Buffer.from(secret.substring(2), 'hex') };
+        }
+
+        let salt = file.slice(0, 32);
+        return derive(secret, salt);
+    }
+    function derive(key: string, salt: Buffer = null) {
+
+        crypto ??= require('crypto');
+        salt ??= crypto.randomBytes(32);
+
+        const derived = crypto.pbkdf2Sync(key, salt, 10_000, 32, 'sha256');
+        return { key: derived, salt };
     }
 }

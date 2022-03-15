@@ -5,7 +5,7 @@
         "name": "Alex Kit",
         "email": "alex.kit@atmajs.com"
     },
-    "version": "1.2.58",
+    "version": "1.2.59",
     "main": "./lib/io.js",
     "types": "./lib/io.d.ts",
     "repository": {
@@ -21,10 +21,10 @@
         "@types/node": "^16.11.12",
         "app-bundler": "^0.1.2",
         "atma": "^0.15.12",
-        "atma-io-middleware-importer": "^1.1.32",
+        "atma-io-middleware-importer": "^1.1.38",
         "atma-io-middleware-uglify": "^1.1.24",
         "atma-io-middleware-yml": "^1.1.25",
-        "atma-loader-ts": "^1.1.15",
+        "atma-loader-ts": "^1.1.18",
         "dts-bundle": "^0.7.3",
         "shellbee": "^0.5.20",
         "typedoc": "^0.21.5"

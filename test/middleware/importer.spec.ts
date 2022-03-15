@@ -10,7 +10,7 @@ UTest({
 
         File
             .Middleware
-            .register(/./, 'read', 'atma-io-middleware-importer');
+            .register(/\.(js|txt)/, 'read', 'atma-io-middleware-importer');
     },
     $after () {
 

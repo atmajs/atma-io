@@ -270,6 +270,7 @@ class AsyncHooks {
     }
 
     next(error?) {
+
         if (error) {
             this.cb(error);
             return;

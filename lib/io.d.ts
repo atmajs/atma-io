@@ -388,7 +388,7 @@ declare module 'atma-io/interfaces/IFile' {
         processSafe?: boolean;
         threadSafe?: boolean;
         aes256?: {
-            secret: string;
+            secret: string | Buffer;
         };
     }
     export interface IFileSettings extends IFileOptionsBase {
