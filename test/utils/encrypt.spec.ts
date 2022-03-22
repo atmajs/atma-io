@@ -27,8 +27,13 @@ UTest({
         const decipher = Encrypt.decrypt(cipher, { secret });
         eq_(decipher.toString(), message);
 
-        const decipherWrong = Encrypt.decrypt(cipher, { secret: 'hello1' });
-        notEq_(decipherWrong.toString(), message);
+        let err: Error;
+        try {
+            const decipherWrong = Encrypt.decrypt(cipher, { secret: 'hello1' });
+        } catch (error) {
+            err = error;
+        }
+        eq_(err.message, 'Invalid secret key or data');
     },
     async 'encrypt - decrypt files, also when hooks are used' () {
         let json  = {
@@ -49,19 +54,24 @@ UTest({
 
         File.clearCache();
 
-        debugger;
         let back = await File.readAsync(path_Secret, {
             aes256: { secret }
         });
         deepEq_(json, back);
 
         File.clearCache();
-        let invalidBack = await File.readAsync(path_Secret, {
-            aes256: {
-                secret: 'invalid_key'
-            }
-        });
-        eq_(typeof invalidBack, 'string');
-        hasNot_(invalidBack, 'date');
+
+        let err: Error;
+        try {
+            let invalidBack = await File.readAsync(path_Secret, {
+                aes256: {
+                    secret: 'invalid_key'
+                }
+            });
+        } catch (error) {
+            err = error;
+        }
+        notEq_(err, null);
+        eq_(err.message, 'Invalid secret key or data');
     }
 })
