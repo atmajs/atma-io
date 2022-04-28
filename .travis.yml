@@ -6,8 +6,8 @@ services:
 before_script:
   - export DISPLAY=:99.0
   - sleep 4
-  - atma &
-  - atma server &
+  - npm run build &
+  - npm run server &
   - sleep 4
   - firefox http://localhost:5777/utest/ &
   - sleep 4

@@ -1,4 +1,4 @@
-import { File } from '../../src/File'
+import { File } from '../../../src/File'
 
 UTest({
     'read from custom transport' () {

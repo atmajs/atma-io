@@ -1,5 +1,5 @@
-import { File } from '../src/File'
-import { Directory } from '../src/Directory'
+import { File } from '../../src/File'
+import { Directory } from '../../src/Directory'
 
 UTest({
     $before(){
@@ -19,57 +19,32 @@ UTest({
         eq_(exists, true);
     },
 
-    'readFiles - directory'(done){
+    async 'readFiles - directory' (){
 
-        Directory
-            .readFilesAsync('test/', '*.spec.ts')
-            .fail(assert.avoid())
-            .done(function(files){
+        let folderTsFiles = await Directory.readFilesAsync('test/', '*.ts')
+        assert(folderTsFiles.length > 0);
+        eq_(hasFile(folderTsFiles, 'append.ts'), true);
+        eq_(hasFile(folderTsFiles, 'config.js'), false);
 
-                assert(files.length > 1);
-                eq_(hasFile(files, 'dir.spec.ts'), true);
-                eq_(hasFile(files, 'file.spec.ts'), true);
-                eq_(hasFile(files, 'config.js'), false);
+        let allSpecFiles = await Directory.readFilesAsync('test/', '**.spec.ts');
 
-                testAll(files);
-            });
+        gt_(allSpecFiles.length, folderTsFiles.length, `${allSpecFiles.length}!=${folderTsFiles.length}`);
+        eq_(hasFile(folderTsFiles, 'config.js'), false);
+        eq_(hasFile(allSpecFiles, 'safe.spec.ts'), true);
 
-        function testAll(files) {
-            Directory
-                .readFilesAsync('test/', '**.spec.ts')
-                .fail(assert.avoid())
-                .done(function(all){
-                    assert(all.length > files.length);
+        folderTsFiles = await Directory.readFilesAsync('test/')
+        eq_(hasFile(folderTsFiles, 'config.js'), true);
+        eq_(hasFile(folderTsFiles, 'append.ts'), true);
 
-                    eq_(hasFile(files, 'config.js'), false);
-                    eq_(hasFile(all, 'json.spec.ts'), true);
-
-                    All();
-                });
-        }
-        function All() {
-            Directory
-                .readFilesAsync('test/')
-                .fail(assert.avoid())
-                .done(function(files){
-                    eq_(hasFile(files, 'config.js'), true);
-                    eq_(hasFile(files, 'json.spec.ts'), true);
-                    done();
-                })
-        }
     },
 
 
-    'ensure'(done){
+    async 'ensure'(){
         let DIR = 'test/bin/dir/sub/';
-        Directory
-            .ensureAsync(DIR)
-            .fail(assert.avoid())
-            .done(function(){
+        await Directory.ensureAsync(DIR);
 
-                eq_(Directory.exists(DIR), true);
-                done();
-            })
+        let exists = await Directory.existsAsync(DIR);
+        eq_(exists, true);
     },
     async 'copyTo'(){
         let DIR = 'test/bin/';

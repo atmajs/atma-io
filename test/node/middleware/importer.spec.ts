@@ -1,5 +1,5 @@
-import { File } from '../../src/File'
-import { Env } from '../../src/Env'
+import { File } from '../../../src/File'
+import { Env } from '../../../src/Env'
 
 
 
@@ -17,7 +17,7 @@ UTest({
     },
     'read simple'() {
 
-        var source = File.read('test/middleware/data/importer.js');
+        var source = File.read('test/node/middleware/data/importer.js');
 
         has_(source, "'bar'");
         has_(source, "'a'");
@@ -25,7 +25,7 @@ UTest({
     },
 
     'read with settings'() {
-        let source = File.read('test/middleware/data/importer-settings.js');
+        let source = File.read('test/node/middleware/data/importer-settings.js');
 
         has_(source, "'a'");
         has_(source, "'b'");
@@ -33,7 +33,7 @@ UTest({
     },
     'read exports file'() {
         var source = File
-            .read('test/middleware/data/importer-exports.js');
+            .read('test/node/middleware/data/importer-exports.js');
 
         has_(source, "'a'");
         has_(source, "'b'");

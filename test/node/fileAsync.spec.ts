@@ -1,4 +1,4 @@
-import { File } from '../src/File'
+import { File } from '../../src/File'
 
 let path_File = 'test/assets/file.txt',
     path_Copy = 'test/bin/copied.js',

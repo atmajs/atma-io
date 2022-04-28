@@ -4,7 +4,7 @@ import { Env } from '../Env'
 
 export const JsonMiddleware = {
     read(file: File) {
-		if (typeof file.content !== 'string') {
+        if (typeof file.content !== 'string') {
             return;
         }
 

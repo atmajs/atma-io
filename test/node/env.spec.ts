@@ -1,4 +1,4 @@
-import { Env } from '../src/Env';
+import { Env } from '../../src/Env';
 
 UTest({
 

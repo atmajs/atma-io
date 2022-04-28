@@ -1,4 +1,5 @@
-import { class_Dfr } from 'atma-utils'
+import { class_Dfr } from '../../../global'
+
 import { cb_toPromise } from '../../../util/cb';
 import { FileFsTransport } from '../fs_file';
 import { LockFile } from './LockFile';

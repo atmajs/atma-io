@@ -14,18 +14,23 @@
     },
     "license": "MIT",
     "dependencies": {
-        "atma-logger": ">0.0.81",
-        "atma-utils": "^0.2.53"
+        "atma-logger": ">0.0.81"
     },
     "devDependencies": {
-        "@types/node": "^16.11.12",
-        "app-bundler": "^0.1.2",
-        "atma": "^0.15.12",
+        "@types/node": "^16.11.31",
+        "app-bundler": "^0.1.7",
+        "atma": "^0.15.15",
+        "atma-io-middleware-condcomments": "^1.2.8",
         "atma-io-middleware-importer": "^1.1.38",
-        "atma-io-middleware-uglify": "^1.1.24",
+        "atma-io-middleware-uglify": "^1.1.25",
         "atma-io-middleware-yml": "^1.1.25",
         "atma-loader-ts": "^1.1.18",
+        "atma-server": "^0.5.16",
+        "atma-utils": "^0.2.59",
+        "body-parser": "^1.20.0",
         "dts-bundle": "^0.7.3",
+        "express-fileupload": "^1.3.1",
+        "node-fetch": "^2.6.7",
         "shellbee": "^0.5.20",
         "typedoc": "^0.21.5"
     },
@@ -34,49 +39,104 @@
         "build": "app-bundler && npm run build-dts && npm run typedoc",
         "watch": "app-bundler --watch",
         "build-io": "app-bundler --app io",
-        "server": "atma server",
+        "server": "atma server --TEST --BROWSER",
         "release": "echo \"atma pub -m \"message\"\"",
         "build-dts": "tsc -p tsconfig-build.json && atma run tools/build-dts",
         "typedoc": "typedoc --tsconfig ./tsconfig-typedoc.json && atma task copy"
     },
     "app-bundler": {
         "apps": {
-            "io": {
+            "node": {
                 "outputMain": "lib/io.js",
-                "js": []
+                "js": [],
+                "settings": {
+                    "atma-io-middleware-condcomments": {
+                        "defines": {
+                            "BROWSER": false
+                        }
+                    }
+                },
+                "package": {
+                    "module": "commonjs",
+                    "commonjs": {
+                        "output": "simplified"
+                    }
+                }
             },
-            "minified": {
-                "outputMain": "lib/io.min.js",
+            "browser": {
+                "outputMain": "lib/io.browser.js",
+                "js": [],
+                "package": {
+                    "module": "commonjs",
+                    "moduleName": "io",
+                    "moduleWrapper": "umd",
+                    "commonjs": {
+                        "output": "simplified"
+                    }
+                },
+                "settings": {
+                    "atma-io-middleware-condcomments": {
+                        "defines": {
+                            "BROWSER": true
+                        }
+                    },
+                    "atma-io-middleware-uglify": {
+                        "uglify": {
+                            "mangle": false,
+                            "compress": {
+                                "unused": true,
+                                "dead_code": true
+                            },
+                            "output": {
+                                "beautify": true
+                            }
+                        }
+                    },
+                    "atma-loader-ts": {
+                        "extensions": [
+                            "ts"
+                        ],
+                        "typescript": {
+                            "compilerOptions": {
+                                "baseUrl": "./",
+                                "paths": {
+                                    "@src/*": [
+                                        "src/*"
+                                    ]
+                                },
+                                "target": "es6",
+                                "module": "commonjs",
+                                "sourceMap": false
+                            }
+                        }
+                    }
+                },
+                "dynamicDependencies": [],
                 "middlewares": {
-                    "ts": [
-                        "atma-loader-ts:read"
-                    ],
                     "js": [
                         "atma-io-middleware-uglify:write"
+                    ],
+                    "ts": [
+                        "atma-io-middleware-condcomments:read",
+                        "atma-loader-ts:read"
                     ]
                 }
             }
         },
         "common": {
             "file": "src/export.ts",
-            "package": {
-                "module": "commonjs",
-                "commonjs": {
-                    "output": "simplified"
-                }
-            },
             "defaultExtensions": {
                 "js": "ts"
             },
             "middlewares": {
                 "js": [],
                 "ts": [
+                    "atma-io-middleware-condcomments:read",
                     "atma-loader-ts:read"
                 ]
             },
             "dynamicDependencies": [
                 "atma-logger",
-                "atma-utils",
                 "^fs$",
                 "^os$",
                 "readline",
@@ -86,9 +146,26 @@
     },
     "atma": {
         "plugins": [
+            "atma-io-middleware-condcomments",
             "atma-loader-ts"
         ],
         "settings": {
+            "io": {
+                "extensions": {
+                    "ts": [
+                        "atma-io-middleware-condcomments:read",
+                        "atma-loader-ts:read"
+                    ]
+                }
+            },
+            "atma-utest": {
+                "include": {
+                    "amd": true,
+                    "extentionDefault": {
+                        "js": "ts"
+                    }
+                }
+            },
             "include": {
                 "amd": true,
                 "extentionDefault": {
@@ -102,6 +179,12 @@
                 ],
                 "typescript": {
                     "compilerOptions": {
+                        "baseUrl": "./",
+                        "paths": {
+                            "@src/*": [
+                                "src/*"
+                            ]
+                        },
                         "sourceMap": false,
                         "#if (TEST)": {
                             "module": "AMD"

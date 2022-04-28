@@ -1,11 +1,26 @@
 import { Io } from './IIo'
 
-const g = global as any;
-const logger = g.logger || require('atma-logger');
-const io: Io = {} as any
+export { class_Uri } from '../node_modules/atma-utils/src/class/Uri';
+export { class_Dfr } from '../node_modules/atma-utils/src/class/Dfr';
+export { class_EventEmitter } from '../node_modules/atma-utils/src/class/EventEmitter';
+
+
+declare let global;
+
+let $global = typeof global === 'undefined' ? window : global;
+let logger = $global.logger;
+if (logger == null) {
+    //#if (!BROWSER)
+    logger = require('atma-logger');
+    //#endif
+    if (logger == null) {
+        logger = console;
+    }
+}
+const io = <Io> {};
 
 export {
-    g as global
+    $global as global
 };
 
 export {

@@ -1,8 +1,12 @@
 {
     "exclude": ["node_modules", "types", "ts-temp", "lib", "test"],
     "compilerOptions": {
+        "baseUrl": "./",
+        "paths": {
+            "@src/*": [ "src/*" ]
+        },
         "outDir": "ts-temp",
-        "lib": ["es2015", "es2015.promise", "es2016"],
+        "lib": ["es2015", "es2015.promise", "es2016", "dom"],
         "typeRoots": [
             "node_modules/@types",
             "typings",

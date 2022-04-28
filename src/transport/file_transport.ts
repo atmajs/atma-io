@@ -1,11 +1,17 @@
 import { CustomTransport, IFileTransport, IFileTransportV2 } from './custom';
+
+//#if (!BROWSER)
 import { FsTransport } from './filesystem/FsTransport';
+import { FsTransportSafe } from './filesystem/FsTransportSafe';
+//#endif
+
 import { path_getProtocol } from '../util/path';
 import { is_Promise } from '../util/is';
 import { IFileSettings, IOperationOptions } from '../interfaces/IFile';
 import { TCallback } from '../util/types';
-import { FsTransportSafe } from './filesystem/FsTransportSafe';
 import { cb_toPromise } from '../util/cb';
+import { is_BROWSER_BUILD } from '../constants';
+import { HttpTransport } from './http/HttpTransport';
 
 export type TPreprocessBuffer = (content: string | Buffer) => string | Buffer
 export type TPreprocessBufferAsync = (content: string | Buffer) => string | Buffer | Promise<string | Buffer>
@@ -121,9 +127,16 @@ export function file_remove(path) {
     let transport = getFileTransportForPath(path);
     return transport.remove(path);
 };
-export function file_removeAsync(path, cb) {
+export async function file_removeAsync(path): Promise<void> {
     let transport = getFileTransportForPath(path);
-    transport.removeAsync(path, cb);
+    if (transport.version === 2) {
+        await transport.removeAsync(path);
+    } else {
+        await cb_toPromise(
+            transport.removeAsync
+            , path
+        );
+    }
 };
 
 export function file_rename(path: string, filename: string) {
@@ -146,14 +159,22 @@ export function file_appendAsync(path: string, str: string, cb: (err?) => void) 
 };
 
 
-
 function getFileTransportForPath (path: string, options?: IFileSettings): IFileTransport | IFileTransportV2 {
     let protocol = path_getProtocol(path);
+    if (protocol == null && is_BROWSER_BUILD) {
+        protocol = 'http';
+    }
     if (protocol == null || protocol === 'file') {
+        if (is_BROWSER_BUILD) {
+            throw new Error(`Unsupported file protocol in browser`);
+        }
         if (options?.threadSafe || options?.processSafe) {
             return FsTransportSafe.File;
         }
         return FsTransport.File;
+    }
+    if (protocol === 'http' || protocol === 'https') {
+        return HttpTransport.File;
     }
     let transport = CustomTransport.get(protocol);
     if (transport == null) {
@@ -177,21 +198,4 @@ async function delegateReadOnComplete (
         result = result.toString(encoding);
     }
     return result;
-}
-
-// function delegateReadDecode (encoding, cb) {
-//     return function (err, buffer: Buffer) {
-//         if (err != null) {
-//             cb(err);
-//             return;
-//         }
-//         let content = buffer.toString(encoding);
-//         cb(null, content);
-//     }
-// }
-function delegateSave (path: string, options, cb) {
-    return function(err, content) {
-        let transport = getFileTransportForPath(path);
-        transport.saveAsync(path, content, options, cb);
-    }
 }

@@ -65,7 +65,7 @@ export interface IDirectoryTransport {
 
 }
 export interface ITransport {
-    File: IFileTransport
+    File: IFileTransport | IFileTransportV2
     Directory: IDirectoryTransport
 }
 

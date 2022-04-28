@@ -1,4 +1,4 @@
-import { class_Uri } from 'atma-utils'
+import { type class_Uri } from './global'
 import { Watcher } from './Watcher';
 import { Directory } from './Directory';
 import { File } from './File';

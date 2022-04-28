@@ -1,6 +1,6 @@
-import { File } from '../src/File'
+import { File } from '../../src/File'
 
-let path_File = 'test/file.spec.ts',
+let path_File = 'test/node/file.spec.ts',
     path_Copy = 'test/bin/copied.js';
 
 

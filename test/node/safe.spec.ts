@@ -1,9 +1,9 @@
 import * as fs from 'fs'
 import { Shell } from 'shellbee'
-import { File } from '../src/File'
-import { FileSafe } from '../src/FileSafe'
-import { Directory } from '../src/Directory'
-import { Env as env } from '../src/Env'
+import { File } from '../../src/File'
+import { FileSafe } from '../../src/FileSafe'
+import { Directory } from '../../src/Directory'
+import { Env as env } from '../../src/Env'
 
 UTest({
     $config: {

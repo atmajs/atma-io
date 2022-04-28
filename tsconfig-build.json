@@ -4,6 +4,16 @@
     ],
     "compilerOptions": {
         "baseUrl": "./",
+        "paths": {
+            "@src/*": [ "src/*" ]
+        },
+        "lib": [ "ES2019", "dom" ],
+        "typeRoots": [
+            "node_modules/@types",
+            "typings/globals",
+            "typings-other"
+        ],
+
         "outDir": "ts-temp",
         "declaration": true,
         "target": "es6",

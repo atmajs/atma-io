@@ -1,5 +1,5 @@
-import { Encrypt } from '../../src/util/encrypt';
-import { File } from '../../src/File'
+import { Encrypt } from '../../../src/util/encrypt';
+import { File } from '../../../src/File'
 
 
 const path_Secret = 'test/bin/encrypted.json';

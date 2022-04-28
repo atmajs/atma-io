@@ -1,4 +1,4 @@
-## NodeJS FileSystem Module
+## FileSystem Module
 
 ----
 
@@ -22,6 +22,7 @@ Features:
 - File-locks to make custom process-safe actions easy to implement.
 - File watcher: cross-platform file watchers.
 - AES-256 Encryption
+- HTTP Transport: `get`, `post`, `put`, `head` and `delete` methods to handle files.
 
 
 ----

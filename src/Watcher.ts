@@ -1,6 +1,6 @@
 import * as __fs from 'fs'
-import { logger } from './global'
-import { class_EventEmitter } from 'atma-utils'
+import { logger, class_EventEmitter } from './global'
+
 
 const event_CHANGE = 'change';
 const WATCHERS: { [key: string]: FileWatcher } = {};

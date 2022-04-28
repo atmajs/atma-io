@@ -1,8 +1,8 @@
-import { class_Dfr } from 'atma-utils'
+import { class_Dfr } from './global'
 
 export class FileFactory {
     handlers = []
-    
+
     registerHandler (regexp:RegExp, handler: any) {
         normalizeHandler(handler);
         this.handlers.push({

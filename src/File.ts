@@ -1,4 +1,6 @@
-import { class_Uri, class_Dfr } from 'atma-utils'
+import { class_Uri, class_Dfr } from './global'
+
+
 import { path_getUri } from './util/path';
 import {
     file_read,
@@ -23,11 +25,16 @@ import {
 
 import { logger } from './global'
 import { log_info } from './util/logger'
-import { fs_getStat } from './util/filesystem-util'
 import { Env } from './Env'
+
+//#if (!BROWSER)
+import { fs_getStat } from './util/filesystem-util'
 import { Watcher } from './Watcher'
-import { IDeferred } from './IDeferred'
+import { Encrypt } from './util/encrypt';
 import { Stats } from 'fs'
+//#endif
+
+import { IDeferred } from './IDeferred'
 import { FileFactory } from './FileFactory'
 import { FileHooks, IFileMiddleware } from './FileHooks';
 import { FileHookRegistration } from './FileHookRegistration';
@@ -35,16 +42,17 @@ import { ITransport, CustomTransport } from './transport/custom';
 import { JsonMiddleware } from './middleware/json';
 import { global } from './global'
 import { uri_getFile } from './util/uri';
-import { Encrypt } from './util/encrypt';
+
 import { IFileCopyOpts, IFileOptionsBase, IFileSettings, IOperationOptions } from './interfaces/IFile';
-import { cb_toPromise, cb_toPromiseCtx } from './util/cb';
+import { cb_toPromiseCtx } from './util/cb';
+import { is_BROWSER_BUILD } from './constants';
 
 
 let _cache = {};
 let _cacheEnabled = true;
 let _hooks: FileHooks;
 let _factory: FileFactory;
-const rootFolder = process.cwd();
+const rootFolder = is_BROWSER_BUILD ? '/' : process.cwd();
 
 export class File {
     private _ver = 0;
@@ -54,7 +62,7 @@ export class File {
     sourceMap?: string
 
     constructor(path: string | class_Uri, public opts?: IFileSettings) {
-        if (typeof path === 'string' && path[0] === '/' && path.startsWith(rootFolder)) {
+        if (typeof path === 'string' && path[0] === '/' && path.startsWith(rootFolder) && is_BROWSER_BUILD === false) {
             path = 'file://' + path;
         }
 
@@ -101,7 +109,7 @@ export class File {
         let path = uri_toPath(this.uri);
         let setts = getSetts(mix);
         let options = getMergedOptions(mix, this.opts);
-        let preprocess: TPreprocessBuffer = getTransportReaderMiddleware(mix, this.opts);
+        let preprocess: TPreprocessBufferAsync = getTransportReaderMiddleware(mix, this.opts);
         try {
             this.content = await file_readAsync(
                 path
@@ -336,15 +344,12 @@ export class File {
     static remove(path: string): boolean {
         return new File(path).remove();
     }
-    removeAsync(): IDeferred<boolean> {
-        return dfr_factory(this, function (dfr, file, path) {
-            file_removeAsync(
-                path,
-                dfr_pipeDelegate(dfr)
-            );
-        });
+    async removeAsync(): Promise<boolean> {
+        let path = uri_toPath(this.uri);
+        await file_removeAsync(path);
+        return true;
     }
-    static removeAsync(path: string): IDeferred<boolean> {
+    static async removeAsync(path: string): Promise<boolean> {
         return new File(path).removeAsync();
     }
     replace(a: string | RegExp, b: string | ((substring: string, ...args: any[]) => string), setts?): string {
