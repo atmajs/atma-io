@@ -17,8 +17,8 @@ export namespace mimeTypes {
                 });
         }
 
-        let rgxExt = /\.(?<ext>[\w]{1,})($|\?)/;
-        let ext = rgxExt.exec(url)?.groups?.ext?.toLowerCase() ?? 'buffer';
+        let rgxExt = /\.([\w]{1,})($|\?)/;
+        let ext = rgxExt.exec(url)?.[1].toLowerCase() ?? 'buffer';
         return extensions[ext] ?? extensions['buffer'];
 
     }
