@@ -8,5 +8,6 @@ docs/
 
 .npmignore
 .travis.yml
+.vscode
 tsconfig-build.json
 tsconfig-typedoc.json
