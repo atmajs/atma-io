@@ -5,9 +5,10 @@
         "name": "Alex Kit",
         "email": "alex.kit@atmajs.com"
     },
-    "version": "1.2.61",
+    "version": "1.2.62",
     "main": "./lib/io.js",
     "types": "./lib/io.d.ts",
+    "browser": "./lib/io-browser.js",
     "repository": {
         "type": "git",
         "url": "https://github.com/atmajs/atma-io.git"
@@ -64,7 +65,7 @@
                 }
             },
             "browser": {
-                "outputMain": "lib/io.browser.js",
+                "outputMain": "lib/io-browser.js",
                 "js": [],
                 "package": {
                     "module": "commonjs",
