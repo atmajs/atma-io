@@ -5,7 +5,7 @@
         "name": "Alex Kit",
         "email": "alex.kit@atmajs.com"
     },
-    "version": "1.2.62",
+    "version": "1.2.63",
     "main": "./lib/io.js",
     "types": "./lib/io.d.ts",
     "browser": "./lib/io-browser.js",

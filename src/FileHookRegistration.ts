@@ -64,7 +64,7 @@ namespace Registration {
             return;
         }
         if (appSettings != null && handlerName != null && typeof middleware !== 'string') {
-            var options = appSettings[handlerName];
+            let options = appSettings[handlerName];
             if (options && middleware.setOptions) {
                 middleware.setOptions(options);
             }
@@ -72,7 +72,7 @@ namespace Registration {
         if (typeof middleware !== 'string' && middleware.setIo) {
             middleware.setIo(io);
         }
-        var rgx = getFileHookRegexp(extension);
+        let rgx = getFileHookRegexp(extension);
         hook.register(rgx, funcName, middleware);
     }
 };
@@ -86,8 +86,12 @@ function ensureMiddlewareLoadedAndValidated(name: string, funcName?: 'read' | 'w
     let middleware = File.middleware[name];
     if (middleware == null) {
         try {
-            var x: IFileMiddleware = require(name);
-            if (x && x.register) {
+            let path = name;
+            if (path.startsWith('./')) {
+                path = process.cwd() + '/' + path;
+            }
+            let x: IFileMiddleware = require(path);
+            if (x?.register) {
                 x.register(io);
             }
             middleware = File.middleware[name];
@@ -118,14 +122,14 @@ function ensureMiddlewareLoadedAndValidated(name: string, funcName?: 'read' | 'w
 
 export function getFileHookRegexp(misc: string) {
     if (misc[0] === '/') {
-        var str = misc.substring(1);
-        var end = str.lastIndexOf('/');
-        var flags = str.substring(end + 1);
+        let str = misc.substring(1);
+        let end = str.lastIndexOf('/');
+        let flags = str.substring(end + 1);
         str = str.substring(0, end);
         return new RegExp(str, flags);
     }
-    var ext = rgx_prepairString(misc);
-    var rgx = '\\.' + ext + '($|\\?|#)';
+    let ext = rgx_prepairString(misc);
+    let rgx = '\\.' + ext + '($|\\?|#)';
     return new RegExp(rgx);
 }
 

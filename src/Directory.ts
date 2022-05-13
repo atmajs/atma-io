@@ -155,8 +155,8 @@ export class Directory {
         return new Directory(path).readFilesAsync(pattern, exclude);
     }
     readAsync(pattern?: string | RegExp | (string | RegExp)[], exclude?: string | RegExp | (string | RegExp)[]): IDeferred<(File | Directory)[]> {
-        var patterns = glob_parsePatterns(pattern),
-            excludes = glob_parsePatterns(exclude);
+        let patterns = glob_parsePatterns(pattern);
+        let excludes = glob_parsePatterns(exclude);
 
         return dfr_factory(this, function (dfr, dir, path) {
             dir_filesAsync(
@@ -169,13 +169,11 @@ export class Directory {
                         dfr.reject(error);
                         return;
                     }
-
-
-                    var arr = files.map(function (x) {
-                        var path = dir.uri.combine(x);
-                        if (x[x.length - 1] === '/')
+                    let arr = files.map(function (x) {
+                        let path = dir.uri.combine(x);
+                        if (x[x.length - 1] === '/') {
                             return new Directory(path);
-
+                        }
                         return new File(path);
                     });
                     dfr.resolve(arr, dir);
@@ -192,7 +190,7 @@ export class Directory {
      * options {Object} { verbose: Boolean} Confirm target file rewrite
      */
     copyTo(target: string, options: {verbose?: boolean} = { verbose: false }): IDeferred<void> {
-        var dfr = new class_Dfr;
+        let dfr = new class_Dfr;
         if (Array.isArray(this.files) === false) {
             this.readFiles();
         }
@@ -209,14 +207,14 @@ export class Directory {
                 dfr.resolve();
                 return;
             }
-            var file = files[i],
+            let file = files[i],
                 relPath = file.uri.toRelativeString(uri),
                 to
                 ;
             to = targetUri.combine(relPath);
 
             if (options.verbose !== true && File.exists(to)) {
-                var message = `File already exists: ${relPath}. Replace? `;
+                let message = `File already exists: ${relPath}. Replace? `;
 
                 cli_prompt(message, function (confirm) {
                     if (confirm)
@@ -243,7 +241,7 @@ export class Directory {
      * 	} Confirm target file rewrite
      */
     copyToAsync(target: string, options: {verbose?: boolean} = { verbose: false}): IDeferred<void> {
-        var dfr = new class_Dfr;
+        let dfr = new class_Dfr;
         if (Array.isArray(this.files) === false) {
             this
                 .readFilesAsync()
@@ -278,7 +276,7 @@ export class Directory {
             ;
 
         function copy(i, done) {
-            var file = files[i],
+            let file = files[i],
                 relPath = file.uri.toRelativeString(uri),
                 to
                 ;
@@ -286,7 +284,7 @@ export class Directory {
 
 
             if (options.verbose !== true && File.exists(to)) {
-                var message = `File already exists: ${relPath}. Replace? `;
+                let message = `File already exists: ${relPath}. Replace? `;
 
                 cli_prompt(message, function (confirm) {
                     if (confirm !== true)
@@ -323,7 +321,7 @@ export class Directory {
             logger.error('<dir:rename> New Name is not defined');
             return;
         }
-        var oldpath = this.uri.toLocalFile(),
+        let oldpath = this.uri.toLocalFile(),
             newpath = oldpath.replace(/[^\/]+\/?$/g, name);
 
         logger.log('<dir:rename>', oldpath, newpath);
@@ -339,7 +337,7 @@ export class Directory {
                 dfr.reject('Name is undefined');
                 return;
             }
-            var newpath = path.replace(/[^\/]+\/?$/g, name);
+            let newpath = path.replace(/[^\/]+\/?$/g, name);
 
             dir_renameAsync(path, newpath, dfr_pipeDelegate(dfr));
         });

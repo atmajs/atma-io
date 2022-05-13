@@ -1,34 +1,36 @@
 import { glob_matchPath, glob_getStrictPath, glob_getRelativePath } from './util/glob'
 import { Directory } from './Directory'
 import { File } from './File'
-import { IDeferred } from './IDeferred';
 
 export const Glob = {
     matchPath: glob_matchPath,
     readFiles (path: string): File[] {
-        
-        var strict = glob_getStrictPath(path),
-            rel = glob_getRelativePath(path);
-            
+
+        let strict = glob_getStrictPath(path);
+        let rel = glob_getRelativePath(path);
+
         return new Directory(strict).readFiles(rel);
     },
     read (path: string): (File | Directory)[] {
-        var strict = glob_getStrictPath(path),
-            rel = glob_getRelativePath(path);
-            
+        let strict = glob_getStrictPath(path);
+        let rel = glob_getRelativePath(path);
+
         return new Directory(strict).read(rel);
     },
-    readAsync: function(path: string, cb?: (error, arr?: (File | Directory)[], dir?: Directory) => void | any): IDeferred<(File | Directory)[]> {
-        var strict = glob_getStrictPath(path),
-            rel = glob_getRelativePath(path);
-            
-        return new Directory(strict)
-            .readAsync(rel)
-            .done(function(arr, dir){
-                cb(null, arr, dir)
-            })
-            .fail(function(err){
+    async readAsync (path: string, cb?: (error, arr?: (File | Directory)[], dir?: Directory) => void | any): Promise<(File | Directory)[]> {
+        let strict = glob_getStrictPath(path);
+        let rel = glob_getRelativePath(path);
+
+        try {
+            let list = await new Directory(strict).readAsync(rel);
+            cb?.(null, list);
+            return list;
+        } catch (err) {
+            if (cb != null) {
                 cb(err);
-            })
+                return;
+            }
+            throw err;
+        }
     }
 }
