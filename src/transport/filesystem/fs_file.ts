@@ -4,6 +4,7 @@ import { log_error } from '../../util/logger';
 import { logger } from '../../global';
 import { path_getDir } from '../../util/path';
 import { IFileTransport } from '../custom';
+import { Errno } from './Errno';
 
 
 
@@ -241,17 +242,4 @@ function copySync(from, to) {
     __fs.closeSync(fdr);
     return __fs.closeSync(fdw);
 }
-export namespace Errno {
-    export function isNotFound(error) {
-        if (error == null) {
-            return false;
-        }
-        return error.errno === 34 || error.errno === -4058 || error.code === 'ENOENT';
-    }
-    export function isExists (error) {
-        if (error == null) {
-            return false;
-        }
-        return error.errno === -4075 || error.code === 'EEXIST';
-    }
-}
+

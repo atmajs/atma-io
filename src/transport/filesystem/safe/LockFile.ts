@@ -1,7 +1,7 @@
 import { class_Dfr } from '../../../global'
 import * as fs from 'fs';
 import * as os from 'os';
-import { Errno } from '../fs_file';
+import { Errno } from "../Errno";
 
 export class LockFile {
 

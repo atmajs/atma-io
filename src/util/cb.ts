@@ -13,6 +13,19 @@ export function cb_toPromise <TResult, TArgs extends any[]> (fn: TFnWithCallback
     })
 }
 
+
+export function cb_toPromiseTuple <TResult, TArgs extends any[]> (fn: TFnWithCallback<TArgs, TResult>, ...args: TArgs): Promise<{ error?: Error, result?: TResult }> {
+    return new Promise((resolve, reject) => {
+        fn(...args, (error, result) => {
+            if (error) {
+                resolve({ error });
+                return;
+            }
+            resolve({ result });
+        });
+    })
+}
+
 export function cb_toPromiseCtx <TResult, TArgs extends any[]> (ctx: any, fn: TFnWithCallback<TArgs, TResult>, ...args: TArgs): Promise<TResult> {
     return new Promise((resolve, reject) => {
         fn.call(ctx, ...args, (error, result) => {

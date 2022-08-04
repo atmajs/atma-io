@@ -1,6 +1,7 @@
 import { class_Dfr } from '../../../global'
 
-import { cb_toPromise } from '../../../util/cb';
+import { cb_toPromise, cb_toPromiseTuple } from '../../../util/cb';
+import { Errno } from '../Errno';
 import { FileFsTransport } from '../fs_file';
 import { LockFile } from './LockFile';
 
@@ -80,12 +81,15 @@ export class SafeFile {
     private async readInner (encoding: 'utf8' | string): Promise<string | Buffer> {
         let existsBak = await cb_toPromise(FileFsTransport.existsAsync, this.pathBak);
         if (existsBak) {
-            let str = await cb_toPromise(FileFsTransport.readAsync, this.pathBak, encoding);
-            if (str) {
-                await cb_toPromise(FileFsTransport.renameAsync, this.pathBak, this.pathFilename);
+            let { error, result: str } = await cb_toPromiseTuple(FileFsTransport.readAsync, this.pathBak, encoding);
+            if (error == null && str) {
+                await cb_toPromiseTuple(FileFsTransport.renameAsync, this.pathBak, this.pathFilename);
                 return str;
-            } else {
-                await cb_toPromise(FileFsTransport.removeAsync, this.pathBak);
+            }
+
+            let isNotFound = Errno.isNotFound(error)
+            if (isNotFound !== true) {
+                await cb_toPromiseTuple(FileFsTransport.removeAsync, this.pathBak);
             }
         }
         // @DONI: just read the file, if it doesn't exist it will throw and we return NULL in any case
