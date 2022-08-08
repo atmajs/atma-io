@@ -140,7 +140,7 @@ export class LockFile {
     private doCheckStale() {
         fs.stat(this.pathLock, (err, stats) => {
             if (err) {
-                if (Errno.isNotFound(stats)) {
+                if (Errno.isNotFound(err)) {
                     this.acquireInner();
                     return;
                 }
