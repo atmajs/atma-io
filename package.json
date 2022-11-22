@@ -5,7 +5,7 @@
         "name": "Alex Kit",
         "email": "alex.kit@atmajs.com"
     },
-    "version": "1.2.66",
+    "version": "1.2.67",
     "main": "./lib/io.js",
     "types": "./lib/io.d.ts",
     "browser": "./lib/io-browser.js",
@@ -18,22 +18,23 @@
         "atma-logger": ">0.0.81"
     },
     "devDependencies": {
-        "@types/node": "^16.11.31",
+        "@types/node": "^18.11.9",
         "app-bundler": "^0.1.7",
         "atma": "^0.15.15",
         "atma-io-middleware-condcomments": "^1.2.8",
         "atma-io-middleware-importer": "^1.1.38",
         "atma-io-middleware-uglify": "^1.1.25",
         "atma-io-middleware-yml": "^1.1.25",
-        "atma-loader-ts": "^1.1.18",
+        "atma-loader-ts": "^1.1.19",
         "atma-server": "^0.5.16",
-        "atma-utils": "^0.2.59",
+        "atma-utils": "^0.2.60",
         "body-parser": "^1.20.0",
         "dts-bundle": "^0.7.3",
         "express-fileupload": "^1.3.1",
         "node-fetch": "^2.6.7",
         "shellbee": "^0.5.20",
-        "typedoc": "^0.21.5"
+        "typedoc": "^0.21.5",
+        "typescript": "^4.9.3"
     },
     "scripts": {
         "test": "atma test",
