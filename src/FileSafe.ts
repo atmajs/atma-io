@@ -1,5 +1,5 @@
 import { File  } from './File'
-import { IFileOptionsBase } from './interfaces/IFile';
+import { IFileSettings } from './interfaces/IFile';
 
 /**
  * Safe cross process file writes and reads using *.bak files as the safe-fallback
@@ -9,7 +9,7 @@ import { IFileOptionsBase } from './interfaces/IFile';
 */
 export class FileSafe extends File {
 
-    constructor(public path: string, public opts?: IFileOptionsBase ) {
+    constructor(public path: string, public opts?: IFileSettings ) {
         super(path, {
             ...(opts ?? {}),
             processSafe: true,
