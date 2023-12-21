@@ -25,7 +25,7 @@
         "atma-io-middleware-importer": "^1.1.38",
         "atma-io-middleware-uglify": "^1.1.25",
         "atma-io-middleware-yml": "^1.1.25",
-        "atma-loader-ts": "^1.1.19",
+        "atma-loader-ts": "^1.1.20",
         "atma-server": "^0.5.16",
         "atma-utils": "^0.2.60",
         "body-parser": "^1.20.0",
@@ -33,8 +33,7 @@
         "express-fileupload": "^1.3.1",
         "node-fetch": "^2.6.7",
         "shellbee": "^0.5.20",
-        "typedoc": "^0.21.5",
-        "typescript": "^4.9.3"
+        "typedoc": "^0.21.5"
     },
     "scripts": {
         "test": "atma test",
