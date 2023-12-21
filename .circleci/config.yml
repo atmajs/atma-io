@@ -15,7 +15,7 @@ jobs:
       - checkout
       - node/install-packages:
           pkg-manager: npm
-      - build:
+      - run:
           name: Build project
           command: npm run build
       - run:
