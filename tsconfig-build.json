@@ -14,7 +14,6 @@
             "typings/globals",
             "typings-other"
         ],
-
         "outDir": "ts-temp",
         "declaration": true,
         "target": "es6",

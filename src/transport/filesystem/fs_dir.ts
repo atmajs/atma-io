@@ -4,6 +4,7 @@ import { obj_extend } from '../../util/obj';
 import { fs_isDirectory } from '../../util/filesystem-util';
 import { path_combine } from '../../util/path';
 import { IDirectoryTransport } from '../custom';
+import type { GlobRegExp } from '@src/util/glob';
 
 export const DirectoryFsTransport: IDirectoryTransport = {
     ensure (path):string {
@@ -194,8 +195,8 @@ function dir_removeRecursiveAsync(path, cb) {
             return;
         }
 
-        var next = cb_listeners(imax, onSubCompleted),
-            fsname;
+        let next = cb_listeners(imax, onSubCompleted);
+        let fsname;
         while (++i < imax) {
             fsname = files[i];
             if ('.' === fsname || '..' === fsname) {
@@ -442,16 +443,19 @@ function matchPath(path, rgxs) {
     }
     return false;
 }
-function rgxs_getDepth(rgxs) {
-    if (rgxs == null) return Infinity;
-
-    var maxdepth = 0,
-        imax = rgxs.length,
-        i = -1;
-    while (++i < imax) {
-        if (maxdepth < rgxs[i].depth) maxdepth = rgxs[i].depth;
+function rgxs_getDepth(rgxs: GlobRegExp[]) {
+    if (rgxs == null) {
+        return Infinity;
     }
-    return maxdepth || Infinity;
+    let maxdepth: number = null;
+    let imax = rgxs.length;
+    let i = -1;
+    while (++i < imax) {
+        if (maxdepth == null || maxdepth < rgxs[i].depth) {
+            maxdepth = rgxs[i].depth;
+        }
+    }
+    return maxdepth ?? Infinity;
 }
 function cb_listeners(count, cb) {
     var err;

@@ -80,9 +80,8 @@ export class Directory {
     }
     readFiles(pattern?: string | RegExp | (string | RegExp)[], exclude?: string | RegExp | (string | RegExp)[]): File[] {
 
-        let patterns = glob_parsePatterns(pattern),
-            excludes = glob_parsePatterns(exclude)
-            ;
+        let patterns = glob_parsePatterns(pattern);
+        let excludes = glob_parsePatterns(exclude);
 
         let arr = this.files = dir_files(
             uri_toDirectory(this.uri)

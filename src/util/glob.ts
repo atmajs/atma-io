@@ -1,189 +1,206 @@
 import { logger } from '../global'
 
 export function glob_getCalculatedPath(path, glob) {
-	var star = glob.indexOf('*'),
-		slash = glob.lastIndexOf('/', star),
-		strict = slash === -1 ? null : glob.substring(0, slash);
+    var star = glob.indexOf('*'),
+        slash = glob.lastIndexOf('/', star),
+        strict = slash === -1 ? null : glob.substring(0, slash);
 
-	if (!slash)
-		return path;
+    if (!slash)
+        return path;
 
-	var index = path.toLowerCase().indexOf(strict.toLowerCase());
+    var index = path.toLowerCase().indexOf(strict.toLowerCase());
 
-	if (index === -1) {
-		logger.warn('[substring not found]', path, strict);
-		return path;
-	}
+    if (index === -1) {
+        logger.warn('[substring not found]', path, strict);
+        return path;
+    }
 
-	return path.substring(index + strict.length);
+    return path.substring(index + strict.length);
 };
 
 export function glob_matchPath(pattern/*String*/, path/*String*/) {
-	if (path[0] === '/')
-		path = path.substring(1);
+    if (path[0] === '/')
+        path = path.substring(1);
 
-	if (pattern[0] === '/')
-		pattern = pattern.substring(1);
+    if (pattern[0] === '/')
+        pattern = pattern.substring(1);
 
-	return glob_toRegExp(pattern).test(path);
+    return glob_toRegExp(pattern).test(path);
 };
 
 export function glob_parsePatterns(mix: string | RegExp | (string | RegExp)[], out?: GlobRegExp[]) {
-	if (mix == null)
-		return null;
+    if (mix == null)
+        return null;
 
-	if (out == null)
-		out = [];
+    if (out == null)
+        out = [];
 
-	if (Array.isArray(mix)) {
-		mix.forEach(x => {
-			glob_parsePatterns(x, out);
-		});
+    if (Array.isArray(mix)) {
+        mix.forEach(x => {
+            glob_parsePatterns(x, out);
+        });
 
-		return out;
-	}
+        return out;
+    }
 
-	if (mix instanceof RegExp) {
-		out.push(mix as GlobRegExp);
-		return out;
-	}
+    if (mix instanceof RegExp) {
+        let globRgx = mix as GlobRegExp;
+        if (globRgx.depth == null) {
+            globRgx.depth = getDepthFromRgx(mix);
+        }
+        out.push(globRgx);
+        return out;
+    }
 
-	if (typeof mix === 'string') {
+    if (typeof mix === 'string') {
 
-		let pattern = mix;
-		if (pattern[0] === '/') {
-			pattern = pattern.substring(1);
-		}
-		let [ depth, rootCount, root ] = glob_parseDirs(pattern);
-		let regexp = glob_toRegExp(pattern);
+        let pattern = mix;
+        if (pattern[0] === '/') {
+            pattern = pattern.substring(1);
+        }
+        let [ depth, rootCount, root ] = glob_parseDirs(pattern);
+        let regexp = glob_toRegExp(pattern);
 
-		regexp.depth = depth;
-		regexp.rootCount = rootCount;
-		regexp.root = root;
-		out.push(regexp);
-		return out;
-	}
+        regexp.depth = depth;
+        regexp.rootCount = rootCount;
+        regexp.root = root;
+        out.push(regexp);
+        return out;
+    }
 
-	logger.error('<glob> Unsupported pattern', mix);
-	return out;
+    logger.error('<glob> Unsupported pattern', mix);
+    return out;
 };
 
 export function glob_parseDirs(pattern): [number, number, string] {
-	if (pattern[0] === '/')
-		pattern = pattern.substring(1);
+    if (pattern[0] === '/')
+        pattern = pattern.substring(1);
 
-	var depth = 0,
-		dirs = pattern.split('/')
-		;
+    var depth = 0,
+        dirs = pattern.split('/')
+        ;
 
-	depth = pattern.indexOf('**') !== -1
-		? Infinity
-		: dirs.length
-		;
+    depth = pattern.indexOf('**') !== -1
+        ? Infinity
+        : dirs.length
+        ;
 
-	// remove file
-	dirs.pop();
-	for (var i = 0; i < dirs.length; i++) {
-		if (dirs[i].indexOf('*') === -1)
-			continue;
+    // remove file
+    dirs.pop();
+    for (var i = 0; i < dirs.length; i++) {
+        if (dirs[i].indexOf('*') === -1)
+            continue;
 
-		dirs.splice(i);
-	}
+        dirs.splice(i);
+    }
 
-	return [depth, dirs.length, dirs.join('/').toLowerCase()];
+    return [depth, dirs.length, dirs.join('/').toLowerCase()];
 };
 
 export function glob_toRegExp(glob): GlobRegExp {
-	var specialChars = "\\^$*+?.()|{}[]",
-		stream = '',
-		i = -1,
-		length = glob.length;
+    var specialChars = "\\^$*+?.()|{}[]",
+        stream = '',
+        i = -1,
+        length = glob.length;
 
-	glob = glob.replace(/(\*\*\/){2,}/g, '**/');
+    glob = glob.replace(/(\*\*\/){2,}/g, '**/');
 
 
-	while (++i < length) {
-		var c = glob[i];
-		switch (c) {
-			case '?':
-				stream += '.';
-				break;
-			case '*':
-				if (glob[i + 1] === '*') {
+    while (++i < length) {
+        var c = glob[i];
+        switch (c) {
+            case '?':
+                stream += '.';
+                break;
+            case '*':
+                if (glob[i + 1] === '*') {
 
-					if (i === 0 && /[\\\/]/.test(glob[i + 2])) {
-						stream += '.+';
-						i += 2;
-					}
+                    if (i === 0 && /[\\\/]/.test(glob[i + 2])) {
+                        stream += '.+';
+                        i += 2;
+                    }
 
-					stream += '.+';
-					i++;
-					break;
-				}
+                    stream += '.+';
+                    i++;
+                    break;
+                }
 
-				stream += '[^/]+';
-				break;
-			case '{':
-				var close = glob.indexOf('}', i);
-				if (~close) {
-					stream += '(' + glob.substring(i + 1, close).replace(/,/g, '|') + ')';
-					i = close;
-					break;
-				}
-				stream += c;
-				break;
-			case '[':
-				var close = glob.indexOf(']', i);
-				if (~close) {
-					stream = glob.substring(i, close);
-					i = close;
-					break;
-				}
-				stream += c;
-				break;
-			default:
-				if (~specialChars.indexOf(c)) {
-					stream += '\\';
-				}
-				stream += c;
-				break;
-		}
-	}
+                stream += '[^/]+';
+                break;
+            case '{':
+                var close = glob.indexOf('}', i);
+                if (~close) {
+                    stream += '(' + glob.substring(i + 1, close).replace(/,/g, '|') + ')';
+                    i = close;
+                    break;
+                }
+                stream += c;
+                break;
+            case '[':
+                var close = glob.indexOf(']', i);
+                if (~close) {
+                    stream = glob.substring(i, close);
+                    i = close;
+                    break;
+                }
+                stream += c;
+                break;
+            default:
+                if (~specialChars.indexOf(c)) {
+                    stream += '\\';
+                }
+                stream += c;
+                break;
+        }
+    }
 
-	stream = '^' + stream + '$';
+    stream = '^' + stream + '$';
 
-	return new GlobRegExp(stream, 'i');
+    return new GlobRegExp(stream, 'i');
 };
 
 /**
- *	[as dir] '/dev/*.js' -> '/dev/'
+ *    [as dir] '/dev/*.js' -> '/dev/'
  */
 export function glob_getStrictPath(path) {
-	var index = path.indexOf('*');
-	if (index === -1) {
-		logger.error('glob.js [path is not a glob pattern]', path);
-		return null;
-	}
+    var index = path.indexOf('*');
+    if (index === -1) {
+        logger.error('glob.js [path is not a glob pattern]', path);
+        return null;
+    }
 
-	return path.substring(0, path.lastIndexOf('/', index) + 1);
+    return path.substring(0, path.lastIndexOf('/', index) + 1);
 };
 
 /**
- *	'c:/dev/*.js' -> '*.js'
+ *    'c:/dev/*.js' -> '*.js'
  */
 export function glob_getRelativePath(path) {
-	var index = path.indexOf('*');
-	if (index === -1) {
-		logger.error('glob.js [path is not a glob pattern]', path);
-		return null;
-	}
+    var index = path.indexOf('*');
+    if (index === -1) {
+        logger.error('glob.js [path is not a glob pattern]', path);
+        return null;
+    }
 
-	return path.substring(path.lastIndexOf('/', index) + 1);
+    return path.substring(path.lastIndexOf('/', index) + 1);
 };
 
 
 export class GlobRegExp extends RegExp {
-	depth: number
-	rootCount: number
-	root: string
+    depth: number
+    rootCount: number
+    root: string
+}
+
+
+function getDepthFromRgx(rgx: RegExp) {
+    let str = rgx.toString();
+    let pattern = str.substring(str.indexOf('/') + 1, str.lastIndexOf('/'));
+    let directories = pattern.split('/');
+    if (directories.length === 1) {
+        return 0;
+    }
+    let pathDirectories = directories.slice(0, directories.length - 1);
+    let hasInfinite = pathDirectories.some(name => name === '.*');
+    return hasInfinite? Infinity : pathDirectories.length - 1;
 }
