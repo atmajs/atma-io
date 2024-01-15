@@ -8,7 +8,7 @@ const WATCHERS: { [key: string]: FileWatcher } = {};
 
 export const Watcher = {
 
-    watch (path: string, callback: (path?: string) => void | any) {
+    watch (path: string, options: { recursive?: boolean }, callback: (path?: string) => void | any) {
 
         if (WATCHERS[path]) {
             WATCHERS[path].on(event_CHANGE, callback);
@@ -20,7 +20,7 @@ export const Watcher = {
             return;
         }
 
-        WATCHERS[path] = new FileWatcher(path);
+        WATCHERS[path] = new FileWatcher(path, options);
         WATCHERS[path].on(event_CHANGE, callback);
     },
     unwatch (path: string, callback?: Function) {
@@ -49,12 +49,15 @@ class FileWatcher extends class_EventEmitter {
     private lastEventType: string
     private lastFilename: string
 
-    constructor(path: string) {
+    constructor(path: string, options?: {
+        recursive?: boolean
+    }) {
         super();
         this.changed = this.changed.bind(this);
         this.reportChange = this.reportChange.bind(this);
         this.path = path;
-        this.fswatcher = __fs.watch(path, this.changed);
+
+        this.fswatcher = __fs.watch(path, options ?? {}, this.changed);
     }
 
     changed(eventType, filename) {

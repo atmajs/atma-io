@@ -361,7 +361,7 @@ export class Directory {
     }
 
     watch(callback: (path?: string) => void | any) {
-        Watcher.watch(this.uri.toLocalFile(), callback);
+        Watcher.watch(this.uri.toLocalFile(), { recursive: true }, callback);
     }
     static watch(path: string, callback: (path?: string) => void | any) {
         new Directory(path).watch(callback);

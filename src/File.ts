@@ -375,7 +375,7 @@ export class File {
     }
 
     watch(callback: (path?: string) => void | any): void {
-        Watcher.watch(uri_toPath(this.uri), callback);
+        Watcher.watch(uri_toPath(this.uri), {}, callback);
     }
     static watch(path: string, callback: (path?: string) => void | any): void {
         new File(path).watch(callback);
