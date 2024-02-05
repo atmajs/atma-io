@@ -1,8 +1,6 @@
 import { Io } from './IIo'
 
-export { class_Uri } from '../node_modules/atma-utils/src/class/Uri';
-export { class_Dfr } from '../node_modules/atma-utils/src/class/Dfr';
-export { class_EventEmitter } from '../node_modules/atma-utils/src/class/EventEmitter';
+export { class_Uri, class_Dfr, class_EventEmitter } from 'atma-utils';
 
 
 declare let global;
