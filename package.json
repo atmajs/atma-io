@@ -38,7 +38,7 @@
     },
     "scripts": {
         "test": "atma test",
-        "build": "app-bundler && npm run build-dts && npm run typedoc",
+        "build": "app-bundler && npm run build-dts",
         "watch": "app-bundler --watch",
         "build-io": "app-bundler --app io",
         "server": "atma server --TEST --BROWSER",
