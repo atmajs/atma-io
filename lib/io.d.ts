@@ -9,7 +9,7 @@ declare module 'atma-io' {
 }
 
 declare module 'atma-io/IIo' {
-    import { type class_Uri } from 'atma-io/global';
+    import { class_Uri } from 'atma-io/global';
     import { Watcher } from 'atma-io/Watcher';
     import { Directory } from 'atma-io/Directory';
     import { File } from 'atma-io/File';
@@ -52,7 +52,9 @@ declare module 'atma-io/global' {
 
 declare module 'atma-io/Watcher' {
     export const Watcher: {
-        watch(path: string, callback: (path?: string) => void | any): void;
+        watch(path: string, options: {
+            recursive?: boolean;
+        }, callback: (path?: string) => void | any): void;
         unwatch(path: string, callback?: Function): void;
     };
 }
@@ -427,11 +429,11 @@ declare module 'atma-io/util/glob' {
     export function glob_parseDirs(pattern: any): [number, number, string];
     export function glob_toRegExp(glob: any): GlobRegExp;
     /**
-        *	[as dir] '/dev/*.js' -> '/dev/'
+        *    [as dir] '/dev/*.js' -> '/dev/'
         */
     export function glob_getStrictPath(path: any): any;
     /**
-        *	'c:/dev/*.js' -> '*.js'
+        *    'c:/dev/*.js' -> '*.js'
         */
     export function glob_getRelativePath(path: any): any;
     export class GlobRegExp extends RegExp {
