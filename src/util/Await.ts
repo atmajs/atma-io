@@ -1,4 +1,4 @@
-import { class_Dfr } from '../global'
+import { class_Dfr } from 'atma-utils';
 
 export class AwaitCallbacks {
     promise = new class_Dfr

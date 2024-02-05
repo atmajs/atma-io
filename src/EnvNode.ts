@@ -1,4 +1,5 @@
-import { logger, class_Uri} from './global'
+import { class_Uri } from 'atma-utils';
+import { logger } from './global'
 import * as os from 'os';
 
 const mainModule = process.mainModule ?? require.main;

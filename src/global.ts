@@ -1,7 +1,5 @@
 import { Io } from './IIo'
 
-export { class_Uri, class_Dfr, class_EventEmitter } from 'atma-utils';
-
 
 declare let global;
 

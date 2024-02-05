@@ -1,4 +1,4 @@
-import { logger, class_Uri, class_Dfr  } from './global'
+import { logger } from './global'
 
 import {
     dir_exists,
@@ -24,6 +24,7 @@ import { IDeferred } from './IDeferred';
 import { stack_formatCaller } from './util/stack';
 import { Env } from './Env'
 import { AwaitCallbacks } from './util/Await';
+import { class_Dfr, class_Uri } from 'atma-utils';
 
 export class Directory {
     uri: class_Uri

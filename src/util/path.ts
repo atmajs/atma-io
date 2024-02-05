@@ -1,5 +1,6 @@
+import { class_Uri } from 'atma-utils';
 import { is_BROWSER_BUILD } from '../constants';
-import { io, class_Uri} from '../global'
+import { io} from '../global'
 
 export function path_getProtocol (path: string) {
     let i = path.indexOf(':');

@@ -1,4 +1,4 @@
-import { class_Uri } from './global'
+
 import { Watcher } from './Watcher';
 import { Directory } from './Directory';
 import { File } from './File';
@@ -6,6 +6,7 @@ import { Glob } from './ExportsGlob';
 import { setSettings } from './ExportsSetts';
 import { FileSafe } from './FileSafe';
 import { LockFile } from './transport/filesystem/safe/LockFile';
+import { class_Uri } from 'atma-utils';
 
 export interface Io {
     env: {

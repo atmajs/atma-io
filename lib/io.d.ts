@@ -10,7 +10,6 @@ declare module 'atma-io' {
 }
 
 declare module 'atma-io/IIo' {
-    import { class_Uri } from 'atma-io/global';
     import { Watcher } from 'atma-io/Watcher';
     import { Directory } from 'atma-io/Directory';
     import { File } from 'atma-io/File';
@@ -18,6 +17,7 @@ declare module 'atma-io/IIo' {
     import { setSettings } from 'atma-io/ExportsSetts';
     import { FileSafe } from 'atma-io/FileSafe';
     import { LockFile } from 'atma-io/transport/filesystem/safe/LockFile';
+    import { class_Uri } from 'atma-utils';
     export interface Io {
         env: {
             currentDir: class_Uri;
@@ -39,16 +39,6 @@ declare module 'atma-io/IIo' {
     }
 }
 
-declare module 'atma-io/global' {
-    import { Io } from 'atma-io/IIo';
-    export { class_Uri, class_Dfr, class_EventEmitter } from 'atma-utils';
-    let $global: any;
-    let logger: any;
-    const io: Io;
-    export { $global as global };
-    export { logger, io };
-}
-
 declare module 'atma-io/Watcher' {
     export const Watcher: {
         watch(path: string, options: {
@@ -59,10 +49,10 @@ declare module 'atma-io/Watcher' {
 }
 
 declare module 'atma-io/Directory' {
-    import { class_Uri } from 'atma-io/global';
     import { dir_symlink } from 'atma-io/transport/dir_transport';
     import { File } from 'atma-io/File';
     import { IDeferred } from 'atma-io/IDeferred';
+    import { class_Uri } from 'atma-utils';
     export class Directory {
         uri: class_Uri;
         files: File[];
@@ -113,13 +103,13 @@ declare module 'atma-io/Directory' {
 }
 
 declare module 'atma-io/File' {
-    import { class_Uri } from 'atma-io/global';
     import { Stats } from 'fs';
     import { IDeferred } from 'atma-io/IDeferred';
     import { FileFactory } from 'atma-io/FileFactory';
     import { FileHooks, IFileMiddleware } from 'atma-io/FileHooks';
     import { ITransport } from 'atma-io/transport/custom';
     import { IFileCopyOpts, IFileSettings, IOperationOptions } from 'atma-io/interfaces/IFile';
+    import { class_Uri } from 'atma-utils';
     export class File {
         opts?: IFileSettings;
         uri: class_Uri;

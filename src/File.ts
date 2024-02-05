@@ -1,6 +1,3 @@
-import { class_Uri, class_Dfr } from './global'
-
-
 import { path_getUri } from './util/path';
 import {
     file_read,
@@ -46,6 +43,7 @@ import { uri_getFile } from './util/uri';
 import { IFileCopyOpts, IFileOptionsBase, IFileSettings, IOperationOptions } from './interfaces/IFile';
 import { cb_toPromiseCtx } from './util/cb';
 import { is_BROWSER_BUILD } from './constants';
+import { class_Dfr, class_Uri } from 'atma-utils';
 
 
 let _cache = {};

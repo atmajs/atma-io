@@ -1,5 +1,4 @@
-import { class_Dfr } from '../../../global'
-
+import { class_Dfr } from 'atma-utils';
 import { cb_toPromise, cb_toPromiseTuple } from '../../../util/cb';
 import { Errno } from '../Errno';
 import { FileFsTransport } from '../fs_file';

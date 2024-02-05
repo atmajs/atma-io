@@ -1,4 +1,4 @@
-import { class_Uri } from './global';
+import { class_Uri } from 'atma-utils';
 
 const cwd = new class_Uri(location.origin + '/');
 export const EnvBrowser = {

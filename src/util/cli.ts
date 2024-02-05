@@ -1,4 +1,4 @@
-import { class_Dfr } from '../global'
+import { class_Dfr } from 'atma-utils';
 
 export function cli_prompt(str, callback) {
     Factory.create(new PromptAction(str, callback));

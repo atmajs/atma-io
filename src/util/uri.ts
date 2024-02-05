@@ -1,4 +1,4 @@
-import { class_Uri } from '../global';
+import { class_Uri } from 'atma-utils';
 import { path_getUri } from './path';
 
 export function uri_getFile (uri: class_Uri, base?: string) {
