@@ -91,11 +91,7 @@ export class SafeFile {
                 await cb_toPromiseTuple(FileFsTransport.removeAsync, this.pathBak);
             }
         }
-        // @DONI: just read the file, if it doesn't exist it will throw and we return NULL in any case
-        // let exists = await File.existsAsync (this.path);
-        // if (exists === false) {
-        //     return null;
-        // }
+        // Just read the file, if it doesn't exist it will throw and we return NULL in any case
         try {
             let content = await cb_toPromise(FileFsTransport.readAsync, this.path, encoding);
             return content;
@@ -109,7 +105,13 @@ export class SafeFile {
         try {
             await this.lockOutProc?.acquire();
             await cb_toPromise(FileFsTransport.saveAsync, this.pathBak, data, null);
-            await cb_toPromise(FileFsTransport.renameAsync, this.pathBak, this.pathFilename);
+            let { error } = await cb_toPromiseTuple(FileFsTransport.renameAsync, this.pathBak, this.pathFilename);
+            if (Errno.isNotFound(error)) {
+                // If the "saveAsync" was succeeded and *.bak not exists, means was the race condition
+                // Ignore the error
+            } else {
+                throw error;
+            }
             this.callWriteListeners(v, null);
         } catch (error) {
             this.errored = error;
