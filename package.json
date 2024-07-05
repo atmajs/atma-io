@@ -6,26 +6,33 @@
         "email": "alex.kit@atmajs.com"
     },
     "version": "1.2.73",
-    "main": "./lib/io.js",
+    "main": "./lib/umd/node/io.js",
     "types": "./lib/io.d.ts",
-    "browser": "./lib/io-browser.js",
+    "browser": "./lib/umd/browser/io.js",
+    "exports": {
+        "node": {
+            "import": "./lib/esm/node/io.mjs",
+            "require": "./lib/umd/node/io.js"
+        },
+        "browser": {
+            "import": "./lib/esm/browser/io.mjs",
+            "require": "./lib/umd/browser/io.js"
+        }
+    },
     "repository": {
         "type": "git",
         "url": "https://github.com/atmajs/atma-io.git"
     },
     "license": "MIT",
-    "dependencies": {
-        "atma-logger": ">0.0.81"
-    },
     "devDependencies": {
         "@types/node": "^18.11.9",
-        "app-bundler": "^0.1.7",
+        "app-bundler": "^0.2.7",
         "atma": "^0.15.20",
         "atma-io-middleware-condcomments": "^1.2.8",
         "atma-io-middleware-importer": "^1.1.38",
         "atma-io-middleware-uglify": "^1.1.25",
         "atma-io-middleware-yml": "^1.1.25",
-        "atma-loader-ts": "^1.1.20",
+        "atma-loader-ts": "^1.2.4",
         "atma-server": "^0.5.16",
         "atma-utils": "^0.2.60",
         "body-parser": "^1.20.0",
@@ -48,8 +55,35 @@
     },
     "app-bundler": {
         "apps": {
-            "node": {
-                "outputMain": "lib/io.js",
+            "node-esm": {
+                "outputMain": "lib/esm/node/io.mjs",
+                "js": [],
+                "package": {
+                    "module": "commonjs",
+                    "moduleName": "appcfg",
+                    "moduleWrapper": "esm",
+                    "commonjs": {
+                        "output": "simplified"
+                    }
+                },
+                "settings": {
+                    "atma-io-middleware-condcomments": {
+                        "defines": {
+                            "BROWSER": false
+                        }
+                    },
+                    "atma-loader-ts": {
+                        "typescript": {
+                            "compilerOptions": {
+                                "module": "CommonJS",
+                                "target": "ES2015"
+                            }
+                        }
+                    }
+                }
+            },
+            "node-umd": {
+                "outputMain": "lib/umd/node/io.js",
                 "js": [],
                 "settings": {
                     "atma-io-middleware-condcomments": {
@@ -65,13 +99,72 @@
                     }
                 }
             },
-            "browser": {
-                "outputMain": "lib/io-browser.js",
+            "browser-umd": {
+                "outputMain": "lib/umd/browser/io.js",
                 "js": [],
                 "package": {
                     "module": "commonjs",
                     "moduleName": "io",
                     "moduleWrapper": "umd",
+                    "commonjs": {
+                        "output": "simplified"
+                    }
+                },
+                "settings": {
+                    "atma-io-middleware-condcomments": {
+                        "defines": {
+                            "BROWSER": true
+                        }
+                    },
+                    "atma-io-middleware-uglify": {
+                        "uglify": {
+                            "mangle": false,
+                            "compress": {
+                                "unused": true,
+                                "dead_code": true
+                            },
+                            "output": {
+                                "beautify": true
+                            }
+                        }
+                    },
+                    "atma-loader-ts": {
+                        "extensions": [
+                            "ts"
+                        ],
+                        "typescript": {
+                            "compilerOptions": {
+                                "baseUrl": "./",
+                                "paths": {
+                                    "@src/*": [
+                                        "src/*"
+                                    ]
+                                },
+                                "target": "es6",
+                                "module": "commonjs",
+                                "sourceMap": false
+                            }
+                        }
+                    }
+                },
+                "dynamicDependencies": [],
+                "middlewares": {
+                    "js": [
+                        "atma-io-middleware-uglify:write"
+                    ],
+                    "ts": [
+                        "atma-io-middleware-condcomments:read",
+                        "atma-loader-ts:read"
+                    ]
+                }
+            },
+            "browser-esm": {
+                "outputMain": "lib/esm/browser/io.mjs",
+                "js": [],
+                "package": {
+                    "module": "commonjs",
+                    "moduleName": "io",
+                    "moduleWrapper": "esm",
                     "commonjs": {
                         "output": "simplified"
                     }
@@ -138,7 +231,6 @@
                 ]
             },
             "dynamicDependencies": [
-                "atma-logger",
                 "^fs$",
                 "^os$",
                 "readline",

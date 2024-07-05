@@ -1,4 +1,4 @@
-const io = require('../../lib/io.js');
+const io = require('../../lib/umd/node/io.js');
 
 UTest({
     'read and write' () {

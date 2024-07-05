@@ -1,9 +1,9 @@
-import * as io from '../../lib/io.browser.js'
+import * as io from '../../lib/umd/browser/io.js'
 
 UTest({
     async 'load json file' () {
-        let pckg = await io.File.readAsync<any>('/package.json');
-        eq_(pckg.name, 'atma-io');
+        let pkg = await io.File.readAsync<any>('/package.json');
+        eq_(pkg.name, 'atma-io');
     },
     async 'load text file' () {
         let text = await io.File.readAsync<any>('/readme.md');
