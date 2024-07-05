@@ -27,7 +27,7 @@
     "devDependencies": {
         "@types/node": "^18.11.9",
         "app-bundler": "^0.2.7",
-        "atma": "^0.15.20",
+        "atma": "^0.15.23",
         "atma-io-middleware-condcomments": "^1.2.8",
         "atma-io-middleware-importer": "^1.1.38",
         "atma-io-middleware-uglify": "^1.1.25",
