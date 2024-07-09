@@ -424,6 +424,11 @@ export class File {
         }
         delete _cache[path];
     }
+    clearCache () {
+        let path = uri_toPath(this.uri);
+        File.clearCache(path);
+        this.content = null;
+    }
     static disableCache() {
         _cache = {};
         _cacheEnabled = false
