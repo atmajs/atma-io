@@ -8,7 +8,7 @@
 
 ----
 
-[![Build Status](https://api.travis-ci.com/atmajs/atma-io.svg?branch=master)](https://app.travis-ci.com/github/atmajs/atma-io)
+[![Build Status](https://dl.circleci.com/status-badge/img/gh/atmajs/atma-io/tree/master.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/atmajs/atma-io/tree/master)
 [![NPM version](https://badge.fury.io/js/atma-io.svg)](http://badge.fury.io/js/atma-io)
 
 Features:
