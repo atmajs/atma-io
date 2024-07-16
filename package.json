@@ -69,7 +69,8 @@
                 "settings": {
                     "atma-io-middleware-condcomments": {
                         "defines": {
-                            "BROWSER": false
+                            "BROWSER": false,
+                            "ESM": true
                         }
                     },
                     "atma-loader-ts": {
@@ -88,7 +89,8 @@
                 "settings": {
                     "atma-io-middleware-condcomments": {
                         "defines": {
-                            "BROWSER": false
+                            "BROWSER": false,
+                            "ESM": false
                         }
                     }
                 },
@@ -113,7 +115,8 @@
                 "settings": {
                     "atma-io-middleware-condcomments": {
                         "defines": {
-                            "BROWSER": true
+                            "BROWSER": true,
+                            "ESM": false
                         }
                     },
                     "atma-io-middleware-uglify": {
@@ -172,7 +175,8 @@
                 "settings": {
                     "atma-io-middleware-condcomments": {
                         "defines": {
-                            "BROWSER": true
+                            "BROWSER": true,
+                            "ESM": true
                         }
                     },
                     "atma-io-middleware-uglify": {

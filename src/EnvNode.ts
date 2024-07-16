@@ -2,11 +2,18 @@ import { class_Uri } from 'atma-utils';
 import { logger } from './global'
 import * as os from 'os';
 
-const mainModule = process.mainModule ?? require.main;
+//#if (!ESM)
+let mainModule = process.mainModule ?? require.main;
+//#endif
 
-const mainFile = getSysFile(mainModule.filename);
+/**#if (ESM)
+let mainModule = {
+    path: import.meta.url
+};
+*/
+
+
 const mainDir  = getSysDir(mainModule.path);
-
 const platform = process.platform;
 const cwd = getSysDir(process.cwd());
 

@@ -159,6 +159,7 @@ declare module 'atma-io/File' {
         stats(): Stats;
         static stats(path: string): Stats;
         static clearCache(mix?: any): void;
+        clearCache(): void;
         static disableCache(): void;
         static enableCache(): void;
         static registerFactory(factory: FileFactory): void;
