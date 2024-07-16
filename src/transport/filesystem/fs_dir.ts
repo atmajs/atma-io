@@ -292,18 +292,11 @@ function dir_walk(dir, root, data): string[] {
                         dirCanBeMatched = true;
                         break;
                     }
-
-                    logger(90).warn(
-                        '<glob> not matched %s | %s',
-                        dirroot,
-                        patternRoot
-                    );
                 }
 
                 if (dirCanBeMatched === false) continue;
             }
 
-            logger(90).warn('<glob> match sub-', dirroot);
             results = results.concat(
                 dir_walk(path_combine(dir, x), dirroot, data)
             );
