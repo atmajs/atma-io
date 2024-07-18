@@ -41,11 +41,9 @@ if (global.io == null) {
 
 export default io as Io;
 
-export {
-    File,
-    Env
-};
+export { File };
 
+export const env = Env;
 export const Uri = class_Uri;
 export const settings = setSettings;
 

@@ -6,7 +6,6 @@
 declare module 'atma-io' {
     import { glob_matchPath } from 'atma-io/util/glob'; 
      import { Io } from 'atma-io/IIo';
-    import { Env } from 'atma-io/Env';
     import { File } from 'atma-io/File';
     import { setSettings } from 'atma-io/ExportsSetts';
     import { class_Uri } from 'atma-utils';
@@ -28,7 +27,17 @@ declare module 'atma-io' {
     export { FileSafe, LockFile, Directory };
     const _default: Io;
     export default _default;
-    export { File, Env };
+    export { File };
+    export const env: {
+            settings: any;
+            cwd: string;
+            applicationDir: class_Uri;
+            currentDir: class_Uri;
+            tmpDir: class_Uri;
+            newLine: string;
+            getTmpPath(filename: string): string;
+            readonly appdataDir: any;
+    };
     export const Uri: typeof class_Uri;
     export const settings: typeof setSettings;
 }
@@ -82,10 +91,6 @@ declare module 'atma-io/IIo' {
         Uri: typeof class_Uri;
         Directory: typeof Directory;
     }
-}
-
-declare module 'atma-io/Env' {
-    export { EnvNode as Env } from 'atma-io/EnvNode';
 }
 
 declare module 'atma-io/File' {
@@ -271,20 +276,6 @@ declare module 'atma-io/ExportsGlob' {
         readFiles(path: string): File[];
         read(path: string): (File | Directory)[];
         readAsync(path: string, cb?: (error: any, arr?: (File | Directory)[], dir?: Directory) => void | any): Promise<(File | Directory)[]>;
-    };
-}
-
-declare module 'atma-io/EnvNode' {
-    import { class_Uri } from 'atma-utils';
-    export const EnvNode: {
-        settings: any;
-        cwd: string;
-        applicationDir: class_Uri;
-        currentDir: class_Uri;
-        tmpDir: class_Uri;
-        newLine: string;
-        getTmpPath(filename: string): string;
-        readonly appdataDir: any;
     };
 }
 
