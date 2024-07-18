@@ -4,9 +4,53 @@
 //   ../fs
 
 declare module 'atma-io' {
-    import { Io } from 'atma-io/IIo';
+    import { glob_matchPath } from 'atma-io/util/glob'; 
+     import { Io } from 'atma-io/IIo';
+    import { Env } from 'atma-io/Env';
+    import { File } from 'atma-io/File';
+    import { setSettings } from 'atma-io/ExportsSetts';
+    import { class_Uri } from 'atma-utils';
+    import { Directory } from 'atma-io/Directory';
+    import { FileSafe } from 'atma-io/FileSafe';
+    import { LockFile } from 'atma-io/transport/filesystem/safe/LockFile';
     const _default: Io;
-    export = _default;
+    export default _default;
+    export { File, Env, FileSafe, LockFile, Directory };
+    export const watcher: {
+            watch(path: string, options: {
+                    recursive?: boolean;
+            }, callback: (path?: string) => any): void;
+            unwatch(path: string, callback?: Function): void;
+    };
+    export const glob: {
+            matchPath: typeof glob_matchPath;
+            readFiles(path: string): File[];
+            read(path: string): (File | Directory)[];
+            readAsync(path: string, cb?: (error: any, arr?: (File | Directory)[], dir?: Directory) => any): Promise<(File | Directory)[]>;
+    };
+    export const Uri: typeof class_Uri;
+    export const settings: typeof setSettings;
+}
+
+declare module 'atma-io/util/glob' {
+    export function glob_getCalculatedPath(path: any, glob: any): any;
+    export function glob_matchPath(pattern: any, path: any): boolean;
+    export function glob_parsePatterns(mix: string | RegExp | (string | RegExp)[], out?: GlobRegExp[]): GlobRegExp[];
+    export function glob_parseDirs(pattern: any): [number, number, string];
+    export function glob_toRegExp(glob: any): GlobRegExp;
+    /**
+        *    [as dir] '/dev/*.js' -> '/dev/'
+        */
+    export function glob_getStrictPath(path: any): any;
+    /**
+        *    'c:/dev/*.js' -> '*.js'
+        */
+    export function glob_getRelativePath(path: any): any;
+    export class GlobRegExp extends RegExp {
+            depth: number;
+            rootCount: number;
+            root: string;
+    }
 }
 
 declare module 'atma-io/IIo' {
@@ -39,67 +83,8 @@ declare module 'atma-io/IIo' {
     }
 }
 
-declare module 'atma-io/Watcher' {
-    export const Watcher: {
-        watch(path: string, options: {
-            recursive?: boolean;
-        }, callback: (path?: string) => void | any): void;
-        unwatch(path: string, callback?: Function): void;
-    };
-}
-
-declare module 'atma-io/Directory' {
-    import { dir_symlink } from 'atma-io/transport/dir_transport';
-    import { File } from 'atma-io/File';
-    import { IDeferred } from 'atma-io/IDeferred';
-    import { class_Uri } from 'atma-utils';
-    export class Directory {
-        uri: class_Uri;
-        files: File[];
-        constructor(directory: string | Directory | class_Uri);
-        exists(): boolean;
-        static exists(path: string): boolean;
-        existsAsync(): IDeferred<boolean>;
-        static existsAsync(path: string): IDeferred<boolean>;
-        ensure(): this;
-        static ensure(path: string): Directory;
-        ensureAsync(): IDeferred<Directory>;
-        static ensureAsync(path: string): IDeferred<Directory>;
-        readFiles(pattern?: string | RegExp | (string | RegExp)[], exclude?: string | RegExp | (string | RegExp)[]): File[];
-        static readFiles(path: string, pattern?: string | RegExp | (string | RegExp)[], exclude?: string | RegExp | (string | RegExp)[]): File[];
-        read(pattern?: string | RegExp | (string | RegExp)[], exclude?: string | RegExp | (string | RegExp)[]): (File | Directory)[];
-        static read(path: string, pattern?: string | RegExp | (string | RegExp)[], exclude?: string | RegExp | (string | RegExp)[]): (File | Directory)[];
-        readFilesAsync(pattern?: string | RegExp | (string | RegExp)[], exclude?: string | RegExp | (string | RegExp)[]): IDeferred<File[]>;
-        static readFilesAsync(path: string, pattern?: string | RegExp | (string | RegExp)[], exclude?: string | RegExp | (string | RegExp)[]): IDeferred<File[]>;
-        readAsync(pattern?: string | RegExp | (string | RegExp)[], exclude?: string | RegExp | (string | RegExp)[]): IDeferred<(File | Directory)[]>;
-        static readAsync(path: string, pattern?: string | RegExp | (string | RegExp)[], exclude?: string | RegExp | (string | RegExp)[]): IDeferred<(File | Directory)[]>;
-        copyTo(target: string, options?: {
-            verbose?: boolean;
-        }): IDeferred<void>;
-        static copyTo(path: string, target: string, options?: {
-            verbose?: boolean;
-        }): IDeferred<void>;
-        copyToAsync(target: string, options?: {
-            verbose?: boolean;
-        }): IDeferred<void>;
-        static copyToAsync(path: string, target: string, options?: {
-            verbose?: boolean;
-        }): IDeferred<void>;
-        getName(): string;
-        rename(name: string): void;
-        static rename(path: string, name: string): void;
-        renameAsync(name: string): IDeferred<any>;
-        static renameAsync(path: string, name: string): IDeferred<any>;
-        remove(): void;
-        static remove(path: string): void;
-        removeAsync(): IDeferred<any>;
-        static removeAsync(path: string): IDeferred<void>;
-        watch(callback: (path?: string) => void | any): void;
-        static watch(path: string, callback: (path?: string) => void | any): void;
-        unwatch(callback?: (path: string) => void | any): void;
-        static unwatch(path: string, callback?: (path?: string) => void | any): void;
-        static symlink: typeof dir_symlink;
-    }
+declare module 'atma-io/Env' {
+    export { EnvNode as Env } from 'atma-io/EnvNode';
 }
 
 declare module 'atma-io/File' {
@@ -182,22 +167,64 @@ declare module 'atma-io/File' {
     }
 }
 
-declare module 'atma-io/ExportsGlob' {
-    import { glob_matchPath } from 'atma-io/util/glob';
-    import { Directory } from 'atma-io/Directory';
-    import { File } from 'atma-io/File';
-    export const Glob: {
-        matchPath: typeof glob_matchPath;
-        readFiles(path: string): File[];
-        read(path: string): (File | Directory)[];
-        readAsync(path: string, cb?: (error: any, arr?: (File | Directory)[], dir?: Directory) => void | any): Promise<(File | Directory)[]>;
-    };
-}
-
 declare module 'atma-io/ExportsSetts' {
     export function setSettings(settings: {
         extensions?: any;
     }): void;
+}
+
+declare module 'atma-io/Directory' {
+    import { dir_symlink } from 'atma-io/transport/dir_transport';
+    import { File } from 'atma-io/File';
+    import { IDeferred } from 'atma-io/IDeferred';
+    import { class_Uri } from 'atma-utils';
+    export class Directory {
+        uri: class_Uri;
+        files: File[];
+        constructor(directory: string | Directory | class_Uri);
+        exists(): boolean;
+        static exists(path: string): boolean;
+        existsAsync(): IDeferred<boolean>;
+        static existsAsync(path: string): IDeferred<boolean>;
+        ensure(): this;
+        static ensure(path: string): Directory;
+        ensureAsync(): IDeferred<Directory>;
+        static ensureAsync(path: string): IDeferred<Directory>;
+        readFiles(pattern?: string | RegExp | (string | RegExp)[], exclude?: string | RegExp | (string | RegExp)[]): File[];
+        static readFiles(path: string, pattern?: string | RegExp | (string | RegExp)[], exclude?: string | RegExp | (string | RegExp)[]): File[];
+        read(pattern?: string | RegExp | (string | RegExp)[], exclude?: string | RegExp | (string | RegExp)[]): (File | Directory)[];
+        static read(path: string, pattern?: string | RegExp | (string | RegExp)[], exclude?: string | RegExp | (string | RegExp)[]): (File | Directory)[];
+        readFilesAsync(pattern?: string | RegExp | (string | RegExp)[], exclude?: string | RegExp | (string | RegExp)[]): IDeferred<File[]>;
+        static readFilesAsync(path: string, pattern?: string | RegExp | (string | RegExp)[], exclude?: string | RegExp | (string | RegExp)[]): IDeferred<File[]>;
+        readAsync(pattern?: string | RegExp | (string | RegExp)[], exclude?: string | RegExp | (string | RegExp)[]): IDeferred<(File | Directory)[]>;
+        static readAsync(path: string, pattern?: string | RegExp | (string | RegExp)[], exclude?: string | RegExp | (string | RegExp)[]): IDeferred<(File | Directory)[]>;
+        copyTo(target: string, options?: {
+            verbose?: boolean;
+        }): IDeferred<void>;
+        static copyTo(path: string, target: string, options?: {
+            verbose?: boolean;
+        }): IDeferred<void>;
+        copyToAsync(target: string, options?: {
+            verbose?: boolean;
+        }): IDeferred<void>;
+        static copyToAsync(path: string, target: string, options?: {
+            verbose?: boolean;
+        }): IDeferred<void>;
+        getName(): string;
+        rename(name: string): void;
+        static rename(path: string, name: string): void;
+        renameAsync(name: string): IDeferred<any>;
+        static renameAsync(path: string, name: string): IDeferred<any>;
+        remove(): void;
+        static remove(path: string): void;
+        removeAsync(): IDeferred<any>;
+        static removeAsync(path: string): IDeferred<void>;
+        watch(callback: (path?: string) => void | any): void;
+        static watch(path: string, callback: (path?: string) => void | any): void;
+        unwatch(callback?: (path: string) => void | any): void;
+        static unwatch(path: string, callback?: (path?: string) => void | any): void;
+        static symlink: typeof dir_symlink;
+    }
 }
 
 declare module 'atma-io/FileSafe' {
@@ -225,18 +252,39 @@ declare module 'atma-io/transport/filesystem/safe/LockFile' {
     }
 }
 
-declare module 'atma-io/transport/dir_transport' {
-    export function dir_ensure(path: any): string;
-    export function dir_ensureAsync(path: any, cb: any): void;
-    export function dir_exists(path: any): boolean;
-    export function dir_existsAsync(path: any, cb: any): void;
-    export function dir_files(path: any, patterns: any, excludes: any, data?: any): string[];
-    export function dir_filesAsync(path: any, patternsOrCb?: any, excludesOrCb?: any, dataOrCb?: any, Cb?: any): any;
-    export function dir_symlink(source: string, target: string): void;
-    export function dir_remove(path: any): boolean;
-    export function dir_removeAsync(path: any, cb: any): any;
-    export function dir_rename(oldPath: string, newPath: string): any;
-    export function dir_renameAsync(oldPath: string, newPath: string, cb: any): any;
+declare module 'atma-io/Watcher' {
+    export const Watcher: {
+        watch(path: string, options: {
+            recursive?: boolean;
+        }, callback: (path?: string) => void | any): void;
+        unwatch(path: string, callback?: Function): void;
+    };
+}
+
+declare module 'atma-io/ExportsGlob' {
+    import { glob_matchPath } from 'atma-io/util/glob';
+    import { Directory } from 'atma-io/Directory';
+    import { File } from 'atma-io/File';
+    export const Glob: {
+        matchPath: typeof glob_matchPath;
+        readFiles(path: string): File[];
+        read(path: string): (File | Directory)[];
+        readAsync(path: string, cb?: (error: any, arr?: (File | Directory)[], dir?: Directory) => void | any): Promise<(File | Directory)[]>;
+    };
+}
+
+declare module 'atma-io/EnvNode' {
+    import { class_Uri } from 'atma-utils';
+    export const EnvNode: {
+        settings: any;
+        cwd: string;
+        applicationDir: class_Uri;
+        currentDir: class_Uri;
+        tmpDir: class_Uri;
+        newLine: string;
+        getTmpPath(filename: string): string;
+        readonly appdataDir: any;
+    };
 }
 
 declare module 'atma-io/IDeferred' {
@@ -412,25 +460,18 @@ declare module 'atma-io/interfaces/IFile' {
     }
 }
 
-declare module 'atma-io/util/glob' {
-    export function glob_getCalculatedPath(path: any, glob: any): any;
-    export function glob_matchPath(pattern: any, path: any): boolean;
-    export function glob_parsePatterns(mix: string | RegExp | (string | RegExp)[], out?: GlobRegExp[]): GlobRegExp[];
-    export function glob_parseDirs(pattern: any): [number, number, string];
-    export function glob_toRegExp(glob: any): GlobRegExp;
-    /**
-        *    [as dir] '/dev/*.js' -> '/dev/'
-        */
-    export function glob_getStrictPath(path: any): any;
-    /**
-        *    'c:/dev/*.js' -> '*.js'
-        */
-    export function glob_getRelativePath(path: any): any;
-    export class GlobRegExp extends RegExp {
-            depth: number;
-            rootCount: number;
-            root: string;
-    }
+declare module 'atma-io/transport/dir_transport' {
+    export function dir_ensure(path: any): string;
+    export function dir_ensureAsync(path: any, cb: any): void;
+    export function dir_exists(path: any): boolean;
+    export function dir_existsAsync(path: any, cb: any): void;
+    export function dir_files(path: any, patterns: any, excludes: any, data?: any): string[];
+    export function dir_filesAsync(path: any, patternsOrCb?: any, excludesOrCb?: any, dataOrCb?: any, Cb?: any): any;
+    export function dir_symlink(source: string, target: string): void;
+    export function dir_remove(path: any): boolean;
+    export function dir_removeAsync(path: any, cb: any): any;
+    export function dir_rename(oldPath: string, newPath: string): any;
+    export function dir_renameAsync(oldPath: string, newPath: string, cb: any): any;
 }
 
 declare module 'atma-io/util/types' {

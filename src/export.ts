@@ -32,5 +32,21 @@ if (global.io == null) {
     global.io = io;
 }
 
-export = io as Io;
+export default io as Io;
+
+
+export {
+    File,
+    Env,
+    FileSafe,
+    LockFile,
+    Directory
+};
+
+export const watcher = Watcher;
+export const glob = Glob;
+export const Uri = class_Uri;
+export const settings = setSettings;
+
+
 
