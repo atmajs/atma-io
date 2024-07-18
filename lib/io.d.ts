@@ -13,9 +13,6 @@ declare module 'atma-io' {
     import { Directory } from 'atma-io/Directory';
     import { FileSafe } from 'atma-io/FileSafe';
     import { LockFile } from 'atma-io/transport/filesystem/safe/LockFile';
-    const _default: Io;
-    export default _default;
-    export { File, Env, FileSafe, LockFile, Directory };
     export const watcher: {
             watch(path: string, options: {
                     recursive?: boolean;
@@ -28,6 +25,10 @@ declare module 'atma-io' {
             read(path: string): (File | Directory)[];
             readAsync(path: string, cb?: (error: any, arr?: (File | Directory)[], dir?: Directory) => any): Promise<(File | Directory)[]>;
     };
+    export { FileSafe, LockFile, Directory };
+    const _default: Io;
+    export default _default;
+    export { File, Env };
     export const Uri: typeof class_Uri;
     export const settings: typeof setSettings;
 }

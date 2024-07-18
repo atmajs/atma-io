@@ -13,18 +13,25 @@ import { FileSafe } from './FileSafe'
 import { LockFile } from './transport/filesystem/safe/LockFile'
 //#endif
 
-io.File = File;
-
-io.env = Env;
-
 //#if (!BROWSER)
 io.watcher = Watcher;
 io.glob = Glob;
 io.FileSafe = FileSafe;
 io.LockFile = LockFile;
 io.Directory = Directory;
+
+export const watcher = Watcher;
+export const glob = Glob;
+export {
+    FileSafe,
+    LockFile,
+    Directory
+};
+
 //#endif
 
+io.File = File;
+io.env = Env;
 io.Uri = class_Uri;
 io.settings = setSettings;
 
@@ -34,17 +41,11 @@ if (global.io == null) {
 
 export default io as Io;
 
-
 export {
     File,
-    Env,
-    FileSafe,
-    LockFile,
-    Directory
+    Env
 };
 
-export const watcher = Watcher;
-export const glob = Glob;
 export const Uri = class_Uri;
 export const settings = setSettings;
 
