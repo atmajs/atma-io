@@ -129,11 +129,11 @@ export class LockFile {
                 }
                 return;
             }
-            if (Errno.isExists(err) === false) {
-                cb(err);
+            if (Errno.isExists(err) || Errno.isPermission(err)) {
+                cb(null, false);
                 return;
             }
-            cb(null, false);
+            cb(err);
         });
     }
 
@@ -144,11 +144,15 @@ export class LockFile {
                     this.acquireInner();
                     return;
                 }
-                this.onError(err);
-                return;
+                if (Errno.isPermission(err)) {
+                    // EPERM means file exists, but stats can't be retrieved right now, go to "pollStart"
+                } else {
+                    this.onError(err);
+                    return;
+                }
             }
             this.lastCheck = Date.now();
-            this.lastMod = Stats.createdAt(stats);
+            this.lastMod = stats == null ? this.lastCheck : Stats.createdAt(stats);
             let oldMs = this.lastCheck - this.lastMod;
             if (oldMs > 5000) {
                 this.doCheckPid();
@@ -204,6 +208,11 @@ export class LockFile {
             if (err) {
                 if (Errno.isNotFound(err)) {
                     this.acquireInner();
+                    return;
+                }
+                if (Errno.isPermission(err)) {
+                    // continue polling, as file is locked by another process
+                    this.pollAcquire();
                     return;
                 }
                 this.onError(err);

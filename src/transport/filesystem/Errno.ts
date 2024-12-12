@@ -11,4 +11,10 @@ export namespace Errno {
         }
         return error.errno === -4075 || error.code === 'EEXIST';
     }
+    export function isPermission(error) {
+        if (error == null) {
+            return false;
+        }
+        return error.errno === -4048 || error.code === 'EPERM';
+    }
 }

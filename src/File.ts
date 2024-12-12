@@ -419,7 +419,6 @@ export class File {
         }
 
         if (_cache.hasOwnProperty(path) === false) {
-            logger.log('io.File - not in cache -', path);
             return;
         }
         delete _cache[path];

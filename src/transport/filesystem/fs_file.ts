@@ -7,7 +7,6 @@ import { IFileTransport } from '../custom';
 import { Errno } from './Errno';
 
 
-
 export const FileFsTransport: IFileTransport = {
     save(path: string, content: string | Buffer, options: __fs.WriteFileOptions) {
         let error = DirectoryFsTransport.ensure(path_getDir(path));
@@ -179,8 +178,13 @@ export const FileFsTransport: IFileTransport = {
         return true;
     },
     renameAsync(path, filename, cb) {
-        __fs.rename(path, getDir(path) + filename, function(error) {
-            cb(error, error == null);
+        let targetPath = getDir(path) + filename;
+        __fs.rename(path, targetPath, async function(error) {
+            if (error == null) {
+                cb(null, true);
+                return;
+            }
+            cb(error, false);
         });
     },
     appendAsync(path: string, str, cb) {

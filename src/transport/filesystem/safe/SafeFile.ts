@@ -3,6 +3,7 @@ import { cb_toPromise, cb_toPromiseTuple } from '../../../util/cb';
 import { Errno } from '../Errno';
 import { FileFsTransport } from '../fs_file';
 import { LockFile } from './LockFile';
+import { $promise } from '../../../util/$promise';
 
 /**
  * Safe cross process file writes and reads using *.bak files as the safe-fallback
@@ -103,9 +104,26 @@ export class SafeFile {
     private async writeInner (data: string | Buffer) {
         let v = this.version;
         try {
+
             await this.lockOutProc?.acquire();
             await cb_toPromise(FileFsTransport.saveAsync, this.pathBak, data, null);
+
             let { error } = await cb_toPromiseTuple(FileFsTransport.renameAsync, this.pathBak, this.pathFilename);
+            if (Errno.isPermission(error)) {
+                // Sometimes system may lock the file for short period, so retry
+                const RETRIES = 10;
+                for (let i = 0; i < RETRIES; i++) {
+                    await $promise.wait((i + 1) * 50);
+
+                    let result = await cb_toPromiseTuple(FileFsTransport.renameAsync, this.pathBak, this.pathFilename);
+                    error = result.error;
+                    if (Errno.isPermission(error)) {
+                        continue;
+                    }
+                    break;
+                }
+            }
+
             if (Errno.isNotFound(error)) {
                 // If the "saveAsync" was succeeded and *.bak not exists, means was the race condition
                 // Ignore the error
