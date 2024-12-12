@@ -31,7 +31,7 @@ export class SafeFile {
      * @param path Local File Path
      * @param opts
      */
-    constructor(public path: string, public opts?: { threadSafe: boolean }) {
+    constructor(public path: string, public opts?: { threadSafe?: boolean }) {
         this.lockInProc.resolve();
     }
 

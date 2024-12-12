@@ -3,6 +3,7 @@ import { TCallback } from '../../util/types';
 import { IFileTransport } from '../custom';
 import { FsTransport } from './FsTransport'
 import { SafeFile } from './safe/SafeFile';
+import { IFileSettings } from '@src/interfaces/IFile';
 
 export namespace FsTransportSafe {
 
@@ -16,8 +17,8 @@ export namespace FsTransportSafe {
         save(path: string, content: string | Buffer, options: __fs.WriteFileOptions) {
             throw new Error('Sync methods are not supported in FsTransportSafe')
         },
-        saveAsync(path: string, content: string | Buffer, options: __fs.WriteFileOptions, cb: TCallback) {
-            let file = SAFE_FILES[path] ?? (SAFE_FILES[path] = new SafeFile(path));
+        saveAsync(path: string, content: string | Buffer, options: __fs.WriteFileOptions & IFileSettings, cb: TCallback) {
+            let file = SAFE_FILES[path] ?? (SAFE_FILES[path] = new SafeFile(path, options));
             file
                 .writeAsync(content)
                 .then(result => cb(null, result), err => cb(err));
