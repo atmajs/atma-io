@@ -13,7 +13,13 @@ jobs:
       - image: cimg/node:26.10.0-browsers
     steps:
       - browser-tools/install_firefox
-      - checkout
+      - run:
+          name: Checkout via HTTPS
+          command: |
+            git init .
+            git remote add origin https://github.com/atmajs/atma-io.git
+            git fetch origin "$CIRCLE_SHA1"
+            git checkout --detach FETCH_HEAD
       - run:
           name: NPM Install
           command: npm install --force
