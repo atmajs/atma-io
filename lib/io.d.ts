@@ -20,7 +20,7 @@ declare module 'atma-io' {
     };
     export const glob: {
             matchPath: typeof glob_matchPath;
-            readFiles(path: string): File[];
+            readFiles(path: string, exclude?: string | RegExp | string[] | RegExp[]): File[];
             read(path: string): (File | Directory)[];
             readAsync(path: string, cb?: (error: any, arr?: (File | Directory)[], dir?: Directory) => any): Promise<(File | Directory)[]>;
     };
@@ -271,12 +271,14 @@ declare module 'atma-io/ExportsGlob' {
     import { glob_matchPath } from 'atma-io/util/glob';
     import { Directory } from 'atma-io/Directory';
     import { File } from 'atma-io/File';
+    type TPathPattern = string | RegExp | string[] | RegExp[];
     export const Glob: {
         matchPath: typeof glob_matchPath;
-        readFiles(path: string): File[];
+        readFiles(path: string, exclude?: TPathPattern): File[];
         read(path: string): (File | Directory)[];
         readAsync(path: string, cb?: (error: any, arr?: (File | Directory)[], dir?: Directory) => void | any): Promise<(File | Directory)[]>;
     };
+    export {};
 }
 
 declare module 'atma-io/IDeferred' {

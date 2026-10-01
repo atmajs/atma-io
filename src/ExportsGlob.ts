@@ -2,14 +2,15 @@ import { glob_matchPath, glob_getStrictPath, glob_getRelativePath } from './util
 import { Directory } from './Directory'
 import { File } from './File'
 
+type TPathPattern = string | RegExp | string[] | RegExp[];
 export const Glob = {
     matchPath: glob_matchPath,
-    readFiles (path: string): File[] {
+    readFiles (path: string, exclude?: TPathPattern): File[] {
 
         let strict = glob_getStrictPath(path);
         let rel = glob_getRelativePath(path);
 
-        return new Directory(strict).readFiles(rel);
+        return new Directory(strict).readFiles(rel, exclude);
     },
     read (path: string): (File | Directory)[] {
         let strict = glob_getStrictPath(path);
