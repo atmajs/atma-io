@@ -1,6 +1,7 @@
 import { class_Uri } from 'atma-utils';
 
-const cwd = new class_Uri(location.origin + '/');
+const origin = typeof location === 'undefined' ? '/' : (location.origin + '/');
+const cwd = new class_Uri(origin);
 export const EnvBrowser = {
     settings: {} as any,
     cwd: cwd,

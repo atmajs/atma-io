@@ -30,7 +30,8 @@ export function path_getUri(path: string | class_Uri, base?: string){
         return io.env.currentDir.combine(uri as any);
     }
     if (is_BROWSER_BUILD) {
-        return new class_Uri(location.origin).combine(uri as any);
+        const origin = typeof location === 'undefined' ? '/' : location.origin;
+        return new class_Uri(origin).combine(uri as any);
     }
     return new class_Uri('file://' + process.cwd() + '/')
         .combine(uri as any);
