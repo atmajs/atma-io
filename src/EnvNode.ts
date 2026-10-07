@@ -13,7 +13,7 @@ let mainModule = {
 */
 
 
-const mainDir  = getSysDir(mainModule.path ?? process.cwd());
+const mainDir  = getSysDir(mainModule?.path ?? process.cwd());
 const platform = process.platform;
 const cwd = getSysDir(process.cwd());
 
